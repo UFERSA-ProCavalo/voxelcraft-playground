@@ -1,0 +1,11 @@
+{
+  "name": "@voxelcraft-playground/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared configuration for nead-app monorepo",
+  "main": "postcss.config.js",
+  "files": [
+    "postcss.config.js"
+  ]
+}

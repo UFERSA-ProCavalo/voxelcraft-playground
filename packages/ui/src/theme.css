@@ -1,0 +1,125 @@
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-error: var(--error);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+
+  --animate-spin: spin 1s linear infinite;
+  --animate-page-loader: page-loader 2s infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes page-loader {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
+/* 1. Define global defaults */
+@layer base {
+  :root {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+  html {
+    @apply bg-[color:var(--color-background)] text-[var(--color-foreground)] font-sans antialiased;
+  }
+}
+
+/* 2. Define theme families */
+@layer base {
+  .theme-default {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary: #f59e0b;
+    --secondary-hover: #d97706;
+    --accent: #f3f4f6;
+  }
+
+  .theme-forest {
+    --primary: #166534;
+    --primary-hover: #14532d;
+    --accent: #d1fae5;
+  }
+
+  .theme-ocean {
+    --primary: #0e7490;
+    --primary-hover: #155e75;
+    --accent: #cffafe;
+  }
+}
+
+/* 3. Define color schemes */
+@layer base {
+  .scheme-light {
+    --background: oklch(1 0 0);
+    --foreground: #111827;
+    --border: #e5e7eb;
+    --card: #ffffff;
+    --muted: #6b7280;
+  }
+
+  .scheme-dark {
+    --background: #111827;
+    --foreground: #f9fafb;
+    --border: #374151;
+    --card: #1f2937;
+    --muted: #9ca3af;
+  }
+
+  .scheme-high-contrast {
+    --background: #000;
+    --foreground: #fff;
+    --border: #fff;
+    --card: #000;
+    --muted: #999;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] font-medium rounded-md px-4 py-2 transition;
+  }
+  .btn-secondary {
+    @apply bg-[var(--color-secondary)] text-white hover:bg-[var(--color-secondary-hover)] font-medium rounded-md px-4 py-2 transition;
+  }
+  .btn-outline {
+    @apply border border-[color:var(--color-border)] bg-transparent text-[var(--color-foreground)] hover:bg-[color:var(--color-accent)] font-medium rounded-md px-4 py-2 transition;
+  }
+  .card {
+    @apply bg-[color:var(--color-card)] border border-[color:var(--color-border)] rounded-lg shadow-sm;
+  }
+  .card-header {
+    @apply p-6 border-b border-[color:var(--color-border)] bg-transparent;
+  }
+  .card-content {
+    @apply p-6 pt-0;
+  }
+  .card-footer {
+    @apply p-6 pt-0 flex items-center justify-center;
+  }
+  .input {
+    @apply w-full rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-card)] text-[var(--color-foreground)] px-3 py-2 text-sm placeholder-[color:var(--color-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .form-error {
+    @apply bg-[color:var(--color-error)]/10 text-[var(--color-error)] rounded-md p-4;
+  }
+}
+
+@source "../dist/"
