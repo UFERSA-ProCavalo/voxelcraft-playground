@@ -1,3 +1,6 @@
 @import "tailwindcss";
 @import "@voxelcraft-playground/ui/theme.css";
 
+.root {
+    isolation: isolate;
+}

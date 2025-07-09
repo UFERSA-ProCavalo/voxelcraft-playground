@@ -1,18 +1,22 @@
-import { ThemeSwitcher } from "@voxelcraft-playground/ui";
+import { Header as UIHeader, ThemeSwitcher, NavigationMenu, NavigationMenuLink } from "@voxelcraft-playground/ui";
+import { Link } from "react-router-dom";
 
-export default function Header() {
+const navItems = [
+  { label: "Home", href: "/" },
+  { label: "Playground", href: "/playground" },
+  { label: "Docs", href: "/docs" },
+];
+
+export function Header() {
   return (
-    <header className="bg-background border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-6">
-          <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-foreground">Voxelcraft Playground</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <ThemeSwitcher />
-          </div>
-        </div>
-      </div>
-    </header>
+    <UIHeader
+      variant="logo-left"
+      logo={<img src="/logo-light.svg" alt="Voxelcraft Logo" className="h-8 w-auto" />}
+      leftContent={<NavigationMenu items={navItems} renderLink={({ href, children }) => (
+  <NavigationMenuLink href={href} render={<Link to={href} />}>{children}</NavigationMenuLink>
+)} />}
+
+      rightContent={<ThemeSwitcher />}
+    />
   );
 }
