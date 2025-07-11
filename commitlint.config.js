@@ -19,6 +19,19 @@ export default { extends: ['@commitlint/config-conventional'] ,
             ]
         ],
         'scope-empty': [2, 'never'],
-        'scope-enum': [2, 'always', ['ui', 'core', 'repo']]
+        'scope-enum': [2, 'always', [
+  "ci",
+  "cli",
+  "config",
+  "core",
+  "core/home",
+  "core/playground",
+  "docs",
+  "repo",
+  "scripts",
+  "tests",
+  "ui"
+]
+]
     }
 };
