@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { useRef } from "react";
 import { OrbitControls } from "@react-three/drei";
 import type { VoxelData } from "../types";
+import { FaceCulling } from "./FaceCulling";
 
 export interface SceneProps {
   perfOffset?: number;
@@ -21,15 +22,16 @@ function Voxel({ voxel, bounds = 1 }: { voxel: VoxelData; bounds?: number }) {
     <group position={voxel.position}>
       <mesh castShadow receiveShadow>
         <boxGeometry ref={geometryRef} args={size} />
-        <meshStandardMaterial color={voxel.color ?? "orange"} />
+        {/* <meshStandardMaterial color={voxel.color ?? "orange"} wireframe /> */}
+        <meshStandardMaterial color={voxel.color ?? "orange"}  />
       </mesh>
       {geometryRef.current && (
         <lineSegments>
           {/* TypeScript workaround: geometryRef.current as any 
           * Ajustar o tipo de geometryRef para evitar erro de tipagem
           */}
-          <edgesGeometry args={[geometryRef.current as any]} />
-          <lineBasicMaterial color="black" linewidth={1} />
+          {/*<edgesGeometry args={[geometryRef.current as any]} />
+          <lineBasicMaterial color="black" linewidth={1} />*/}
         </lineSegments>
       )}
     </group>
@@ -95,9 +97,10 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 3 }: SceneProps) 
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 7]} intensity={0.8} castShadow />
       <AxesCylinders bounds={bounds} radius={0.08} />
-      {voxelData.map((voxel) => (
+      {/* {voxelData.map((voxel) => (
         <Voxel key={voxel.position.join(",")} voxel={voxel} bounds={bounds} />
-      ))}
+      ))} */}
+      <FaceCulling />
       <OrbitControls enableDamping makeDefault />
       <Perf position="top-right" style={{ top: perfOffset }} />
     </Canvas>
