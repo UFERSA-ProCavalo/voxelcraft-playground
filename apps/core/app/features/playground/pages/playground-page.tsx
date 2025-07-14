@@ -14,7 +14,7 @@ export default function PlaygroundPage() {
           <CodeEditor code={code} onChange={setCode} />
         </div>
         <div style={{ flex: 1, minWidth: 0}}>
-          <Scene perfOffset={headerHeight} />
+          <Scene perfOffset={headerHeight} code={code} />
         </div>
       </div>
     </div>

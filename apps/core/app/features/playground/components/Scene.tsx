@@ -6,10 +6,24 @@ import { OrbitControls } from "@react-three/drei";
 import type { VoxelData } from "../types";
 import { FaceCulling } from "./FaceCulling";
 
+// Cores para o retorno pelo código do usuário
+const COLOR_MAP: Record<number, string> = {
+  1: '#e74c3c', // vermelho
+  2: '#27ae60', // verde
+  3: '#2980b9', // azul
+  4: '#f1c40f', // amarelo
+  5: '#8e44ad', // roxo
+  6: '#e67e22', // laranja
+  7: '#1abc9c', // ciano
+  8: '#34495e', // cinza escuro
+  9: '#ecf0f1', // branco
+};
+
 export interface SceneProps {
   perfOffset?: number;
   bounds?: number;
   gridSize?: number;
+  code: string;
 }
 
 /**
@@ -77,14 +91,36 @@ function AxesCylinders({ bounds = 1, radius = 0.08 }: { bounds?: number; radius?
   );
 }
 
-export function Scene({ perfOffset = 0, bounds = 1, gridSize = 3 }: SceneProps) {
+export function Scene({ perfOffset = 0, bounds = 1, gridSize = 10, code }: SceneProps) {
   const voxelData: VoxelData[] = [];
   const spacing = bounds * 1.15;
   const half = Math.floor(gridSize / 2);
+
+  // Compila o código do usuário em uma função
+  let userFn: ((x: number, y: number, z: number) => number) | null = null;
+  try {
+    userFn = new Function('x', 'y', 'z', code) as (x: number, y: number, z: number) => number;
+  } catch (e) {
+    // Código inválido, não renderiza nada
+    userFn = null;
+  }
+
   for (let x = -half; x <= half; x++) {
     for (let y = -half; y <= half; y++) {
       for (let z = -half; z <= half; z++) {
-        voxelData.push({ position: [x * spacing, y * spacing, z * spacing] });
+        let colorIdx = 0;
+        if (userFn) {
+          try {
+            colorIdx = userFn(x, y, z);
+          } catch {
+            colorIdx = 0;
+          }
+        }
+        if (!Number.isFinite(colorIdx) || colorIdx <= 0) continue; // Transparente, não renderiza
+        voxelData.push({
+          position: [x * spacing, y * spacing, z * spacing],
+          color: COLOR_MAP[colorIdx] || '#888',
+        });
       }
     }
   }
@@ -97,10 +133,10 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 3 }: SceneProps) 
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 7]} intensity={0.8} castShadow />
       <AxesCylinders bounds={bounds} radius={0.08} />
-      {/* {voxelData.map((voxel) => (
+      {voxelData.map((voxel) => (
         <Voxel key={voxel.position.join(",")} voxel={voxel} bounds={bounds} />
-      ))} */}
-      <FaceCulling />
+      ))}
+      {/* <FaceCulling /> */}
       <OrbitControls enableDamping makeDefault />
       <Perf position="top-right" style={{ top: perfOffset }} />
     </Canvas>
