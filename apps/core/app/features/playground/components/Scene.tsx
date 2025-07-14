@@ -91,9 +91,44 @@ function AxesCylinders({ bounds = 1, radius = 0.08 }: { bounds?: number; radius?
   );
 }
 
-export function Scene({ perfOffset = 0, bounds = 1, gridSize = 10, code }: SceneProps) {
+// --- Pipeline ---
+type VoxelPipelineStep = (voxels: VoxelData[]) => VoxelData[];
+
+// Logging da quantidade de voxels
+const logStep: VoxelPipelineStep = (voxels) => {
+  console.log('Pipeline: Voxel count:', voxels.length);
+  return voxels;
+};
+
+// Direções das faces (x, y, z) para cada face do voxel
+const faceCullingStep: VoxelPipelineStep = (voxels) => {
+  const voxelSet = new Set(voxels.map(v => v.position.join(',')));
+  const faceDirs = [
+    [1, 0, 0], [-1, 0, 0],
+    [0, 1, 0], [0, -1, 0],
+    [0, 0, 1], [0, 0, -1],
+  ];
+  return voxels.filter(voxel => {
+    // Verifica se pelo menos uma face do voxel está exposta
+    return faceDirs.some(([dx, dy, dz]) => 
+      !voxelSet.has([
+        voxel.position[0] + dx,
+        voxel.position[1] + dy,
+        voxel.position[2] + dz
+      ].join(','))
+    );
+  });
+};
+
+function runVoxelPipeline(voxels: VoxelData[], steps: VoxelPipelineStep[]): VoxelData[] {
+  return steps.reduce((data, step) => step(data), voxels);
+}
+
+export function Scene({ perfOffset = 0, bounds = 1, gridSize = 12, code }: SceneProps) {
   const voxelData: VoxelData[] = [];
-  const spacing = bounds * 1.15;
+  //const spacing = bounds * 1.15;
+  const spacing = bounds;
+  // Para os limites do objeto ( -N/2 to +N/2)
   const half = Math.floor(gridSize / 2);
 
   // Compila o código do usuário em uma função
@@ -117,8 +152,9 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 10, code }: Scene
           }
         }
         if (!Number.isFinite(colorIdx) || colorIdx <= 0) continue; // Transparente, não renderiza
+        // Adiciona o voxel com a cor correspondente
         voxelData.push({
-          position: [x * spacing, y * spacing, z * spacing],
+          position: [x, y, z],
           color: COLOR_MAP[colorIdx] || '#888',
         });
       }
@@ -128,12 +164,20 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 10, code }: Scene
   const cameraDistance = gridSize * bounds * 1.5;
   const cameraPosition: [number, number, number] = [cameraDistance, cameraDistance, cameraDistance];
 
+  // --- Pipeline ---
+  const pipeline: VoxelPipelineStep[] = [
+  logStep,
+  faceCullingStep,
+  logStep,
+];
+  const processedVoxels = runVoxelPipeline(voxelData, pipeline);
+
   return (
     <Canvas style={{ height: "100%", width: "100%" }} camera={{ position: cameraPosition, fov: 50 }} shadows>
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 7]} intensity={0.8} castShadow />
       <AxesCylinders bounds={bounds} radius={0.08} />
-      {voxelData.map((voxel) => (
+      {processedVoxels.map((voxel) => (
         <Voxel key={voxel.position.join(",")} voxel={voxel} bounds={bounds} />
       ))}
       {/* <FaceCulling /> */}
