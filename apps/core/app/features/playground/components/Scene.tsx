@@ -177,10 +177,17 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 12, code }: Scene
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 7]} intensity={0.8} castShadow />
       <AxesCylinders bounds={bounds} radius={0.08} />
-      {processedVoxels.map((voxel) => (
-        <Voxel key={voxel.position.join(",")} voxel={voxel} bounds={bounds} />
-      ))}
-      {/* <FaceCulling /> */}
+       {processedVoxels.map((voxel) => {
+         // Aplica o espaçamento à posição do voxel para renderização
+         const posEspacado: [number, number, number] = [
+           voxel.position[0] * spacing,
+           voxel.position[1] * spacing,
+           voxel.position[2] * spacing,
+         ];
+         return (
+           <Voxel key={posEspacado.join(",")} voxel={{ ...voxel, position: posEspacado }} bounds={bounds} />
+         );
+       })}      {/* <FaceCulling /> */}
       <OrbitControls enableDamping makeDefault />
       <Perf position="top-right" style={{ top: perfOffset }} />
     </Canvas>
