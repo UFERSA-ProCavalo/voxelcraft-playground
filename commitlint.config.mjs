@@ -17,25 +17,6 @@ export default { extends: ['@commitlint/config-conventional'] ,
                 'build',
                 'ci'
             ]
-        ],
-        'scope-empty': [2, 'never'],
-        'scope-enum': [2, 'always', [
-  "ci",
-  "cli",
-  "config",
-  "libs",
-  "apps",
-  "packages",
-  "deps",
-  "core",
-  "home",
-  "playground",
-  "docs",
-  "repo",
-  "scripts",
-  "tests",
-  "ui"
-]
-]
+        ]
     }
 };
