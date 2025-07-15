@@ -2,7 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
 import * as THREE from "three";
 import { useRef } from "react";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, RoundedBox } from "@react-three/drei";
 import type { VoxelData } from "../types";
 import { FaceCulling } from "./FaceCulling";
 
@@ -30,24 +30,13 @@ export interface SceneProps {
  * Renderiza um voxel com contorno.
  */
 function Voxel({ voxel, bounds = 1 }: { voxel: VoxelData; bounds?: number }) {
-  const geometryRef = useRef<THREE.BoxGeometry>(null);
+  //const geometryRef = useRef<THREE.BoxGeometry>(null);
   const size = voxel.size ?? [bounds, bounds, bounds];
   return (
     <group position={voxel.position}>
-      <mesh castShadow receiveShadow>
-        <boxGeometry ref={geometryRef} args={size} />
-        {/* <meshStandardMaterial color={voxel.color ?? "orange"} wireframe /> */}
-        <meshStandardMaterial color={voxel.color ?? "orange"}  />
-      </mesh>
-      {geometryRef.current && (
-        <lineSegments>
-          {/* TypeScript workaround: geometryRef.current as any 
-          * Ajustar o tipo de geometryRef para evitar erro de tipagem
-          */}
-          {/*<edgesGeometry args={[geometryRef.current as any]} />
-          <lineBasicMaterial color="black" linewidth={1} />*/}
-        </lineSegments>
-      )}
+      <RoundedBox args={size} radius={0.2} smoothness={1}>
+        <meshStandardMaterial color={voxel.color ?? "orange"} />
+      </RoundedBox>
     </group>
   );
 }
@@ -166,30 +155,40 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 12, code }: Scene
 
   // --- Pipeline ---
   const pipeline: VoxelPipelineStep[] = [
-  logStep,
   faceCullingStep,
-  logStep,
 ];
   const processedVoxels = runVoxelPipeline(voxelData, pipeline);
 
-  return (
-    <Canvas style={{ height: "100%", width: "100%" }} camera={{ position: cameraPosition, fov: 50 }} shadows>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[5, 10, 7]} intensity={0.8} castShadow />
-      <AxesCylinders bounds={bounds} radius={0.08} />
-       {processedVoxels.map((voxel) => {
-         // Aplica o espaçamento à posição do voxel para renderização
-         const posEspacado: [number, number, number] = [
-           voxel.position[0] * spacing,
-           voxel.position[1] * spacing,
-           voxel.position[2] * spacing,
-         ];
-         return (
-           <Voxel key={posEspacado.join(",")} voxel={{ ...voxel, position: posEspacado }} bounds={bounds} />
-         );
-       })}      {/* <FaceCulling /> */}
-      <OrbitControls enableDamping makeDefault />
-      <Perf position="top-right" style={{ top: perfOffset }} />
-    </Canvas>
-  );
-}
+   function GridOutline({ gridSize, bounds, spacing }: { gridSize: number; bounds: number; spacing: number }) {
+     // Cria uma grade de linhas ao redor do grid
+     const size = (gridSize + 1.15) * spacing;
+     const geometry = new THREE.BoxGeometry(size, size, size) as THREE.BufferGeometry;
+     return (
+       <lineSegments>
+         <edgesGeometry args={[geometry as any]} />
+         <lineBasicMaterial color="white" linewidth={1} />
+       </lineSegments>
+     );
+   }
+
+   return (
+     <Canvas style={{ height: "100%", width: "100%" }} camera={{ position: cameraPosition, fov: 50 }} shadows>
+       <ambientLight intensity={0.5} />
+       <directionalLight position={[5, 10, 7]} intensity={0.8} castShadow />
+       <AxesCylinders bounds={bounds} radius={0.08} />
+       <GridOutline gridSize={gridSize} bounds={bounds} spacing={spacing} />
+        {processedVoxels.map((voxel) => {
+          // Aplica o espaçamento à posição do voxel para renderização
+          const posEspacado: [number, number, number] = [
+            voxel.position[0] * spacing,
+            voxel.position[1] * spacing,
+            voxel.position[2] * spacing,
+          ];
+          return (
+            <Voxel key={posEspacado.join(",")} voxel={{ ...voxel, position: posEspacado }} bounds={bounds} />
+          );
+        })}      {/* <FaceCulling /> */}
+       <OrbitControls enableDamping makeDefault />
+       <Perf position="top-right" style={{ top: perfOffset }} />
+     </Canvas>
+   );}
