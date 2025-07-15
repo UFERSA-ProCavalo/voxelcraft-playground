@@ -28,6 +28,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@types/node": "^24.0.10",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "three-stdlib": "^2.36.0"
   }
 }

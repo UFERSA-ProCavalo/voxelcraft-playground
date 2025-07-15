@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useOutletContext } from "react-router";
 import { CodeEditor } from "../components/CodeEditor";
 import { Scene } from "../components/Scene";
+import { useDebounce } from "@libs/utils";
 
 export default function PlaygroundPage() {
   const [code, setCode] = useState("// Write code here\n");
+  const debouncedCode = useDebounce(code, 200);
   const { headerHeight = 0 } = useOutletContext() as { headerHeight: number };
 
   return (

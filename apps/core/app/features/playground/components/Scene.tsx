@@ -1,8 +1,9 @@
 import { Canvas } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
 import * as THREE from "three";
-import { useRef } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { OrbitControls, RoundedBox } from "@react-three/drei";
+import { RoundedBoxGeometry } from "three-stdlib";
 import type { VoxelData } from "../types";
 import { FaceCulling } from "./FaceCulling";
 
@@ -29,20 +30,81 @@ export interface SceneProps {
 /**
  * Renderiza um voxel com contorno.
  */
-function Voxel({ voxel, bounds = 1 }: { voxel: VoxelData; bounds?: number }) {
-  //const geometryRef = useRef<THREE.BoxGeometry>(null);
-  const size = voxel.size ?? [bounds, bounds, bounds];
+// function Voxel({ voxel, bounds = 1 }: { voxel: VoxelData; bounds?: number }) {
+//   //const geometryRef = useRef<THREE.BoxGeometry>(null);
+//   const size = voxel.size ?? [bounds, bounds, bounds];
+//   return (
+//     <group position={voxel.position}>
+//       <RoundedBox args={size} radius={0.2} smoothness={1}>
+//         <meshStandardMaterial color={voxel.color ?? "orange"} />
+//       </RoundedBox>
+//     </group>
+//   );
+// }
+
+function VoxelInstances({ voxels, bounds = 1 }: { voxels: VoxelData[]; bounds?: number }) {
+  const meshRef = useRef<THREE.InstancedMesh>(null!);
+  const prevVoxelsRef = useRef<VoxelData[]>([]);
+  const geometry = useMemo(() => new RoundedBoxGeometry(bounds, bounds, bounds, 4, 0.2), [bounds]);
+  const instanceCount = voxels.length;
+
+  // Inicializa o mesh com a quantidade de instâncias
+  useEffect(() => {
+    if (!meshRef.current) return;
+    meshRef.current.count = instanceCount;
+  }, [instanceCount]);
+
+  useEffect(() => {
+    if (!meshRef.current) return;
+    const dummy = new THREE.Object3D();
+    const color = new THREE.Color();
+    let colorChanged = false;
+    let matrixChanged = false;
+
+    for (let i = 0; i < voxels.length; i++) {
+      const voxel = voxels[i];
+      const prevVoxel = prevVoxelsRef.current[i];
+
+      // Verifica se a posição mudou ou é o primeiro render
+      if (
+        !prevVoxel ||
+        voxel.position[0] !== prevVoxel.position[0] ||
+        voxel.position[1] !== prevVoxel.position[1] ||
+        voxel.position[2] !== prevVoxel.position[2]
+      ) {
+        dummy.position.set(voxel.position[0], voxel.position[1], voxel.position[2]);
+        dummy.updateMatrix();
+        meshRef.current.setMatrixAt(i, dummy.matrix);
+        matrixChanged = true;
+      }
+
+      // Update color if changed or on first render
+      if (!prevVoxel || voxel.color !== prevVoxel.color) {
+        meshRef.current.setColorAt(i, color.set(voxel.color || "#ffffff"));
+        colorChanged = true;
+      }
+    }
+
+    if (matrixChanged) meshRef.current.instanceMatrix.needsUpdate = true;
+    if (colorChanged && meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true;
+
+    // Save current voxels for next diff
+    prevVoxelsRef.current = voxels;
+  }, [voxels]);
+
   return (
-    <group position={voxel.position}>
-      <RoundedBox args={size} radius={0.2} smoothness={1}>
-        <meshStandardMaterial color={voxel.color ?? "orange"} />
-      </RoundedBox>
-    </group>
+    // @ts-ignore
+    <instancedMesh ref={meshRef} args={[geometry, undefined, instanceCount]}>
+      <meshStandardMaterial />
+    </instancedMesh>
   );
 }
 
-function AxesCylinders({ bounds = 1, radius = 0.08 }: { bounds?: number; radius?: number }) {
-  const length = bounds + 1;
+
+function AxesCylinders({ gridSize }: { gridSize: number }) {
+  const half = Math.floor(gridSize / 2);
+  const length = half + 0.5; // Extends to the edge of the grid
+  const radius = Math.max(0.03 * gridSize, 0.05); // Proportional thickness
   const cylArgs = [radius, radius, length, 16] as [number, number, number, number];
   const coneHeight = radius * 4;
   const coneRadius = radius * 2;
@@ -80,6 +142,7 @@ function AxesCylinders({ bounds = 1, radius = 0.08 }: { bounds?: number; radius?
   );
 }
 
+
 // --- Pipeline ---
 type VoxelPipelineStep = (voxels: VoxelData[]) => VoxelData[];
 
@@ -113,21 +176,21 @@ function runVoxelPipeline(voxels: VoxelData[], steps: VoxelPipelineStep[]): Voxe
   return steps.reduce((data, step) => step(data), voxels);
 }
 
-export function Scene({ perfOffset = 0, bounds = 1, gridSize = 12, code }: SceneProps) {
+export function Scene({ perfOffset = 0, bounds = 1, gridSize = 32, code }: SceneProps) {
   const voxelData: VoxelData[] = [];
   //const spacing = bounds * 1.15;
-  const spacing = bounds;
+  const spacing = bounds - 0.1; // Ajuste fino para evitar sobreposição
   // Para os limites do objeto ( -N/2 to +N/2)
   const half = Math.floor(gridSize / 2);
 
   // Compila o código do usuário em uma função
-  let userFn: ((x: number, y: number, z: number) => number) | null = null;
-  try {
-    userFn = new Function('x', 'y', 'z', code) as (x: number, y: number, z: number) => number;
-  } catch (e) {
-    // Código inválido, não renderiza nada
-    userFn = null;
-  }
+  const userFn = useMemo(() => {
+    try {
+      return new Function('x', 'y', 'z', code) as (x: number, y: number, z: number) => number;
+    } catch (e) {
+      return null;
+    }
+  }, [code]);
 
   for (let x = -half; x <= half; x++) {
     for (let y = -half; y <= half; y++) {
@@ -150,7 +213,7 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 12, code }: Scene
     }
   }
 
-  const cameraDistance = gridSize * bounds * 1.5;
+  const cameraDistance = gridSize * bounds * 1.15;
   const cameraPosition: [number, number, number] = [cameraDistance, cameraDistance, cameraDistance];
 
   // --- Pipeline ---
@@ -161,8 +224,8 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 12, code }: Scene
 
    function GridOutline({ gridSize, bounds, spacing }: { gridSize: number; bounds: number; spacing: number }) {
      // Cria uma grade de linhas ao redor do grid
-     const size = (gridSize + 1.15) * spacing;
-     const geometry = new THREE.BoxGeometry(size, size, size) as THREE.BufferGeometry;
+     const size = (gridSize) * spacing + 1.15; // Tamanho total da grade
+     const geometry = new RoundedBoxGeometry(size, size, size, 4, 0.1) as THREE.BufferGeometry;
      return (
        <lineSegments>
          <edgesGeometry args={[geometry as any]} />
@@ -172,22 +235,20 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 12, code }: Scene
    }
 
    return (
-     <Canvas style={{ height: "100%", width: "100%" }} camera={{ position: cameraPosition, fov: 50 }} shadows>
-       <ambientLight intensity={0.5} />
-       <directionalLight position={[5, 10, 7]} intensity={0.8} castShadow />
-       <AxesCylinders bounds={bounds} radius={0.08} />
-       <GridOutline gridSize={gridSize} bounds={bounds} spacing={spacing} />
-        {processedVoxels.map((voxel) => {
-          // Aplica o espaçamento à posição do voxel para renderização
-          const posEspacado: [number, number, number] = [
-            voxel.position[0] * spacing,
-            voxel.position[1] * spacing,
-            voxel.position[2] * spacing,
-          ];
-          return (
-            <Voxel key={posEspacado.join(",")} voxel={{ ...voxel, position: posEspacado }} bounds={bounds} />
-          );
-        })}      {/* <FaceCulling /> */}
+     <Canvas style={{ height: "100%", width: "100%" }} camera={{ position: cameraPosition, fov: 50 }}>
+        
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[5, 10, 7]} intensity={0.8} />
+        <directionalLight position={[-5, -10, -7]} intensity={0.8} />
+       
+
+        {/* Light helpers for debugging: comment out to hide */}
+        {/* <primitive object={new THREE.CameraHelper(new THREE.DirectionalLight(0xffffff, 0.6).shadow.camera)} /> */}
+        {/* <primitive object={new THREE.DirectionalLightHelper(new THREE.DirectionalLight(0xffffff, 0.6), 2)} /> */}
+        {/* <AxesCylinders gridSize={gridSize} /> */}
+       {/* <GridOutline gridSize={gridSize} bounds={bounds} spacing={spacing} /> */}
+        <VoxelInstances voxels={processedVoxels.map(v => ({...v, position: [v.position[0] * spacing, v.position[1] * spacing, v.position[2] * spacing]}))} bounds={bounds} />
+      {/* <FaceCulling /> */}
        <OrbitControls enableDamping makeDefault />
        <Perf position="top-right" style={{ top: perfOffset }} />
      </Canvas>

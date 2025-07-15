@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect, RefObject } from 'react';
-
+import { useState, useEffect } from 'react';
+import type { RefObject } from 'react';
 /**
  * useResizeObserver - Hook React para observar o tamanho de um elemento DOM.
  *
@@ -40,4 +40,20 @@ export function useResizeObserver<T extends HTMLElement>(
   }, [ref]);
 
   return size;
+}
+
+export function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
 }
