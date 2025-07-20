@@ -1,4 +1,3 @@
-
 /**
  * Representa um voxel na cena.
  * @property { [number, number, number] } position - Posição do voxel [x, y, z]

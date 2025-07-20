@@ -1,6 +1,6 @@
-import { Outlet } from "react-router";
-import { Header } from "../components/Header";
-import { useRef, useState, useEffect } from "react";
+import { Outlet } from 'react-router';
+import { Header } from '../components/Header';
+import { useRef, useState, useEffect } from 'react';
 
 export default function PublicLayout() {
   const headerRef = useRef<HTMLDivElement>(null);
@@ -9,8 +9,8 @@ export default function PublicLayout() {
   useEffect(() => {
     if (!headerRef.current) return;
     setHeaderHeight(headerRef.current.offsetHeight);
-    const observer = new window.ResizeObserver(entries => {
-      for (let entry of entries) {
+    const observer = new window.ResizeObserver((entries) => {
+      for (const entry of entries) {
         setHeaderHeight(entry.contentRect.height);
       }
     });

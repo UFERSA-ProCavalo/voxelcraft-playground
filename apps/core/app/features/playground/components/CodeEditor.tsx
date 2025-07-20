@@ -1,4 +1,4 @@
-import MonacoEditor from "@monaco-editor/react";
+import MonacoEditor from '@monaco-editor/react';
 
 interface CodeEditorProps {
   code: string;
@@ -11,7 +11,7 @@ export function CodeEditor({ code, onChange }: CodeEditorProps) {
       height="100%"
       defaultLanguage="javascript"
       value={code}
-      onChange={v => onChange(v || "")}
+      onChange={(v) => onChange(v || '')}
       theme="vs-dark"
       options={{ minimap: { enabled: false } }}
     />
