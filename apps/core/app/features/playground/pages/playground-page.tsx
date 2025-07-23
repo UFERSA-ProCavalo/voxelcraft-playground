@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router';
-import { CodeEditor } from '../components/CodeEditor';
-import { Scene } from '../components/Scene';
+import { CodeEditor } from '../components/Editor/CodeEditor';
+import { Scene } from '../components/Scene/Scene';
 import { useDebounce } from '@libs/utils';
 
 export default function PlaygroundPage() {

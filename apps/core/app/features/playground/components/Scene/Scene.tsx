@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Perf } from 'r3f-perf';
 import { OrbitControls } from '@react-three/drei';
-import type { VoxelData } from '../types';
-import { COLOR_MAP } from '../consts';
-import { VoxelInstances } from './VoxelInstances';
+import type { VoxelData } from '~/features/playground/types';
+import { COLOR_MAP } from '~/features/playground/consts';
+import { VoxelInstances } from '~/features/playground/components/VoxelInstances';
 import { GridOutline } from './GridOutline';
 
 export interface SceneProps {
