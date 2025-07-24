@@ -1,0 +1,112 @@
+[
+  {
+    "name": "bug",
+    "color": "FF0000",
+    "description": "Indica um erro, falha ou comportamento inesperado no sistema."
+  },
+  {
+    "name": "enhancement",
+    "color": "1D76DB",
+    "description": "Solicitação de melhoria ou aprimoramento de uma funcionalidade existente."
+  },
+  {
+    "name": "feature",
+    "color": "0E8A16",
+    "description": "Solicitação ou implementação de uma nova funcionalidade no projeto."
+  },
+  {
+    "name": "question",
+    "color": "D876E3",
+    "description": "Dúvidas, perguntas ou discussões sobre o funcionamento do projeto."
+  },
+  {
+    "name": "documentation",
+    "color": "0075CA",
+    "description": "Mudanças, correções ou melhorias na documentação do projeto."
+  },
+  {
+    "name": "refactor",
+    "color": "FBCA04",
+    "description": "Refatoração de código sem alteração de comportamento externo."
+  },
+  {
+    "name": "test",
+    "color": "5319E7",
+    "description": "Adição ou alteração de testes automatizados."
+  },
+  {
+    "name": "wip",
+    "color": "FFFFFF",
+    "description": "Trabalho em andamento, ainda não pronto para revisão."
+  },
+  {
+    "name": "ready",
+    "color": "0E8A16",
+    "description": "Pronto para revisão ou integração."
+  },
+  {
+    "name": "blocked",
+    "color": "E4E669",
+    "description": "Esta tarefa está bloqueada por algum motivo e não pode avançar."
+  },
+  {
+    "name": "duplicate",
+    "color": "CFD3D7",
+    "description": "Esta issue ou pull request é duplicada de outra já existente."
+  },
+  {
+    "name": "invalid",
+    "color": "E4E669",
+    "description": "A issue ou pull request não é válida ou não segue as diretrizes do projeto."
+  },
+  {
+    "name": "help wanted",
+    "color": "008672",
+    "description": "Ajuda da comunidade é bem-vinda para resolver esta tarefa."
+  },
+  {
+    "name": "good first issue",
+    "color": "7057FF",
+    "description": "Boa oportunidade para novos contribuidores começarem a colaborar."
+  },
+  {
+    "name": "priority: alta",
+    "color": "B60205",
+    "description": "Tarefa de alta prioridade, deve ser tratada com urgência."
+  },
+  {
+    "name": "priority: média",
+    "color": "FBCA04",
+    "description": "Tarefa de prioridade intermediária."
+  },
+  {
+    "name": "priority: baixa",
+    "color": "0E8A16",
+    "description": "Tarefa de baixa prioridade, pode ser tratada posteriormente."
+  },
+  {
+    "name": "core",
+    "color": "5319E7",
+    "description": "Relacionado ao núcleo principal do sistema ou funcionalidades centrais."
+  },
+  {
+    "name": "ui",
+    "color": "1D76DB",
+    "description": "Relacionado à interface do usuário, design ou experiência visual."
+  },
+  {
+    "name": "infra",
+    "color": "0052CC",
+    "description": "Mudanças ou problemas relacionados à infraestrutura do projeto."
+  },
+  {
+    "name": "docs",
+    "color": "0075CA",
+    "description": "Alterações ou melhorias em arquivos de documentação."
+  },
+  {
+    "name": "ci",
+    "color": "5319E7",
+    "description": "Relacionado à integração contínua, automações e pipelines."
+  }
+]
