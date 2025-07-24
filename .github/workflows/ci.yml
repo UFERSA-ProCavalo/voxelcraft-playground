@@ -20,19 +20,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+        
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
+          cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm i --frozen-lockfile
 
       - name: Typecheck core
         run: pnpm --filter @voxelcraft-playground/core typecheck
