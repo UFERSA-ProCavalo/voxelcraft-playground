@@ -5,11 +5,10 @@ dist-ssr
 *.local
 count.txt
 .env
-.nitro
-.tanstack
 
 *storybook.log
 storybook-static
 
 AGENTS.md
+coverage
 stuff

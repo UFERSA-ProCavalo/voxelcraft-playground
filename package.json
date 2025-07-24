@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test:all": "vitest run --coverage",
+    "test:watch": "vitest watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky"
   },

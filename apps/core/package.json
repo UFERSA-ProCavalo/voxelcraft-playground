@@ -7,6 +7,8 @@
     "dev": "react-router dev --port 3000",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
+	"test": "vitest run --coverage",
+	"test:watch": "vitest watch",
     "rebuild:start": "react-router typegen && react-router build && tsc && react-router dev"
   },
   "dependencies": {
@@ -29,6 +31,7 @@
     "@react-router/dev": "^7.5.3",
     "@tailwindcss/vite": "^4.1.4",
     "vite": "^6.3.3",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   }
 }
