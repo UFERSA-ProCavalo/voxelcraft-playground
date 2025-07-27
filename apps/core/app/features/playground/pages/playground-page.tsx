@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router';
-import { CodeEditor } from '../components/Editor/CodeEditor';
-import { Scene } from '../components/Scene/Scene';
 import { useDebounce } from '@libs/utils';
+import { LeftPanel } from '../components/LeftPanel';
+import { RightPanel } from '../components/RightPanel';
 
 export default function PlaygroundPage() {
   const [code, setCode] = useState('// Write code here\n');
+  const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(null);
   const debouncedCode = useDebounce(code, 200);
   const { headerHeight = 0 } = useOutletContext() as { headerHeight: number };
 
@@ -15,10 +16,15 @@ export default function PlaygroundPage() {
     >
       <div style={{ display: 'flex', flex: 1 }}>
         <div style={{ flex: 1, borderRight: '1px solid #eee', minWidth: 0 }}>
-          <CodeEditor code={debouncedCode} onChange={setCode} />
+          <LeftPanel
+            code={code}
+            setCode={setCode}
+            selectedChallengeId={selectedChallengeId}
+            setSelectedChallengeId={setSelectedChallengeId}
+          />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <Scene perfOffset={headerHeight} code={debouncedCode} />
+          <RightPanel code={debouncedCode} perfOffset={headerHeight} />
         </div>
       </div>
     </div>
