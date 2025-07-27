@@ -1,32 +1,48 @@
-import { useState } from 'react';
+import {
+  Panel,
+  PanelGroup,
+  PanelResizeHandle,
+} from 'react-resizable-panels';
 import { useOutletContext } from 'react-router';
 import { useDebounce } from '@libs/utils';
 import { LeftPanel } from '../components/LeftPanel/LeftPanel';
 import { RightPanel } from '../components/RightPanel/RightPanel';
+import { usePlaygroundStore } from '../lib/store';
 
 export default function PlaygroundPage() {
-  const [code, setCode] = useState('// Write code here\n');
-  const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(null);
+  const {
+    code,
+    setCode,
+    selectedChallengeId,
+    setSelectedChallengeId,
+  } = usePlaygroundStore();
   const debouncedCode = useDebounce(code, 200);
   const { headerHeight = 0 } = useOutletContext() as { headerHeight: number };
 
   return (
     <div
-      style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', flex: 1 }}
+      style={{
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1,
+      }}
     >
-      <div style={{ display: 'flex', flex: 1 }}>
-        <div style={{ flex: 1, borderRight: '1px solid #eee', minWidth: 0 }}>
+      <PanelGroup direction="horizontal" style={{ flex: 1 }}>
+        <Panel defaultSize={33}>
           <LeftPanel
             code={code}
             setCode={setCode}
             selectedChallengeId={selectedChallengeId}
             setSelectedChallengeId={setSelectedChallengeId}
           />
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
+        </Panel>
+        
+        <Panel defaultSize={67}>
           <RightPanel code={debouncedCode} perfOffset={headerHeight} />
-        </div>
-      </div>
+        </Panel>
+      </PanelGroup>
     </div>
   );
 }
