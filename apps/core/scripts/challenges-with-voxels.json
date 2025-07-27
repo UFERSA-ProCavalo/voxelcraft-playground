@@ -1,0 +1,43 @@
+[
+  {
+    "id": "tutorial-1",
+    "name": "Primeiro Cubo",
+    "voxels": [
+      {
+        "position": [0, 0, 0],
+        "color": "red"
+      }
+    ]
+  },
+  {
+    "id": "iniciante-1",
+    "name": "Linha de Cubos",
+    "voxels": [
+      {
+        "position": [0, 0, 0],
+        "color": "blue"
+      },
+      {
+        "position": [1, 0, 0],
+        "color": "blue"
+      },
+      {
+        "position": [2, 0, 0],
+        "color": "blue"
+      },
+      {
+        "position": [3, 0, 0],
+        "color": "blue"
+      },
+      {
+        "position": [4, 0, 0],
+        "color": "blue"
+      }
+    ]
+  },
+  {
+    "id": "desafiador-1",
+    "name": "Pirâmide",
+    "voxels": []
+  }
+]
