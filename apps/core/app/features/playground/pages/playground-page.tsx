@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router';
 import { useDebounce } from '@libs/utils';
-import { LeftPanel } from '../components/LeftPanel';
-import { RightPanel } from '../components/RightPanel';
+import { LeftPanel } from '../components/LeftPanel/LeftPanel';
+import { RightPanel } from '../components/RightPanel/RightPanel';
 
 export default function PlaygroundPage() {
   const [code, setCode] = useState('// Write code here\n');

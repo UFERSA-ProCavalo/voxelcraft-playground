@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Scene } from './Scene/Scene';
-import { Button } from './ui/button';
+import { Scene } from './Scene';
+import { Button } from '../ui/button';
 import { Card } from '@voxelcraft-playground/ui';
 
 interface RightPanelProps {
@@ -175,57 +175,82 @@ function DraggablePopup({ children, onClose }: { children: React.ReactNode; onCl
   );
 }
 
+function ToolMenu({ showAxes, setShowAxes, showOutline, setShowOutline }: {
+  showAxes: boolean;
+  setShowAxes: (v: boolean) => void;
+  showOutline: boolean;
+  setShowOutline: (v: boolean) => void;
+}) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: 16 }}>
+      <Card className="tool-menu-card">
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 20px' }}>
+          <Button
+            variant={showAxes ? 'default' : 'outline'}
+            size="icon"
+            onClick={() => setShowAxes(!showAxes)}
+            title="Alternar eixos"
+            aria-label="Alternar eixos"
+          >
+            {/* Lucide Axis3D icon fallback SVG */}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>
+          </Button>
+          <Button
+            variant={showOutline ? 'default' : 'outline'}
+            size="icon"
+            onClick={() => setShowOutline(!showOutline)}
+            title="Alternar grade"
+            aria-label="Alternar grade"
+          >
+            {/* Lucide Grid icon fallback SVG */}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+          </Button>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function PreviewButton({ onClick }: { onClick: () => void }) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: 8 }}>
+      <Button size="sm" onClick={onClick}>
+        Preview
+      </Button>
+    </div>
+  );
+}
+
+function SceneDisplay({ code, perfOffset, showAxes, showOutline, children }: {
+  code: string;
+  perfOffset?: number;
+  showAxes: boolean;
+  showOutline: boolean;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div style={{ flex: 1, minHeight: 0, minWidth: 0 }}>
+      <Scene
+        perfOffset={perfOffset}
+        code={code}
+        showAxes={showAxes}
+        showOutline={showOutline}
+      />
+      {children}
+    </div>
+  );
+}
+
 export function RightPanel({ code, perfOffset = 0 }: RightPanelProps) {
   const [showAxes, setShowAxes] = useState(true);
   const [showOutline, setShowOutline] = useState(true);
-
-  // Modal state for preview simulation
   const [showPreview, setShowPreview] = useState(false);
 
   return (
     <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-      {/* Tool menu as Card */}
-      <div style={{ display: 'flex', justifyContent: 'center', padding: 16 }}>
-        <Card className="tool-menu-card">
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 20px' }}>
-            <Button
-              variant={showAxes ? 'default' : 'outline'}
-              size="icon"
-              onClick={() => setShowAxes(v => !v)}
-              title="Alternar eixos"
-              aria-label="Alternar eixos"
-            >
-              {/* Lucide Axis3D icon fallback SVG */}
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>
-            </Button>
-            <Button
-              variant={showOutline ? 'default' : 'outline'}
-              size="icon"
-              onClick={() => setShowOutline(v => !v)}
-              title="Alternar grade"
-              aria-label="Alternar grade"
-            >
-              {/* Lucide Grid icon fallback SVG */}
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
-            </Button>
-          </div>
-        </Card>
-      </div>
-      {/* Preview button below toolbar */}
-      <div style={{ display: 'flex', justifyContent: 'center', padding: 8 }}>
-        <Button size="sm" onClick={() => setShowPreview(true)}>
-          Preview
-        </Button>
-      </div>
-      {/* Canvas */}
-      <div style={{ flex: 1, minHeight: 0, minWidth: 0 }}>
-        <Scene
-          perfOffset={perfOffset}
-          code={code}
-          showAxes={showAxes}
-          showOutline={showOutline}
-        />
-        {/* Simulated floating popup window */}
+      <ToolMenu showAxes={showAxes} setShowAxes={setShowAxes} showOutline={showOutline} setShowOutline={setShowOutline} />
+      <PreviewButton onClick={() => setShowPreview(true)} />
+      <SceneDisplay code={code} perfOffset={perfOffset} showAxes={showAxes} showOutline={showOutline}>
         {showPreview && (
           <DraggablePopup onClose={() => setShowPreview(false)}>
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 15 }}>
@@ -233,7 +258,7 @@ export function RightPanel({ code, perfOffset = 0 }: RightPanelProps) {
             </div>
           </DraggablePopup>
         )}
-      </div>
+      </SceneDisplay>
     </div>
   );
 }

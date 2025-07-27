@@ -33,3 +33,20 @@ export interface Chunk {
   size: number;
   voxels: Record<string, VoxelData>;
 }
+
+// Challenge types
+export type ChallengeDifficulty = 'tutorial' | 'iniciante' | 'desafiador';
+export type ChallengeProgress = 'not-started' | 'in-progress' | 'completed';
+
+export interface Challenge {
+  id: string;
+  name: string;
+  description: string;
+  difficulty: ChallengeDifficulty;
+  progress: ChallengeProgress;
+  starterCode: string;
+  expectedVoxels: VoxelData[];
+  // solution?: string; // Deprecated: use expectedVoxels for validation
+  hint?: string;
+  order?: number;
+}
