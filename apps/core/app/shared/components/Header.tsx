@@ -1,10 +1,6 @@
-import {
-  Header as UIHeader,
-  ThemeSwitcher,
-  NavigationMenu,
-  NavigationMenuLink,
-} from '@voxelcraft-playground/ui';
 import { Link } from 'react-router-dom';
+import { Button } from '../../features/playground/components/ui/button';
+import { Card } from '../../features/playground/components/ui/card';
 
 const navItems = [
   { label: 'Home', href: '/' },
@@ -14,20 +10,19 @@ const navItems = [
 
 export function Header() {
   return (
-    <UIHeader
-      variant="logo-left"
-      logo={<img src="/logo-light.svg" alt="Voxelcraft Logo" className="h-8 w-auto" />}
-      leftContent={
-        <NavigationMenu
-          items={navItems}
-          renderLink={({ href, children }) => (
-            <NavigationMenuLink href={href} render={<Link to={href} />}>
-              {children}
-            </NavigationMenuLink>
-          )}
-        />
-      }
-      rightContent={<ThemeSwitcher />}
-    />
+    <header className="w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
+        <Link to="/">
+          <img src="/logo-light.svg" alt="Voxelcraft Logo" className="h-8 w-auto" />
+        </Link>
+        <nav className="flex gap-2">
+          {navItems.map((item) => (
+            <Button key={item.href} asChild variant="ghost" size="sm">
+              <Link to={item.href}>{item.label}</Link>
+            </Button>
+          ))}
+        </nav>
+      </div>
+    </header>
   );
 }
