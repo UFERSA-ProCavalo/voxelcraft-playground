@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface AxesCylindersProps {
   gridSize: number;
@@ -8,7 +8,12 @@ export function AxesCylinders({ gridSize }: AxesCylindersProps) {
   const half = Math.floor(gridSize / 2 + 2);
   const length = half + 0.5; // Extends to the edge of the grid
   const radius = Math.max(0.03 * gridSize, 0.05); // Proportional thickness
-  const cylArgs = [radius, radius, length, 16] as [number, number, number, number];
+  const cylArgs = [radius, radius, length, 16] as [
+    number,
+    number,
+    number,
+    number,
+  ];
   const coneHeight = radius * 4;
   const coneRadius = radius * 2;
   const coneArgs = [coneRadius, coneHeight, 16] as [number, number, number];

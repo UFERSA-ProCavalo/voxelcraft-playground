@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 /**
  * LoaderSpinner - spinner centralizado simples usando shadcn/ui e Tailwind.
@@ -6,7 +6,13 @@ import * as React from 'react';
  * @param className Classes CSS adicionais.
  * @param size Tamanho do spinner (padrão 24).
  */
-export function LoaderSpinner({ className = '', size = 24 }: { className?: string; size?: number }) {
+export function LoaderSpinner({
+  className = "",
+  size = 24,
+}: {
+  className?: string;
+  size?: number;
+}) {
   return (
     <svg
       className={`animate-spin text-muted-foreground ${className}`}

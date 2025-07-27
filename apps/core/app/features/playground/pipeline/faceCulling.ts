@@ -4,18 +4,22 @@
  * @param {Array<{ position: [number, number, number], [key: string]: any }>} voxels - Array de voxels com posições e propriedades.
  * @returns {Array<{ position: [number, number, number], [key: string]: any }>} Array de voxels visíveis (sem faces internas).
  */
-import { faceDirs } from '../consts';
+import { faceDirs } from "../consts.ts";
 
 export function faceCulling(
-  voxels: Array<{ position: [number, number, number]; [key: string]: any }>
+  voxels: Array<{ position: [number, number, number]; [key: string]: any }>,
 ): Array<{ position: [number, number, number]; [key: string]: any }> {
-  const voxelSet = new Set(voxels.map((v) => v.position.join(',')));
+  const voxelSet = new Set(voxels.map((v) => v.position.join(",")));
   return voxels.filter((voxel) => {
     return faceDirs.some(
       ([dx, dy, dz]) =>
         !voxelSet.has(
-          [voxel.position[0] + dx, voxel.position[1] + dy, voxel.position[2] + dz].join(',')
-        )
+          [
+            voxel.position[0] + dx,
+            voxel.position[1] + dy,
+            voxel.position[2] + dz,
+          ].join(","),
+        ),
     );
   });
 }

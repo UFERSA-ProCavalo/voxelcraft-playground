@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface PlaygroundState {
   code: string;
@@ -8,7 +8,7 @@ interface PlaygroundState {
 }
 
 export const usePlaygroundStore = create<PlaygroundState>((set) => ({
-  code: '// Write code here\n',
+  code: "// Write code here\n",
   selectedChallengeId: null,
   setCode: (code) => set({ code }),
   setSelectedChallengeId: (id) => set({ selectedChallengeId: id }),

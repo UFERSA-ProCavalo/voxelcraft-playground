@@ -4,15 +4,15 @@
  * Mapeamento de índices para cores de voxel.
  */
 export const COLOR_MAP: Record<number, string> = {
-  1: '#e74c3c', // vermelho
-  2: '#27ae60', // verde
-  3: '#2980b9', // azul
-  4: '#f1c40f', // amarelo
-  5: '#8e44ad', // roxo
-  6: '#e67e22', // laranja
-  7: '#1abc9c', // ciano
-  8: '#34495e', // cinza escuro
-  9: '#ecf0f1', // branco
+  1: "#e74c3c", // vermelho
+  2: "#27ae60", // verde
+  3: "#2980b9", // azul
+  4: "#f1c40f", // amarelo
+  5: "#8e44ad", // roxo
+  6: "#e67e22", // laranja
+  7: "#1abc9c", // ciano
+  8: "#34495e", // cinza escuro
+  9: "#ecf0f1", // branco
 };
 
 /**

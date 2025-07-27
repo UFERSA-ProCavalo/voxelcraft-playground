@@ -35,8 +35,8 @@ export interface Chunk {
 }
 
 // Challenge types
-export type ChallengeDifficulty = 'tutorial' | 'iniciante' | 'desafiador';
-export type ChallengeProgress = 'not-started' | 'in-progress' | 'completed';
+export type ChallengeDifficulty = "tutorial" | "iniciante" | "desafiador";
+export type ChallengeProgress = "not-started" | "in-progress" | "completed";
 
 export interface Challenge {
   id: string;
