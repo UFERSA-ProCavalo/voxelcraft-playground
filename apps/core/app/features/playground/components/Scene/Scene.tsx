@@ -6,15 +6,18 @@ import type { VoxelData } from '~/features/playground/types';
 import { COLOR_MAP } from '~/features/playground/consts';
 import { VoxelInstances } from '~/features/playground/components/VoxelInstances';
 import { GridOutline } from './GridOutline';
+import { AxesCylinders } from './AxesCylinders';
 
 export interface SceneProps {
   perfOffset?: number;
   bounds?: number;
   gridSize?: number;
   code: string;
+  showAxes?: boolean;
+  showOutline?: boolean;
 }
 
-export function Scene({ perfOffset = 0, bounds = 1, gridSize = 32, code }: SceneProps) {
+export function Scene({ perfOffset = 0, bounds = 1, gridSize = 32, code, showAxes = true, showOutline = true }: SceneProps) {
   const [voxels, setVoxels] = useState<VoxelData[]>([]);
   const [workerError, setWorkerError] = useState<string | null>(null);
   const workerRef = useRef<Worker | null>(null);
@@ -22,7 +25,7 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 32, code }: Scene
 
   useEffect(() => {
     if (!workerRef.current) {
-      workerRef.current = new Worker(new URL('../worker/voxelWorker.js', import.meta.url));
+      workerRef.current = new Worker(new URL('../../lib/voxelWorker.ts', import.meta.url), {type: 'module'});
     }
     const worker = workerRef.current;
     worker.onmessage = (e) => {
@@ -59,8 +62,9 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 32, code }: Scene
         bounds={bounds}
       />
       <OrbitControls enableDamping makeDefault />
-      <GridOutline gridSize={gridSize} bounds={bounds} spacing={spacing} />
-      <Perf position="top-right" style={{ top: perfOffset }} />
+      {showAxes && <AxesCylinders gridSize={gridSize} />}
+      {showOutline && <GridOutline gridSize={gridSize} bounds={bounds} spacing={spacing} />}
+      {/* <Perf position="top-right" style={{ top: perfOffset }} /> */}
     </Canvas>
   );
 }

@@ -5,7 +5,7 @@ interface AxesCylindersProps {
 }
 
 export function AxesCylinders({ gridSize }: AxesCylindersProps) {
-  const half = Math.floor(gridSize / 2);
+  const half = Math.floor(gridSize / 2 + 2);
   const length = half + 0.5; // Extends to the edge of the grid
   const radius = Math.max(0.03 * gridSize, 0.05); // Proportional thickness
   const cylArgs = [radius, radius, length, 16] as [number, number, number, number];
