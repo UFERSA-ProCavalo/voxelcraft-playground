@@ -1,6 +1,6 @@
-import { Outlet } from 'react-router';
-import { Header } from '../components/Header';
-import { useRef, useState, useEffect } from 'react';
+import { Outlet } from "react-router";
+import { Header } from "../components/Header";
+import { useRef, useState, useEffect } from "react";
 
 export default function PublicLayout() {
   const headerRef = useRef<HTMLDivElement>(null);

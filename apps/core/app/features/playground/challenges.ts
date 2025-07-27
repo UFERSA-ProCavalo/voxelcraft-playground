@@ -9,7 +9,6 @@ export const challenges: Challenge[] = [
     expectedVoxels: [{ position: [0, 0, 0], color: "red" }],
     difficulty: "tutorial",
     progress: "not-started",
-    // solution?: string; // Deprecated: use expectedVoxels for validation
     // hint?: string;
     // order?: number;
   },

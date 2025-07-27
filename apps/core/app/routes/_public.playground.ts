@@ -1,1 +1,1 @@
-export { default } from '~/features/playground/pages/playground-page';
+export { default } from "~/features/playground/pages/playground-page";

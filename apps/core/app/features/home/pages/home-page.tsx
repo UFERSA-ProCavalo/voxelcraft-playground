@@ -1,4 +1,14 @@
-import { Button, Card, CardHeader, CardContent, CardFooter, PageLoader, ThemeSwitcher, FullPageLoader, LoaderSpinner } from "@voxelcraft-playground/ui";
+import { Button } from "../../playground/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "../../playground/components/ui/card";
+import { LoaderSpinner } from "../../playground/components/ui/LoaderSpinner";
+// import { PageLoader } from '../../playground/components/ui/PageLoader';
+// import { FullPageLoader } from '../../playground/components/ui/FullPageLoader';
+// TODO: Implement ThemeSwitcher locally or remove for now
 
 export function meta() {
   return [
@@ -12,15 +22,12 @@ export default function Home() {
     <div>
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <ThemeSwitcher />
-          
+          {/* TODO: Add ThemeSwitcher here if implemented locally */}
           <div className="border p-4 my-4">
             <LoaderSpinner />
           </div>
           {/*<FullPageLoader description="Loading Voxelcraft Playground..." className="mb-4" />*/}
-          <h1 className="text-4xl font-bold mb-4">
-            Welcome to Nead App
-          </h1>
+          <h1 className="text-4xl font-bold mb-4">Welcome to Nead App</h1>{" "}
           <p className="text-xl">
             Built with React Router 7 and our custom UI components
           </p>
@@ -29,9 +36,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
-              <h2 className="text-xl font-semibold">
-                Getting Started
-              </h2>
+              <h2 className="text-xl font-semibold">Getting Started</h2>
             </CardHeader>
             <CardContent>
               <p>
@@ -39,21 +44,20 @@ export default function Home() {
               </p>
             </CardContent>
             <CardFooter>
-              <Button variant="primary" size="sm">
+              <Button variant="default" size="sm">
                 Learn More
-              </Button>
+              </Button>{" "}
             </CardFooter>
           </Card>
 
           <Card>
             <CardHeader>
-              <h2 className="color-secondary">
-                UI Components
-              </h2>
+              <h2 className="color-secondary">UI Components</h2>
             </CardHeader>
             <CardContent>
               <p>
-                Explore our custom UI components built with Base UI and Tailwind CSS.
+                Explore our custom UI components built with Base UI and Tailwind
+                CSS.
               </p>
             </CardContent>
             <CardFooter>
@@ -65,14 +69,10 @@ export default function Home() {
 
           <Card>
             <CardHeader>
-              <h2 className="text-xl font-semibold">
-                Documentation
-              </h2>
+              <h2 className="text-xl font-semibold">Documentation</h2>
             </CardHeader>
             <CardContent>
-              <p>
-                Check out our development guidelines and project structure.
-              </p>
+              <p>Check out our development guidelines and project structure.</p>
             </CardContent>
             <CardFooter>
               <Button variant="outline" size="sm">
@@ -84,9 +84,9 @@ export default function Home() {
 
         <div className="mt-12 text-center">
           <div className="space-x-4">
-            <Button variant="primary" size="lg">
+            <Button variant="default" size="lg">
               Get Started
-            </Button>
+            </Button>{" "}
             <Button variant="outline" size="lg">
               View Source
             </Button>

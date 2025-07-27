@@ -46,7 +46,6 @@ export interface Challenge {
   progress: ChallengeProgress;
   starterCode: string;
   expectedVoxels: VoxelData[];
-  // solution?: string; // Deprecated: use expectedVoxels for validation
   hint?: string;
   order?: number;
 }

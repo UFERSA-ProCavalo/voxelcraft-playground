@@ -10,7 +10,11 @@ import { useNavigation } from "react-router-dom";
 import type { Route } from "./+types/root";
 import "./app.css";
 import { PageLoader, ThemeProvider } from "@voxelcraft-playground/ui";
-import { Header, ThemeSwitcher, NavigationMenu } from "@voxelcraft-playground/ui";
+import {
+  Header,
+  ThemeSwitcher,
+  NavigationMenu,
+} from "@voxelcraft-playground/ui";
 import { useEffect, useState } from "react";
 
 export const links: Route.LinksFunction = () => [
@@ -70,7 +74,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <ThemeProvider>
-        <Outlet />
+      <Outlet />
     </ThemeProvider>
   );
 }
