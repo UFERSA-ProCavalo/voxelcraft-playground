@@ -229,7 +229,7 @@ function SceneDisplay({ code, perfOffset, showAxes, showOutline, children }: {
   children?: React.ReactNode;
 }) {
   return (
-    <div style={{ flex: 1, minHeight: 0, minWidth: 0 }}>
+    <div style={{ flex: 1, minHeight: 0, minWidth: 0, overflow: 'hidden' }}>
       <Scene
         perfOffset={perfOffset}
         code={code}

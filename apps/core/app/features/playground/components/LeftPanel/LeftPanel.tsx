@@ -62,16 +62,16 @@ export function LeftPanel({ code, setCode, selectedChallengeId, setSelectedChall
   const selectedChallenge = challenges.find(c => c.id === selectedChallengeId) ?? filteredChallenges[0];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', height: '100%', flex: 1, minWidth: 0, minHeight: 0, alignSelf: 'stretch', borderRight: '1px solid #eee' }}>
+    <div style={{ display: 'flex', flexDirection: 'row', height: '100%', minWidth: 0 }}>
       <VerticalTabs tab={tab} setTab={setTab} />
-      <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
+      <div style={{ flex: 1, minHeight: 0 }}>
         {tab === 'editor' && (
           <div style={{ height: '100%' }}>
             <CodeEditor code={code} onChange={setCode} />
           </div>
         )}
         {tab === 'challenges' && (
-          <div style={{ padding: 16 }}>
+          <div style={{ padding: 16, height: '100%', overflow: 'auto' }}>
             <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
               {DIFFICULTIES.map(d => (
                 <Button key={d.value} variant={difficulty === d.value ? 'default' : 'outline'} size="sm" onClick={() => setDifficulty(d.value)}>{d.label}</Button>

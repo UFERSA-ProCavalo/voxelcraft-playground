@@ -48,7 +48,7 @@ export function Scene({ perfOffset = 0, bounds = 1, gridSize = 32, code, showAxe
 
   return (
     <Canvas
-      style={{ height: '100%', width: '100%', overflow: 'hidden' }}
+      style={{ height: '100%', width: '100%' }}
       camera={{ position: cameraPosition, fov: 50 }}
     >
       <ambientLight intensity={0.5} />
