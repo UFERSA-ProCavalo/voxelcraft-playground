@@ -1,13 +1,13 @@
-import React, { useRef, useState as useReactState, useCallback } from "react";
-import { Button } from "./ui/button";
+import { useRef, useState, useEffect, useCallback } from "react";
+import { Button } from "~/components/ui/button";
 
 /**
  * Componente de popup arrastável e redimensionável.
  * Permite exibir children em uma janela flutuante, com botão de fechar.
  * Comentários em pt-BR conforme padrão do projeto.
  */
-import { VoxelPreviewScene } from "./VoxelPreviewScene";
-import { ToolMenu } from "./shared/ToolMenu";
+// import { VoxelPreviewScene } from "./VoxelPreviewScene";
+import { usePlaygroundStore } from "../lib/store";
 
 import { useChallengeVoxels } from "../lib/ChallengeVoxelsProvider";
 
@@ -23,30 +23,30 @@ export interface DraggablePopupProps {
 export function DraggablePopup({ onClose, challengeId }: DraggablePopupProps) {
   // Ref for reset camera in preview
   const resetCameraRef = useRef<(() => void) | null>(null);
-  // Local state for axes/grid toggles
-  const [showAxes, setShowAxes] = useReactState(true);
-  const [showOutline, setShowOutline] = useReactState(true);
+  // Shared state for axes/grid toggles
+  const showAxes = usePlaygroundStore((s) => s.showAxes);
+  const showOutline = usePlaygroundStore((s) => s.showOutline);
   const { getVoxelsForChallenge } = useChallengeVoxels();
   const voxels = challengeId ? getVoxelsForChallenge(challengeId) : undefined;
   const popupRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dragging, setDragging] = useReactState(false);
-  const [resizing, setResizing] = useReactState(false);
-  const [offset, setOffset] = useReactState<{ x: number; y: number }>({
+  const [dragging, setDragging] = useState(false);
+  const [resizing, setResizing] = useState(false);
+  const [offset, setOffset] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
   });
-  const [position, setPosition] = useReactState<{
+  const [position, setPosition] = useState<{
     x: number;
     y: number;
   } | null>(null);
-  const [size, setSize] = useReactState<{ width: number; height: number }>({
+  const [size, setSize] = useState<{ width: number; height: number }>({
     width: 420,
     height: 260,
   });
 
   // Centraliza o popup no container ao montar
-  React.useEffect(() => {
+  useEffect(() => {
     if (!position && containerRef.current && popupRef.current) {
       const containerRect = containerRef.current.getBoundingClientRect();
       setPosition({
@@ -101,7 +101,7 @@ export function DraggablePopup({ onClose, challengeId }: DraggablePopupProps) {
     setResizing(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (dragging || resizing) {
       window.addEventListener("mousemove", onMouseMove);
       window.addEventListener("mouseup", onMouseUp);
@@ -171,19 +171,30 @@ export function DraggablePopup({ onClose, challengeId }: DraggablePopupProps) {
           onMouseDown={onMouseDown}
         >
           Pré-visualização do desafio
-          <Button size="sm" variant="outline" onClick={onClose}>
-            Fechar
-          </Button>
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={onClose}
+            title="Fechar"
+            aria-label="Fechar"
+          >
+            {/* X (close) icon */}
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="4" y1="4" x2="16" y2="16" />
+              <line x1="16" y1="4" x2="4" y2="16" />
+            </svg>
+          </Button>{" "}
         </div>
-        {/* Tool menu bar */}
-        {/* ToolMenu compartilhado */}
-        <ToolMenu
-          showAxes={showAxes}
-          setShowAxes={setShowAxes}
-          showOutline={showOutline}
-          setShowOutline={setShowOutline}
-          style={{ padding: 8, borderBottom: "1px solid #eee", background: "#f6f6f6" }}
-        />        <div
+        <div
           style={{
             flex: 1,
             position: "relative",
@@ -193,14 +204,7 @@ export function DraggablePopup({ onClose, challengeId }: DraggablePopupProps) {
         >
           {challengeId ? (
             voxels && voxels.length > 0 ? (
-              <>
-                <VoxelPreviewScene
-                  voxels={voxels}
-                  showAxes={showAxes}
-                  showOutline={showOutline}
-                  
-                />
-              </>
+              <>{/* Preview scene removed */}</>
             ) : (
               <div style={{ padding: 24, textAlign: "center", color: "#888" }}>
                 Nenhum voxel para este desafio.
@@ -210,7 +214,7 @@ export function DraggablePopup({ onClose, challengeId }: DraggablePopupProps) {
             <div style={{ padding: 24, textAlign: "center", color: "#888" }}>
               Nenhum desafio selecionado.
             </div>
-          )}
+          )}{" "}
           {/* Handle de resize */}
           <div
             className="resize-handle"

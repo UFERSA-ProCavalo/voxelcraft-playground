@@ -9,12 +9,7 @@ import {
 import { useNavigation } from "react-router-dom";
 import type { Route } from "./+types/root";
 import "./app.css";
-import { PageLoader, ThemeProvider } from "@voxelcraft-playground/ui";
-import {
-  Header,
-  ThemeSwitcher,
-  NavigationMenu,
-} from "@voxelcraft-playground/ui";
+import { ThemeProvider } from "./components/theme-provider";
 import { useEffect, useState } from "react";
 
 export const links: Route.LinksFunction = () => [
@@ -59,7 +54,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="root">
           {showLoader && (
             <div className="fixed top-0 left-0 right-0 z-50">
-              <PageLoader />
+              {/* <PageLoader /> */}
             </div>
           )}
           {children}

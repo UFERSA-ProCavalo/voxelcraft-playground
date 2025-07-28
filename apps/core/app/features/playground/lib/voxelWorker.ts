@@ -1,6 +1,6 @@
 // Worker responsável por processar o código do usuário e gerar voxels.
 import type { VoxelData } from "../types";
-
+import { runVoxelPipeline, faceCullingStep } from "../pipeline/voxelPipeline";
 interface WorkerInput {
   code: string;
   gridSize: number;
@@ -12,8 +12,6 @@ interface WorkerOutput {
   voxels?: VoxelData[];
   error?: string;
 }
-
-import { runVoxelPipeline, faceCullingStep } from "../pipeline/voxelPipeline";
 
 self.onmessage = function (e: MessageEvent<WorkerInput>) {
   const { code, gridSize, bounds, colorMap } = e.data;

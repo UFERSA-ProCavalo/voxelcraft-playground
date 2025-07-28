@@ -53,7 +53,6 @@ export function CodeEditor({ code, onChange }: CodeEditorProps) {
           padding: "12px 20px",
           background: "rgba(220, 50, 47, 0.95)",
           color: "#fff",
-          borderRadius: 8,
           boxShadow: "0 4px 24px rgba(220,50,47,0.18)",
           fontWeight: 500,
           fontSize: "1em",

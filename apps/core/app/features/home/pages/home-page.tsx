@@ -1,14 +1,11 @@
-import { Button } from "../../playground/components/ui/button";
+import { Button } from "~/components/ui/button";
 import {
   Card,
   CardHeader,
   CardContent,
   CardFooter,
-} from "../../playground/components/ui/card";
-import { LoaderSpinner } from "../../playground/components/ui/LoaderSpinner";
-// import { PageLoader } from '../../playground/components/ui/PageLoader';
-// import { FullPageLoader } from '../../playground/components/ui/FullPageLoader';
-// TODO: Implement ThemeSwitcher locally or remove for now
+} from "~/components/ui/card";
+import { LoaderSpinner } from "~/components/ui/LoaderSpinner";
 
 export function meta() {
   return [

@@ -1,6 +1,8 @@
 import React from "react";
 import { AxesCylinders } from "./RightPanel/AxesCylinders";
 import { GridOutline } from "./RightPanel/GridOutline";
+import { AxisRulers } from "./AxisRulers";
+import { usePlaygroundStore } from "../lib/store";
 
 interface CommonSceneElementsProps {
   gridSize: number;
@@ -34,6 +36,13 @@ export function CommonSceneElements({
       {showAxes && <AxesCylinders gridSize={gridSize} />}
       {showOutline && (
         <GridOutline gridSize={gridSize} bounds={bounds} spacing={spacing} />
+      )}
+      {usePlaygroundStore((s) => s.showRulers) && (
+        <AxisRulers
+          min={(-bounds * gridSize) / 2}
+          max={(bounds * gridSize) / 2}
+          step={5}
+        />
       )}
     </>
   );

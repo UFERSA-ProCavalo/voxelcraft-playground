@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { CodeEditor } from "./CodeEditor";
-import { challenges } from "../../challenges";
-import type { Challenge, ChallengeDifficulty } from "../../types";
-import { Button } from "../ui/button";
+import { challenges } from "~/features/playground/challenges";
+import type {
+  Challenge,
+  ChallengeDifficulty,
+} from "~/features/playground/types";
+import { Button } from "~/components/ui/button";
 
 const DIFFICULTIES: { label: string; value: ChallengeDifficulty }[] = [
   { label: "Tutorial", value: "tutorial" },
@@ -18,14 +21,7 @@ function VerticalTabs({
   setTab: (t: "editor" | "challenges") => void;
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        borderRight: "1px solid #eee",
-        background: "#fafbfc",
-      }}
-    >
+    <div className="flex flex-col border-r bg-muted">
       <Button
         variant={tab === "editor" ? "default" : "ghost"}
         onClick={() => setTab("editor")}
@@ -55,19 +51,32 @@ function ChallengeList({
 }) {
   return (
     <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-      {challenges.map((ch) => (
+      {challenges.map((ch, idx) => (
         <li key={ch.id}>
           <Button
             variant={selectedId === ch.id ? "default" : "ghost"}
             size="sm"
             style={{
-              width: "100%",
-              justifyContent: "flex-start",
+              width: 30,
+              minWidth: 30,
+              maxWidth: 30,
+              height: 30,
+              minHeight: 30,
+              maxHeight: 30,
+              fontSize: 20,
+              fontWeight: 700,
+              fontFamily:
+                "'JetBrains Mono', 'Fira Mono', 'Menlo', 'monospace', 'Arial Rounded MT Bold', Arial, sans-serif",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               marginBottom: 4,
+              padding: 0,
             }}
             onClick={() => onSelect(ch.id)}
+            title={ch.name}
           >
-            {ch.name}
+            {`#${idx + 1}`}
           </Button>
         </li>
       ))}
@@ -75,7 +84,7 @@ function ChallengeList({
   );
 }
 
-import { useChallengeVoxels } from "../../lib/ChallengeVoxelsProvider";
+import { useChallengeVoxels } from "~/features/playground/lib/ChallengeVoxelsProvider";
 
 function ChallengeDescription({
   challenge,
@@ -103,20 +112,14 @@ function ChallengeDescription({
       >
         {challenge.starterCode}
       </pre>
-      <button
+      <Button
         onClick={onTryItOut}
-        style={{
-          marginBottom: 8,
-          padding: "4px 12px",
-          borderRadius: 4,
-          background: "#e0e0e0",
-          border: "none",
-          cursor: "pointer",
-        }}
+        variant="secondary"
+        size="sm"
+        style={{ marginBottom: 8 }}
       >
         Tentar desafio
-      </button>
-      {/* TODO: Add preview of voxels here if desired */}
+      </Button>
     </div>
   );
 }
@@ -143,18 +146,7 @@ export function LeftPanel({
     filteredChallenges[0];
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        height: "100%",
-        flex: 1,
-        minWidth: 0,
-        minHeight: 0,
-        alignSelf: "stretch",
-        borderRight: "1px solid #eee",
-      }}
-    >
+    <div className="flex flex-row h-full flex-1 min-w-0 min-h-0 self-stretch border-r border-border">
       <VerticalTabs tab={tab} setTab={setTab} />
       <div style={{ flex: 1, minHeight: 0 }}>
         {tab === "editor" && (

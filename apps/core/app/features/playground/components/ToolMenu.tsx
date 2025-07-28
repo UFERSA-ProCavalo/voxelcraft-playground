@@ -1,5 +1,5 @@
-import { Button } from "../ui/button";
-import { Card } from "@voxelcraft-playground/ui";
+import { Button } from "~/components/ui/button";
+import { Card } from "~/components/ui/card";
 
 /**
  * ToolMenu compartilhado para alternar eixos e grade.
@@ -11,6 +11,8 @@ export interface ToolMenuProps {
   setShowAxes: (v: boolean) => void;
   showOutline: boolean;
   setShowOutline: (v: boolean) => void;
+  showRulers?: boolean;
+  setShowRulers?: (v: boolean) => void;
   style?: React.CSSProperties;
   cardClassName?: string;
 }
@@ -20,11 +22,20 @@ export function ToolMenu({
   setShowAxes,
   showOutline,
   setShowOutline,
+  showRulers,
+  setShowRulers,
   style,
   cardClassName,
 }: ToolMenuProps) {
   return (
-    <div style={{ display: "flex", justifyContent: "center", padding: 16, ...style }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        padding: 16,
+        ...style,
+      }}
+    >
       <Card className={cardClassName || "tool-menu-card"}>
         <div
           style={{
@@ -79,8 +90,32 @@ export function ToolMenu({
               <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
             </svg>
           </Button>
+          {typeof showRulers === "boolean" && setShowRulers && (
+            <Button
+              variant={showRulers ? "default" : "outline"}
+              size="icon"
+              onClick={() => setShowRulers(!showRulers)}
+              title="Alternar réguas"
+              aria-label="Alternar réguas"
+            >
+              {/* Ruler icon SVG */}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="2" y="7" width="20" height="6" rx="2" />
+                <path d="M6 7v6M10 7v6M14 7v6M18 7v6" />
+              </svg>
+            </Button>
+          )}
         </div>
-      </Card>
+      </Card>{" "}
     </div>
   );
 }

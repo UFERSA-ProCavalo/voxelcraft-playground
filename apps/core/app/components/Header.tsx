@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Button } from "../../features/playground/components/ui/button";
-import { Card } from "../../features/playground/components/ui/card";
+import { Button } from "~/components/ui/button";
+import { ModeToggle } from "~/components/ModeToggle";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -19,14 +19,16 @@ export function Header() {
             className="h-8 w-auto"
           />
         </Link>
-        <nav className="flex gap-2">
+        <nav className="flex gap-2 items-center">
           {navItems.map((item) => (
             <Button key={item.href} asChild variant="ghost" size="sm">
               <Link to={item.href}>{item.label}</Link>
             </Button>
           ))}
+          {/* Dark mode toggle */}
+          <ModeToggle />
         </nav>
-      </div>
+      </div>{" "}
     </header>
   );
 }

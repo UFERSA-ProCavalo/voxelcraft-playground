@@ -9,7 +9,6 @@ interface VoxelInstancesProps {
 }
 
 export function VoxelInstances({ voxels, bounds = 1 }: VoxelInstancesProps) {
-
   const meshRef = useRef<THREE.InstancedMesh>(null!);
   const prevVoxelsRef = useRef<VoxelData[]>([]);
   const geometry = useMemo(
