@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { usePlaygroundStore } from "~/features/playground/lib/store";
 import { Scene } from "./Scene";
-import { Button } from "../ui/button";
+import { Button } from "~/components/ui/button";
 
 interface RightPanelProps {
   code: string;
@@ -10,52 +11,26 @@ interface RightPanelProps {
 
 import { DraggablePopup } from "../DraggablePopup";
 
-import { ToolMenu } from "../shared/ToolMenu";
+import { ToolMenu } from "../ToolMenu";
 
-function PreviewButton({ onClick }: { onClick: () => void }) {
-  return (
-    <div style={{ display: "flex", justifyContent: "center", padding: 8 }}>
-      <Button size="sm" onClick={onClick}>
-        Preview
-      </Button>
-    </div>
-  );
-}
-
-function SceneDisplay({
-  code,
-  perfOffset,
-  showAxes,
-  showOutline,
-  children,
-}: {
-  code: string;
-  perfOffset?: number;
-  showAxes: boolean;
-  showOutline: boolean;
-  children?: React.ReactNode;
-}) {
-  return (
-    <div style={{ flex: 1, minHeight: 0, minWidth: 0, overflow: "hidden" }}>
-      <Scene
-        perfOffset={perfOffset}
-        code={code}
-        showAxes={showAxes}
-        showOutline={showOutline}
-      />
-      {children}
-    </div>
-  );
-}
+// // import { VoxelPreviewScene } from "../VoxelPreviewScene";
+import { useChallengeVoxels } from "../../lib/ChallengeVoxelsProvider";
 
 export function RightPanel({
   code,
   perfOffset = 0,
   selectedChallengeId,
 }: RightPanelProps) {
-  const [showAxes, setShowAxes] = useState(true);
-  const [showOutline, setShowOutline] = useState(true);
+  const showAxes = usePlaygroundStore((s: any) => s.showAxes);
+  const setShowAxes = usePlaygroundStore((s: any) => s.setShowAxes);
+  const showOutline = usePlaygroundStore((s: any) => s.showOutline);
+  const setShowOutline = usePlaygroundStore((s: any) => s.setShowOutline);
   const [showPreview, setShowPreview] = useState(false);
+
+  const { getVoxelsForChallenge } = useChallengeVoxels();
+  const previewVoxels = selectedChallengeId
+    ? getVoxelsForChallenge(selectedChallengeId)
+    : undefined;
 
   return (
     <div
@@ -72,29 +47,57 @@ export function RightPanel({
         setShowAxes={setShowAxes}
         showOutline={showOutline}
         setShowOutline={setShowOutline}
+        showRulers={usePlaygroundStore((s: any) => s.showRulers)}
+        setShowRulers={usePlaygroundStore((s: any) => s.setShowRulers)}
       />
-      <PreviewButton onClick={() => setShowPreview(true)} />
-      <SceneDisplay
-        code={code}
-        perfOffset={perfOffset}
-        showAxes={showAxes}
-        showOutline={showOutline}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 0,
+        }}
       >
-        {showPreview && (
-          <DraggablePopup
+        <div
+          style={{
+            flex: 1,
+            minHeight: 0,
+            borderBottom: "1px solid #eee",
+            background: "#fafbfc",
+            overflow: "hidden",
+          }}
+        >
+          {previewVoxels && previewVoxels.length > 0 ? (
+            <Scene
+              voxels={previewVoxels}
+              showAxes={showAxes}
+              showOutline={showOutline}
+              preview
+            />
+          ) : (
+            <div
+              style={{
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#888",
+              }}
+            >
+              Nenhum voxel para este desafio.
+            </div>
+          )}{" "}
+        </div>
+        <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+          <Scene
             code={code}
-            onClose={() => setShowPreview(false)}
+            perfOffset={perfOffset}
             showAxes={showAxes}
             showOutline={showOutline}
-            perfOffset={perfOffset}
-            challengeId={
-              typeof selectedChallengeId === "string"
-                ? selectedChallengeId
-                : undefined
-            }
+            preview={false}
           />
-        )}
-      </SceneDisplay>
+        </div>{" "}
+      </div>
     </div>
   );
 }

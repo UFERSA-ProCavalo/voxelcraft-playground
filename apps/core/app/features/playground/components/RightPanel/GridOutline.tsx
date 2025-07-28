@@ -21,7 +21,7 @@ export function GridOutline({ gridSize, bounds, spacing }: GridOutlineProps) {
   return (
     <lineSegments>
       <edgesGeometry args={[geometry as any]} />
-      <lineBasicMaterial color="white" linewidth={1} />
+      <lineBasicMaterial color="black" linewidth={1} />
     </lineSegments>
   );
 }
