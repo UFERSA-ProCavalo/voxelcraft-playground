@@ -77,12 +77,9 @@ export function CameraSync({ controlsRef }: { controlsRef: RefObject<any> }) {
 export function Scene({
   // perfOffset = 0,
   bounds = 1,
-  gridSize = 16,
+  gridSize = 32,
   code,
   voxels: voxelsProp,
-  showAxes = true,
-  showOutline = true,
-  preview = false,
 }: SceneProps) {
   const [voxels, setVoxels] = useState<VoxelData[]>([]);
   // const [workerError, setWorkerError] = useState<string | null>(null);
@@ -131,8 +128,6 @@ export function Scene({
         gridSize={gridSize}
         bounds={bounds}
         spacing={spacing}
-        showAxes={showAxes}
-        showOutline={showOutline}
       >
         <VoxelInstances
           voxels={mapVoxelPositions(voxelsToRender, spacing)}

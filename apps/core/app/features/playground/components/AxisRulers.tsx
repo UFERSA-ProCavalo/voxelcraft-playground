@@ -18,9 +18,9 @@ interface AxisRulersProps {
  * Intervalo padrão: -15 a 15, passo 5, deslocamento 1.2 unidades da origem.
  */
 export function AxisRulers({
-  min = -15,
-  max = 15,
-  step = 5,
+  min = -8,
+  max = 8,
+  step = 4,
   offset = 1.2,
   color = "#888",
   axisColors = {},

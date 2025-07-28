@@ -51,7 +51,6 @@ export function ToolMenu({
             onClick={() => setShowAxes(!showAxes)}
             title="Alternar eixos"
             aria-label="Alternar eixos"
-            style={{ marginRight: 8 }}
           >
             {/* Lucide Axis3D icon fallback SVG */}
             <svg

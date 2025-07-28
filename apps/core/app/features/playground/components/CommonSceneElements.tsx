@@ -8,8 +8,7 @@ interface CommonSceneElementsProps {
   gridSize: number;
   bounds: number;
   spacing: number;
-  showAxes?: boolean;
-  showOutline?: boolean;
+  step?: number;
   children?: React.ReactNode;
 }
 
@@ -21,10 +20,14 @@ export function CommonSceneElements({
   gridSize,
   bounds,
   spacing,
-  showAxes = true,
-  showOutline = true,
+  step = 5,
   children,
 }: CommonSceneElementsProps) {
+  // Usa o store para controlar a visibilidade dos elementos
+  const showAxes = usePlaygroundStore((s) => s.showAxes);
+  const showOutline = usePlaygroundStore((s) => s.showOutline);
+  const showRulers = usePlaygroundStore((s) => s.showRulers);
+
   return (
     <>
       <ambientLight intensity={0.5} />
@@ -33,15 +36,15 @@ export function CommonSceneElements({
       {/* Debug: strong point light at origin */}
       <pointLight position={[0, 0, 0]} intensity={2} />
       {children}
-      {showAxes && <AxesCylinders gridSize={gridSize} />}
+      {showAxes && <AxesCylinders gridSize={gridSize} tickInterval={step} />}
       {showOutline && (
         <GridOutline gridSize={gridSize} bounds={bounds} spacing={spacing} />
       )}
-      {usePlaygroundStore((s) => s.showRulers) && (
+      {showRulers && (
         <AxisRulers
           min={(-bounds * gridSize) / 2}
           max={(bounds * gridSize) / 2}
-          step={5}
+          step={step}
         />
       )}
     </>
