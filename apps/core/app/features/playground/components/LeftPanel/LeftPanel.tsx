@@ -256,9 +256,9 @@ export function LeftPanel({
         mainTab={mainTab}
         onGuideClick={() => setGuideOpen(true)}
       />
-      <div style={{ flex: 1, minHeight: 0 }}>
+      <div style={{ flex: 1, minHeight: 0, minWidth: 0, height: '100%' }}>
         {tab === "editor" && (
-          <div style={{ height: "100%" }}>
+          <div style={{ height: "100%", width: "100%" }}>
             <CodeEditor code={code} onChange={setCode} />
           </div>
         )}

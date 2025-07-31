@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { TEMA_CENA } from '../utils';
+import { TEMA_CENA } from "../utils";
+import { Separator } from "~/components/ui/separator";
 import { usePlaygroundStore } from "~/features/playground/lib/store";
 import { Scene } from "./Scene";
 import { Button } from "~/components/ui/button";
@@ -23,7 +24,6 @@ export function RightPanel({
   selectedChallengeId,
   tab,
 }: RightPanelProps) {
-
   const showAxes = usePlaygroundStore((s: any) => s.showAxes);
   const setShowAxes = usePlaygroundStore((s: any) => s.setShowAxes);
   const showOutline = usePlaygroundStore((s: any) => s.showOutline);
@@ -34,9 +34,8 @@ export function RightPanel({
   const previewVoxels = selectedChallengeId
     ? getVoxelsForChallenge(selectedChallengeId)
     : undefined;
-    
-  if (tab === "challenge") {
 
+  if (tab === "challenge") {
     return (
       <div
         style={{
@@ -86,16 +85,7 @@ export function RightPanel({
             )}
           </div>
           {/* Divisória entre as cenas */}
-          <div
-            style={{
-              width: '100%',
-              height: 6,
-              background: 'var(--color-border, #e5e7eb)',
-              margin: '8px 0',
-              borderRadius: 3,
-              boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-            }}
-          />
+          <Separator className="my-4" />{" "}
           <div style={TEMA_CENA}>
             <Scene
               code={code}
@@ -129,7 +119,14 @@ export function RightPanel({
           showRulers={usePlaygroundStore((s: any) => s.showRulers)}
           setShowRulers={usePlaygroundStore((s: any) => s.setShowRulers)}
         />
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 0,
+          }}
+        >
           <div style={TEMA_CENA}>
             <Scene
               code={code}

@@ -8,10 +8,17 @@ import { ChallengeVoxelsProvider } from "../lib/ChallengeVoxelsProvider";
 import { loadChallengeProgress } from "../lib/persistence";
 import { RightPanel } from "../components/RightPanel/RightPanel";
 import { FullPageLoader } from "~/components/ui/FullPageLoader";
-import { TEMA_CENA, CONTAINER_LADO_DIREITO } from "../components/utils";
+import { TEMA_CENA } from "../components/utils";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "~/components/ui/resizable";
+import { ChatButtonWithPopup } from "../components/ChatButtonWithPopup";
+
 export default function PlaygroundPage() {
   const [tab, setTab] = useState<"challenge" | "free">("challenge");
-  
+
   const [code, setCode] = useState("// Write code here\n");
   const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(
     null,
@@ -37,49 +44,6 @@ export default function PlaygroundPage() {
 
   const { headerHeight = 0 } = useOutletContext() as { headerHeight: number };
 
-  const [isResizing, setIsResizing] = useState(false);
-  const [leftPanelWidth, setLeftPanelWidth] = useState(33); // Initial width in percentage
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsResizing(true);
-  };
-
-  const handleMouseUp = useCallback(() => {
-    setIsResizing(false);
-  }, []);
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (isResizing && containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        const newLeftPanelWidth = (e.clientX / containerWidth) * 100;
-        const minWidth = 20; // 20%
-        const maxWidth = 80; // 80%
-        if (newLeftPanelWidth > minWidth && newLeftPanelWidth < maxWidth) {
-          setLeftPanelWidth(newLeftPanelWidth);
-        }
-      }
-    },
-    [isResizing],
-  );
-
-  useEffect(() => {
-    //desativado
-    if (isResizing) {
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-    } else {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    }
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isResizing, handleMouseMove, handleMouseUp]);
-
   return (
     <div
       style={{
@@ -88,8 +52,10 @@ export default function PlaygroundPage() {
         display: "flex",
         flexDirection: "column",
         flex: 1,
+        position: "relative",
       }}
     >
+      <ChatButtonWithPopup />
       {/* Tabs menu */}
       <div
         style={{
@@ -140,46 +106,38 @@ export default function PlaygroundPage() {
         </button>
       </div>
       {/* Loader visual ao trocar de aba */}
-
       {/* Conteúdo das abas */}
-<ChallengeVoxelsProvider>
-  <div
-    ref={containerRef}
-    style={{ display: "flex", flex: 1, minHeight: 0 }}
-  >
-    <div
-      style={{
-        flexBasis: `33%`,
-        borderRight: "1px solid #eee",
-        minWidth: 0,
-      }}
-    >
-      <LeftPanel
-        code={code}
-        setCode={setCode}
-        selectedChallengeId={tab === 'challenge' ? selectedChallengeId : null}
-        setSelectedChallengeId={setSelectedChallengeId}
-        mainTab={tab}
-      />
+      <ChallengeVoxelsProvider>
+        <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+          <ResizablePanelGroup
+            direction="horizontal"
+            className="flex-1 min-h-0 h-full w-full"
+          >
+            <ResizablePanel defaultSize={33} minSize={20}>
+              <LeftPanel
+                code={code}
+                setCode={setCode}
+                selectedChallengeId={
+                  tab === "challenge" ? selectedChallengeId : null
+                }
+                setSelectedChallengeId={setSelectedChallengeId}
+                mainTab={tab}
+              />
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={67} minSize={20}>
+              <RightPanel
+                code={debouncedCode}
+                perfOffset={0}
+                selectedChallengeId={
+                  tab === "challenge" ? selectedChallengeId : null
+                }
+                tab={tab}
+              />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
+      </ChallengeVoxelsProvider>{" "}
     </div>
-    <div
-      onMouseDown={handleMouseDown}
-      style={{
-        width: "5px",
-        cursor: "col-resize",
-        background: "#eee",
-        flexShrink: 0,
-      }}
-    />
-    <div style={CONTAINER_LADO_DIREITO}>
-      <RightPanel
-        code={debouncedCode}
-        perfOffset={0}
-        selectedChallengeId={tab === 'challenge' ? selectedChallengeId : null}
-        tab={tab}
-      />
-    </div>
-  </div>
-</ChallengeVoxelsProvider>    </div>
   );
 }

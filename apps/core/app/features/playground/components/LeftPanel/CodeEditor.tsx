@@ -1,6 +1,6 @@
 import MonacoEditor from "@monaco-editor/react";
 import * as acorn from "acorn";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 interface CodeEditorProps {
   code: string;
@@ -9,6 +9,8 @@ interface CodeEditorProps {
 
 export function CodeEditor({ code, onChange }: CodeEditorProps) {
   const [error, setError] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<any>(null);
 
   // Memoized handleChange para evitar re-render desnecessário
   const handleChange = useCallback(
@@ -27,8 +29,34 @@ export function CodeEditor({ code, onChange }: CodeEditorProps) {
     [onChange],
   );
 
+  // Handle Monaco mount
+  const handleEditorDidMount = useCallback((editor: any) => {
+    editorRef.current = editor;
+  }, []);
+
+  // ResizeObserver to trigger layout on resize
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const ro = new window.ResizeObserver((entries) => {
+      if (editorRef.current) {
+        const { width, height } = entries[0].contentRect;
+        console.log('[ResizeObserver] Container resized:', width, height);
+        requestAnimationFrame(() => {
+          if (editorRef.current) {
+            console.log('[ResizeObserver] Calling editor.layout()');
+            editorRef.current.layout();
+          }
+        });
+      } else {
+        console.log('[ResizeObserver] Editor not ready');
+      }
+    });
+    ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, []);
+
   return (
-    <div style={{ position: "relative", height: "100%", width: "100%" }}>
+    <div ref={containerRef} style={{ position: "relative", height: "100%", width: "100%" }}>
       <div
         style={{
           height: "100%",
@@ -36,11 +64,13 @@ export function CodeEditor({ code, onChange }: CodeEditorProps) {
       >
         <MonacoEditor
           height="100%"
+          width="100%"
           defaultLanguage="javascript"
           value={code}
           onChange={handleChange}
           theme="vs-dark"
           options={{ minimap: { enabled: false } }}
+          onMount={handleEditorDidMount}
         />
       </div>
       <div
@@ -73,3 +103,4 @@ export function CodeEditor({ code, onChange }: CodeEditorProps) {
     </div>
   );
 }
+
