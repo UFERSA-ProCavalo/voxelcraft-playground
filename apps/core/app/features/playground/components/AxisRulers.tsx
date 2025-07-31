@@ -95,7 +95,11 @@ export function AxisRulers({
     }
     return (
       <group key={axis}>
-        <Line points={[axisStart, axisEnd]} color={mergedAxisColors[axis] || color} lineWidth={2} />
+        <Line
+          points={[axisStart, axisEnd]}
+          color={mergedAxisColors[axis] || color}
+          lineWidth={2}
+        />
         {ticks}
       </group>
     );
