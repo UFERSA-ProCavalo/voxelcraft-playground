@@ -1,17 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
+import { MessageCircle, X, RotateCcw } from "lucide-react";
+import {
+  criarSessaoChat,
+  enviarMensagem,
+  carregarHistorico,
+  resetarChat,
+} from "../lib/gemini";
 
 export function ChatButtonWithPopup() {
+  const [incluirCodigo, setIncluirCodigo] = useState(false);
   const [open, setOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<any[]>(carregarHistorico());
+  const [loading, setLoading] = useState(false);
+  const [chat, setChat] = useState<any>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Tamanho do botão
   const buttonSize = 56;
   // Tamanho do chat
-  const chatWidth = buttonSize;
-  const chatHeight = buttonSize * 4;
+  const chatWidth = 320;
+  const chatHeight = 420;
   // Posição do botão
   const left = 72;
   const bottom = 32;
+
+  useEffect(() => {
+    if (open && !chat) {
+      criarSessaoChat().then(setChat);
+    }
+    if (open && inputRef.current) {
+      setTimeout(() => inputRef.current?.focus(), 200);
+    }
+  }, [open, chat]);
+
+  const handleSend = async () => {
+    if (!input.trim() || !chat) return;
+    setLoading(true);
+    let mensagem = input;
+    if (incluirCodigo) {
+      // O código do usuário é salvo no localStorage como 'playground.userCode' ou similar
+      // Vamos tentar pegar do localStorage
+      const codigo = localStorage.getItem("playground.userCode") || "";
+      mensagem = `${input}\ncódigo do usuário:\n${codigo}`;
+    }
+    const resposta = await enviarMensagem(chat, mensagem);
+    setMessages([
+      ...chat.getHistory(),
+      { role: "user", parts: [{ text: mensagem }] },
+      { role: "model", parts: [{ text: resposta }] },
+    ]);
+    setInput("");
+    setLoading(false);
+    setTimeout(() => inputRef.current?.focus(), 200);
+  };
+
+  const handleReset = () => {
+    resetarChat();
+    setMessages(carregarHistorico());
+    setChat(null);
+    criarSessaoChat().then(setChat);
+    setInput("");
+  };
 
   return (
     <>
@@ -84,58 +135,118 @@ export function ChatButtonWithPopup() {
             }}
           >
             <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-              </svg>
+              <MessageCircle size={22} />
               Chat IA
             </span>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => setOpen(false)}
-              title="Fechar"
-              aria-label="Fechar"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 20 20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+            <div style={{ display: "flex", gap: 8 }}>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={handleReset}
+                title="Resetar chat"
+                aria-label="Resetar chat"
               >
-                <line x1="4" y1="4" x2="16" y2="16" />
-                <line x1="16" y1="4" x2="4" y2="16" />
-              </svg>
-            </Button>
+                <RotateCcw size={18} />
+              </Button>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => setOpen(false)}
+                title="Fechar"
+                aria-label="Fechar"
+              >
+                <X size={18} />
+              </Button>
+            </div>
           </div>
           <div
             style={{
               flex: 1,
               padding: 12,
-              color: "#888",
+              overflowY: "auto",
+              background: "#fafbfc",
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-              fontSize: 14,
+              flexDirection: "column",
+              gap: 8,
             }}
           >
-            <span>
-              Em breve: chat com IA para ajudar nos desafios e no modo livre!
-            </span>
+            {messages.map((msg, i) => (
+              <div
+                key={i}
+                style={{
+                  alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
+                  background: msg.role === "user" ? "#e0e7ff" : "#f3f4f6",
+                  color: "#222",
+                  borderRadius: 12,
+                  padding: "6px 12px",
+                  maxWidth: "80%",
+                  fontSize: 14,
+                  marginBottom: 2,
+                }}
+              >
+                {msg.parts?.[0]?.text}
+              </div>
+            ))}
+            {loading && (
+              <div
+                style={{ color: "#888", fontSize: 13, alignSelf: "flex-start" }}
+              >
+                Pensando...
+              </div>
+            )}
           </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "0 8px 4px 8px",
+            }}
+          >
+            <Button
+              size={"sm"}
+              variant={incluirCodigo ? "default" : "secondary"}
+              onClick={() => setIncluirCodigo((v) => !v)}
+              style={{ fontSize: 13 }}
+              title="Enviar código do usuário junto da mensagem"
+            >
+              {incluirCodigo ? "Enviando código do usuário" : "Só mensagem"}
+            </Button>
+          </div>
+          <form
+            style={{
+              display: "flex",
+              borderTop: "1px solid #eee",
+              background: "#fff",
+              padding: 8,
+              gap: 8,
+            }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSend();
+            }}
+          >
+            {" "}
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Digite sua mensagem..."
+              style={{
+                flex: 1,
+                border: "1px solid #e5e7eb",
+                borderRadius: 8,
+                padding: "6px 10px",
+                fontSize: 14,
+              }}
+              disabled={loading}
+              autoFocus
+            />
+            <Button type="submit" size="sm" disabled={loading || !input.trim()}>
+              Enviar
+            </Button>
+          </form>
         </div>
       )}
     </>

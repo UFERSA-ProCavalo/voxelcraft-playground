@@ -18,6 +18,8 @@ import { ToolMenu } from "../ToolMenu";
 // // import { VoxelPreviewScene } from "../VoxelPreviewScene";
 import { useChallengeVoxels } from "../../lib/ChallengeVoxelsProvider";
 
+import type { VoxelData } from "../../types";
+
 export function RightPanel({
   code,
   perfOffset = 0,
@@ -28,12 +30,38 @@ export function RightPanel({
   const setShowAxes = usePlaygroundStore((s: any) => s.setShowAxes);
   const showOutline = usePlaygroundStore((s: any) => s.showOutline);
   const setShowOutline = usePlaygroundStore((s: any) => s.setShowOutline);
-  const [showPreview, setShowPreview] = useState(false);
+  // Estado para armazenar os voxels atuais do usuário
+  const [userVoxels, setUserVoxels] = useState<VoxelData[]>([]);
 
   const { getVoxelsForChallenge } = useChallengeVoxels();
   const previewVoxels = selectedChallengeId
     ? getVoxelsForChallenge(selectedChallengeId)
     : undefined;
+
+  // Função para comparar voxels do usuário e do preview
+  function handleRun() {
+    if (!selectedChallengeId || !previewVoxels) return;
+    try {
+      // Usa os voxels atuais da cena do usuário
+      // Cria um set de chaves "x,y,z:color" para comparação
+      const toKey = (v: {
+        position: [number, number, number];
+        color?: string;
+      }) => `${v.position.join(",")}:${v.color || ""}`;
+      const previewSet = new Set(previewVoxels.map(toKey));
+      const userSet = new Set(userVoxels.map(toKey));
+      // Conta quantos voxels do preview existem no userVoxels
+      let match = 0;
+      previewSet.forEach((k) => {
+        if (userSet.has(k)) match++;
+      });
+      const percent =
+        previewSet.size === 0 ? 0 : Math.round((match / previewSet.size) * 100);
+      console.log(`Similaridade: ${percent}% (${match} de ${previewSet.size})`);
+    } catch (e) {
+      console.error("Erro ao comparar voxels:", e);
+    }
+  }
 
   if (tab === "challenge") {
     return (
@@ -53,6 +81,8 @@ export function RightPanel({
           setShowOutline={setShowOutline}
           showRulers={usePlaygroundStore((s: any) => s.showRulers)}
           setShowRulers={usePlaygroundStore((s: any) => s.setShowRulers)}
+          onRun={selectedChallengeId ? handleRun : undefined}
+          runDisabled={!selectedChallengeId}
         />
         <div
           style={{
@@ -87,14 +117,14 @@ export function RightPanel({
           {/* Divisória entre as cenas */}
           <Separator className="my-4" />{" "}
           <div style={TEMA_CENA}>
-            <Scene
-              code={code}
-              perfOffset={perfOffset}
-              showAxes={showAxes}
-              showOutline={showOutline}
-              preview={false}
-            />
-          </div>
+<Scene
+               code={code}
+               perfOffset={perfOffset}
+               showAxes={showAxes}
+               showOutline={showOutline}
+               preview={false}
+               onVoxelsChange={setUserVoxels}
+             />          </div>
         </div>
       </div>
     );
@@ -128,14 +158,14 @@ export function RightPanel({
           }}
         >
           <div style={TEMA_CENA}>
-            <Scene
-              code={code}
-              perfOffset={perfOffset}
-              showAxes={showAxes}
-              showOutline={showOutline}
-              preview={false}
-            />
-          </div>
+<Scene
+               code={code}
+               perfOffset={perfOffset}
+               showAxes={showAxes}
+               showOutline={showOutline}
+               preview={false}
+               onVoxelsChange={setUserVoxels}
+             />          </div>
         </div>
       </div>
     );

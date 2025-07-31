@@ -3,12 +3,12 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { NodeVM } from "vm2";
 
-import { challenges } from "../app/features/playground/challenges.ts";
-import type { VoxelData } from "../app/features/playground/types.ts";
+import { challenges } from "../app/features/playground/challenges";
+import type { VoxelData } from "../app/features/playground/types";
 import {
   runVoxelPipeline,
   faceCullingStep,
-} from "../app/features/playground/pipeline/voxelPipeline.ts";
+} from "../app/features/playground/pipeline/voxelPipeline";
 
 async function generateVoxelsForChallenge(code: string): Promise<VoxelData[]> {
   const voxels: VoxelData[] = [];

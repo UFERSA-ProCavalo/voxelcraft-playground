@@ -2,7 +2,7 @@ import type { VoxelData } from "../types";
 
 export type VoxelPipelineStep = (voxels: VoxelData[]) => VoxelData[];
 
-import { faceCulling } from "./faceCulling.ts";
+import { faceCulling } from "./faceCulling";
 
 export const faceCullingStep: VoxelPipelineStep = (voxels) =>
   faceCulling(voxels);

@@ -256,7 +256,7 @@ export function LeftPanel({
         mainTab={mainTab}
         onGuideClick={() => setGuideOpen(true)}
       />
-      <div style={{ flex: 1, minHeight: 0, minWidth: 0, height: '100%' }}>
+      <div style={{ flex: 1, minHeight: 0, minWidth: 0, height: "100%" }}>
         {tab === "editor" && (
           <div style={{ height: "100%", width: "100%" }}>
             <CodeEditor code={code} onChange={setCode} />
@@ -304,7 +304,7 @@ export function LeftPanel({
                     code={code}
                     setCode={setCode}
                     onTryItOut={() => {
-                      setCode(selectedChallenge.starterCode);
+                      setCode('// Write your code here\n');
                       setSelectedChallengeId(selectedChallenge.id);
                     }}
                   />

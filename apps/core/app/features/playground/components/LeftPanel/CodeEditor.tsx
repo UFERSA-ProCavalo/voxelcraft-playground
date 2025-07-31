@@ -40,15 +40,15 @@ export function CodeEditor({ code, onChange }: CodeEditorProps) {
     const ro = new window.ResizeObserver((entries) => {
       if (editorRef.current) {
         const { width, height } = entries[0].contentRect;
-        console.log('[ResizeObserver] Container resized:', width, height);
+        console.log("[ResizeObserver] Container resized:", width, height);
         requestAnimationFrame(() => {
           if (editorRef.current) {
-            console.log('[ResizeObserver] Calling editor.layout()');
+            console.log("[ResizeObserver] Calling editor.layout()");
             editorRef.current.layout();
           }
         });
       } else {
-        console.log('[ResizeObserver] Editor not ready');
+        console.log("[ResizeObserver] Editor not ready");
       }
     });
     ro.observe(containerRef.current);
@@ -56,7 +56,10 @@ export function CodeEditor({ code, onChange }: CodeEditorProps) {
   }, []);
 
   return (
-    <div ref={containerRef} style={{ position: "relative", height: "100%", width: "100%" }}>
+    <div
+      ref={containerRef}
+      style={{ position: "relative", height: "100%", width: "100%" }}
+    >
       <div
         style={{
           height: "100%",
@@ -103,4 +106,3 @@ export function CodeEditor({ code, onChange }: CodeEditorProps) {
     </div>
   );
 }
-

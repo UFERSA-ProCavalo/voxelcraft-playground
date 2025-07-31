@@ -15,9 +15,10 @@ import {
   ResizableHandle,
 } from "~/components/ui/resizable";
 import { ChatButtonWithPopup } from "../components/ChatButtonWithPopup";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 
 export default function PlaygroundPage() {
-  const [tab, setTab] = useState<"challenge" | "free">("challenge");
+  const [tab, setTab] = useState<string>("challenge");
 
   const [code, setCode] = useState("// Write code here\n");
   const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(
@@ -56,88 +57,77 @@ export default function PlaygroundPage() {
       }}
     >
       <ChatButtonWithPopup />
-      {/* Tabs menu */}
-      <div
-        style={{
-          display: "flex",
-          borderBottom: "1px solid #eee",
-          background: "#fafafa",
-        }}
+      <Tabs
+        value={tab}
+        onValueChange={setTab}
+        className="flex-1 flex flex-col min-h-0 relative"
       >
-        <button
-          onClick={() => {
-            if (tab !== "challenge") {
-              setTab("challenge");
-            }
-          }}
-          style={{
-            padding: "12px 24px",
-            border: "none",
-            background: tab === "challenge" ? "#fff" : "transparent",
-            borderBottom:
-              tab === "challenge"
-                ? "2px solid #0070f3"
-                : "2px solid transparent",
-            fontWeight: tab === "challenge" ? "bold" : "normal",
-            cursor: tab === "challenge" ? "default" : "pointer",
-            outline: "none",
-          }}
-        >
-          Desafios
-        </button>
-        <button
-          onClick={() => {
-            if (tab !== "free") {
-              setTab("free");
-            }
-          }}
-          style={{
-            padding: "12px 24px",
-            border: "none",
-            background: tab === "free" ? "#fff" : "transparent",
-            borderBottom:
-              tab === "free" ? "2px solid #0070f3" : "2px solid transparent",
-            fontWeight: tab === "free" ? "bold" : "normal",
-            cursor: tab === "free" ? "default" : "pointer",
-            outline: "none",
-          }}
-        >
-          Livre
-        </button>
-      </div>
-      {/* Loader visual ao trocar de aba */}
-      {/* Conteúdo das abas */}
-      <ChallengeVoxelsProvider>
-        <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
-          <ResizablePanelGroup
-            direction="horizontal"
-            className="flex-1 min-h-0 h-full w-full"
-          >
-            <ResizablePanel defaultSize={33} minSize={20}>
-              <LeftPanel
-                code={code}
-                setCode={setCode}
-                selectedChallengeId={
-                  tab === "challenge" ? selectedChallengeId : null
-                }
-                setSelectedChallengeId={setSelectedChallengeId}
-                mainTab={tab}
-              />
-            </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={67} minSize={20}>
-              <RightPanel
-                code={debouncedCode}
-                perfOffset={0}
-                selectedChallengeId={
-                  tab === "challenge" ? selectedChallengeId : null
-                }
-                tab={tab}
-              />
-            </ResizablePanel>
-          </ResizablePanelGroup>
+        {/* Floating, centered TabsList */}
+        <div className="absolute left-1/2 top-6 z-20 -translate-x-1/2 flex justify-center w-auto">
+          <TabsList className="shadow-lg bg-background rounded-xl px-6 py-2 flex gap-2 border border-border">
+            <TabsTrigger value="challenge">Desafios</TabsTrigger>
+            <TabsTrigger value="free">Livre</TabsTrigger>
+          </TabsList>
         </div>
-      </ChallengeVoxelsProvider>{" "}
+        <TabsContent value="challenge" className="flex-1 flex flex-col min-h-0">
+          <ChallengeVoxelsProvider>
+            <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+              <ResizablePanelGroup
+                direction="horizontal"
+                className="flex-1 min-h-0 h-full w-full"
+              >
+                <ResizablePanel defaultSize={33} minSize={20}>
+                  <LeftPanel
+                    code={code}
+                    setCode={setCode}
+                    selectedChallengeId={selectedChallengeId}
+                    setSelectedChallengeId={setSelectedChallengeId}
+                    mainTab={tab as "challenge" | "free"}
+                  />
+                </ResizablePanel>
+                <ResizableHandle withHandle />
+                <ResizablePanel defaultSize={67} minSize={20}>
+                  <RightPanel
+                    code={debouncedCode}
+                    perfOffset={0}
+                    selectedChallengeId={selectedChallengeId}
+                    tab={tab as "challenge" | "free"}
+                  />
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </div>
+          </ChallengeVoxelsProvider>
+        </TabsContent>
+        <TabsContent value="free" className="flex-1 flex flex-col min-h-0">
+          <ChallengeVoxelsProvider>
+            <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+              <ResizablePanelGroup
+                direction="horizontal"
+                className="flex-1 min-h-0 h-full w-full"
+              >
+                <ResizablePanel defaultSize={33} minSize={20}>
+                  <LeftPanel
+                    code={code}
+                    setCode={setCode}
+                    selectedChallengeId={null}
+                    setSelectedChallengeId={setSelectedChallengeId}
+                    mainTab={tab as "challenge" | "free"}
+                  />
+                </ResizablePanel>
+                <ResizableHandle withHandle />
+                <ResizablePanel defaultSize={67} minSize={20}>
+                  <RightPanel
+                    code={debouncedCode}
+                    perfOffset={0}
+                    selectedChallengeId={null}
+                    tab={tab as "challenge" | "free"}
+                  />
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </div>
+          </ChallengeVoxelsProvider>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

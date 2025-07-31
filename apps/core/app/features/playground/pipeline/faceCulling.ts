@@ -4,7 +4,7 @@
  * @param {Array<{ position: [number, number, number], [key: string]: any }>} voxels - Array de voxels com posições e propriedades.
  * @returns {Array<{ position: [number, number, number], [key: string]: any }>} Array de voxels visíveis (sem faces internas).
  */
-import { faceDirs } from "../consts.ts";
+import { faceDirs } from "../consts";
 
 export function faceCulling(
   voxels: Array<{ position: [number, number, number]; [key: string]: any }>,

@@ -15,6 +15,9 @@ export interface ToolMenuProps {
   setShowRulers?: (v: boolean) => void;
   style?: React.CSSProperties;
   cardClassName?: string;
+  // Botão Run opcional
+  onRun?: () => void;
+  runDisabled?: boolean;
 }
 
 export function ToolMenu({
@@ -26,6 +29,8 @@ export function ToolMenu({
   setShowRulers,
   style,
   cardClassName,
+  onRun,
+  runDisabled,
 }: ToolMenuProps) {
   return (
     <div
@@ -75,6 +80,31 @@ export function ToolMenu({
             <path d="M12 2v20M2 12h20" />
           </svg>
         </Button>
+        {onRun && (
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onRun}
+            title="Executar comparação"
+            aria-label="Executar comparação"
+            disabled={runDisabled}
+            style={{ opacity: runDisabled ? 0.5 : 1 }}
+          >
+            {/* Lucide Play icon fallback SVG */}
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+          </Button>
+        )}
         <Button
           variant={showOutline ? "default" : "outline"}
           size="icon"

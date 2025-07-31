@@ -44,8 +44,9 @@ export interface Challenge {
   description: string;
   difficulty: ChallengeDifficulty;
   progress: ChallengeProgress;
-  starterCode: string;
-  expectedVoxels: VoxelData[];
+  constructionCode: string; // Código para construir o desafio
+  starterCode?: string;
+  // expectedVoxels: VoxelData[];
   hint?: string;
   order?: number;
 }

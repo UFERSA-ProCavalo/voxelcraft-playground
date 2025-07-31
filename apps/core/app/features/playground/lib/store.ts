@@ -23,7 +23,7 @@ export const usePlaygroundStore = create<PlaygroundState>((set) => ({
   selectedChallengeId: null,
   showAxes: true,
   showOutline: true,
-  showRulers: false,
+  showRulers: true,
   cameraPosition: [50, 50, 50], // default initial camera position
   cameraTarget: [0, 0, 0], // default initial camera target
   setCameraPosition: (pos) => set({ cameraPosition: pos }),

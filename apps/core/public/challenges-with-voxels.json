@@ -4,8 +4,12 @@
     "name": "Primeiro Cubo",
     "voxels": [
       {
-        "position": [0, 0, 0],
-        "color": "red"
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "color": "#e74c3c"
       }
     ]
   },
@@ -14,23 +18,43 @@
     "name": "Linha de Cubos",
     "voxels": [
       {
-        "position": [0, 0, 0],
+        "position": [
+          0,
+          0,
+          0
+        ],
         "color": "blue"
       },
       {
-        "position": [1, 0, 0],
+        "position": [
+          1,
+          0,
+          0
+        ],
         "color": "blue"
       },
       {
-        "position": [2, 0, 0],
+        "position": [
+          2,
+          0,
+          0
+        ],
         "color": "blue"
       },
       {
-        "position": [3, 0, 0],
+        "position": [
+          3,
+          0,
+          0
+        ],
         "color": "blue"
       },
       {
-        "position": [4, 0, 0],
+        "position": [
+          4,
+          0,
+          0
+        ],
         "color": "blue"
       }
     ]
