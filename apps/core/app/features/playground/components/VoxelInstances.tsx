@@ -9,12 +9,13 @@ interface VoxelInstancesProps {
 }
 
 export function VoxelInstances({ voxels, bounds = 1 }: VoxelInstancesProps) {
+  console.log("voxel data", voxels);
+
   const meshRef = useRef<THREE.InstancedMesh>(null!);
-  const prevVoxelsRef = useRef<VoxelData[]>([]);
-  const geometry = useMemo(
-    () => new RoundedBoxGeometry(bounds, bounds, bounds, 4, 0.2),
-    [bounds],
-  );
+  const geometry = useMemo(() => {
+    console.log("Creating new geometry", bounds, voxels.length);
+    return new RoundedBoxGeometry(bounds, bounds, bounds, 4, 0.2);
+  }, [bounds, voxels.length]);
   const instanceCount = voxels.length;
 
   useEffect(() => {
@@ -26,41 +27,40 @@ export function VoxelInstances({ voxels, bounds = 1 }: VoxelInstancesProps) {
     if (!meshRef.current) return;
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
-    let colorChanged = false;
-    let matrixChanged = false;
-
     for (let i = 0; i < voxels.length; i++) {
       const voxel = voxels[i];
-      const prevVoxel = prevVoxelsRef.current[i];
-      if (
-        !prevVoxel ||
-        voxel.position[0] !== prevVoxel.position[0] ||
-        voxel.position[1] !== prevVoxel.position[1] ||
-        voxel.position[2] !== prevVoxel.position[2]
-      ) {
-        dummy.position.set(
-          voxel.position[0],
-          voxel.position[1],
-          voxel.position[2],
-        );
-        dummy.updateMatrix();
-        meshRef.current.setMatrixAt(i, dummy.matrix);
-        matrixChanged = true;
-      }
-      if (!prevVoxel || voxel.color !== prevVoxel.color) {
-        meshRef.current.setColorAt(i, color.set(voxel.color || "#ffffff"));
-        colorChanged = true;
-      }
+      dummy.position.set(
+        voxel.position[0],
+        voxel.position[1],
+        voxel.position[2],
+      );
+      dummy.updateMatrix();
+      meshRef.current.setMatrixAt(i, dummy.matrix);
+      meshRef.current.setColorAt(i, color.set(voxel.color || "#ffffff"));
     }
-    if (matrixChanged) meshRef.current.instanceMatrix.needsUpdate = true;
-    if (colorChanged && meshRef.current.instanceColor)
+    meshRef.current.instanceMatrix.needsUpdate = true;
+    if (meshRef.current.instanceColor)
       meshRef.current.instanceColor.needsUpdate = true;
-    prevVoxelsRef.current = voxels;
+  }, [voxels]);
+
+  console.log("remount", instanceCount, voxels.length);
+  // Cria uma chave que muda quando os dados dos voxels mudam (posições/cores)
+  const meshKey = useMemo(() => {
+    // Para arrays pequenos, isso é rápido e robusto
+    return (
+      voxels.length +
+      ":" +
+      voxels.map((v) => `${v.position.join(",")}:${v.color || ""}`).join("|")
+    );
   }, [voxels]);
 
   return (
     // @ts-ignore
-    <instancedMesh ref={meshRef} args={[geometry, undefined, instanceCount]}>
+    <instancedMesh
+      key={meshKey}
+      ref={meshRef}
+      args={[geometry, undefined, instanceCount]}
+    >
       <meshStandardMaterial />
     </instancedMesh>
   );
