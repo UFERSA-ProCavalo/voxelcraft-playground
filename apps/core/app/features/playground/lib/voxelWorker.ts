@@ -13,8 +13,13 @@ interface WorkerOutput {
   error?: string;
 }
 
-function interpolateRGB(color1: [number, number, number], color2: [number, number, number], t: number): [number, number, number] {
-  const clamp = (value: number, min = 0, max = 1) => Math.max(min, Math.min(max, value));
+function interpolateRGB(
+  color1: [number, number, number],
+  color2: [number, number, number],
+  t: number,
+): [number, number, number] {
+  const clamp = (value: number, min = 0, max = 1) =>
+    Math.max(min, Math.min(max, value));
   t = clamp(t);
 
   const r = Math.round(color1[0] + (color2[0] - color1[0]) * t);
@@ -26,7 +31,7 @@ function interpolateRGB(color1: [number, number, number], color2: [number, numbe
 
 function hexToRgb(hex: string): [number, number, number] | null {
   // Remove o # se estiver presente
-  hex = hex.replace(/^#/, '');
+  hex = hex.replace(/^#/, "");
 
   if (hex.length !== 6) {
     return null;
@@ -41,7 +46,7 @@ function hexToRgb(hex: string): [number, number, number] | null {
 
 function rgbToHex(rgb: [number, number, number]): string {
   const [r, g, b] = rgb;
-  const toHex = (c: number) => c.toString(16).padStart(2, '0');
+  const toHex = (c: number) => c.toString(16).padStart(2, "0");
 
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
@@ -61,8 +66,9 @@ self.onmessage = function (e: MessageEvent<WorkerInput>) {
     const half = Math.floor(gridSize / 2);
     // Gera os voxels de acordo com o código do usuário
     let now = new Date();
-    let time = now.getMilliseconds() / 1000 + now.getSeconds() + now.getMinutes() * 60;
-    
+    let time =
+      now.getMilliseconds() / 1000 + now.getSeconds() + now.getMinutes() * 60;
+
     for (let x = -half; x <= half; x++) {
       for (let y = -half; y <= half; y++) {
         for (let z = -half; z <= half; z++) {
@@ -79,12 +85,12 @@ self.onmessage = function (e: MessageEvent<WorkerInput>) {
           let color2 = colorMap[Math.floor(colorIdx) + 1] || "#888888";
           let t = colorIdx - Math.floor(colorIdx);
 
-          let color = rgbToHex(interpolateRGB(
-            hexToRgb(color1),
-            hexToRgb(color2),
-            t
-          ))
-          
+          const defaultRgb: [number, number, number] = [136, 136, 136]; // #888888
+          const rgb1 = hexToRgb(color1) ?? defaultRgb;
+          const rgb2 = hexToRgb(color2) ?? defaultRgb;
+
+          let color = rgbToHex(interpolateRGB(rgb1, rgb2, t));
+
           voxels.push({
             position: [x, y, z],
             color: color,

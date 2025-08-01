@@ -14,7 +14,82 @@ import {
   resetarChat,
 } from "../lib/gemini";
 
-export function ChatButtonWithPopup() {
+import React from "react";
+
+function ChatMessageWithCodeblocks({ text }: { text: string }) {
+  // Regex para codeblock: ```lang\n...\n```
+  const codeBlockRegex = /```([\w-]*)\n([\s\S]*?)```/g;
+  const inlineCodeRegex = /`([^`]+)`/g;
+  const elements: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match;
+  let idx = 0;
+  // Render codeblocks
+  while ((match = codeBlockRegex.exec(text))) {
+    if (match.index > lastIndex) {
+      // Texto antes do bloco
+      elements.push(
+        renderInlineCode(text.slice(lastIndex, match.index), idx++),
+      );
+    }
+    elements.push(
+      <pre
+        key={idx++}
+        style={{
+          background: "#222",
+          color: "#fff",
+          borderRadius: 8,
+          padding: 10,
+          margin: "8px 0",
+          fontSize: 13,
+          overflowX: "auto",
+        }}
+      >
+        <div style={{ fontSize: 11, color: "#aaa", marginBottom: 2 }}>
+          {match[1]}
+        </div>
+        <code>{match[2]}</code>
+      </pre>,
+    );
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    elements.push(renderInlineCode(text.slice(lastIndex), idx++));
+  }
+  return <>{elements}</>;
+  // Função para inline code
+  function renderInlineCode(str: string, key: number) {
+    const parts = [];
+    let last = 0;
+    let m;
+    let partIdx = 0;
+    while ((m = inlineCodeRegex.exec(str))) {
+      if (m.index > last) {
+        parts.push(<span key={partIdx++}>{str.slice(last, m.index)}</span>);
+      }
+      parts.push(
+        <code
+          key={partIdx++}
+          style={{
+            background: "#eee",
+            borderRadius: 4,
+            padding: "1px 4px",
+            fontSize: 13,
+          }}
+        >
+          {m[1]}
+        </code>,
+      );
+      last = m.index + m[0].length;
+    }
+    if (last < str.length) {
+      parts.push(<span key={partIdx++}>{str.slice(last)}</span>);
+    }
+    return <>{parts}</>;
+  }
+}
+
+export function ChatButtonWithPopup({ userCode }: { userCode: string }) {
   // play close sound when popover closes
   const playSound = useSoundStore((s) => s.playSound);
   const [open, setOpen] = useState(false);
@@ -36,7 +111,7 @@ export function ChatButtonWithPopup() {
   // Tamanho do botão
   const buttonSize = 56;
   // Tamanho do chat
-  const chatWidth = 320;
+  const chatWidth = "100vh";
   const chatHeight = 420;
 
   useEffect(() => {
@@ -53,10 +128,7 @@ export function ChatButtonWithPopup() {
     setLoading(true);
     let mensagem = input;
     if (incluirCodigo) {
-      // O código do usuário é salvo no localStorage como 'playground.userCode' ou similar
-      // Vamos tentar pegar do localStorage
-      const codigo = localStorage.getItem("playground.userCode") || "";
-      mensagem = `${input}\ncódigo do usuário:\n${codigo}`;
+      mensagem = `${input}\ncódigo do usuário:\n${userCode}`;
     }
     await enviarMensagem(chat, mensagem);
     setMessages(chat.getHistory().slice(2));
@@ -166,14 +238,19 @@ export function ChatButtonWithPopup() {
                     color: "#222",
                     borderRadius: 12,
                     padding: "6px 12px",
-                    maxWidth: "80%",
+                    maxWidth: "100%",
                     fontSize: 14,
                     marginBottom: 2,
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
                   }}
                 >
-                  {msg.parts?.[0]?.text}
+                  <ChatMessageWithCodeblocks
+                    text={msg.parts?.[0]?.text || ""}
+                  />
                 </div>
               ))}
+
               {loading && (
                 <div
                   style={{

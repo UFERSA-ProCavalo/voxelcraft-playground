@@ -83,19 +83,18 @@ export function Scene({
   voxels: voxelsProp,
   onVoxelsChange,
 }: SceneProps & { onVoxelsChange?: (voxels: VoxelData[]) => void }) {
-   const [voxels, setVoxels] = useState<VoxelData[]>([]);
-   const [animation, setAnimation] = useState(null);
-   // const [workerError, setWorkerError] = useState<string | null>(null);
+  const [voxels, setVoxels] = useState<VoxelData[]>([]);
+  const [animation, setAnimation] = useState<NodeJS.Timeout | null>(null);
+  // const [workerError, setWorkerError] = useState<string | null>(null);
 
-   // Notifica o pai sempre que os voxels mudam (apenas quando não é preview)
-   useEffect(() => {
-     if (!voxelsProp && onVoxelsChange) {
-       onVoxelsChange(voxels);
-     }
-   }, [voxels, voxelsProp, onVoxelsChange]); 
-   const workerRef = useRef<Worker | null>(null);
-   const spacing = bounds - 0.1;
-
+  // Notifica o pai sempre que os voxels mudam (apenas quando não é preview)
+  useEffect(() => {
+    if (!voxelsProp && onVoxelsChange) {
+      onVoxelsChange(voxels);
+    }
+  }, [voxels, voxelsProp, onVoxelsChange]);
+  const workerRef = useRef<Worker | null>(null);
+  const spacing = bounds - 0.1;
 
   useEffect(() => {
     if (voxelsProp) return;
@@ -139,7 +138,13 @@ export function Scene({
       }
     };
     if (code) {
-      setAnimation(setInterval(() => worker.postMessage({ code, gridSize, bounds, colorMap: COLOR_MAP }), 50));
+      const colorMap = usePlaygroundStore.getState().colorMap;
+      setAnimation(
+        setInterval(
+          () => worker.postMessage({ code, gridSize, bounds, colorMap }),
+          50,
+        ),
+      );
     }
   }
 
@@ -152,7 +157,7 @@ export function Scene({
   // If preview, use voxelsProp (challenge voxels); else, use computed voxels
   const voxelsToRender = voxelsProp ?? voxels;
   const controlsRef = useRef<any>(null);
- 
+
   return (
     <>
       <Canvas
@@ -189,10 +194,7 @@ export function Scene({
           }
         }}
       >
-      {animation
-        ? "Stop Animation"
-        : "Start Animation"
-      }
+        {animation ? "Stop Animation" : "Start Animation"}
       </Button>
     </>
   );

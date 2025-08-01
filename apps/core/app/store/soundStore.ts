@@ -1,25 +1,13 @@
 import { create } from "zustand";
+import { useSettingsStore } from "./settingsStore";
 
 export type UISoundName = "click" | "hover" | "close" | "typing" | "success";
 
 interface SoundStore {
   playSound: (name: UISoundName) => void;
-  effectsVolume: number;
-  setEffectsVolume: (v: number) => void;
-  muted: boolean;
-  toggleMuted: () => void;
-  typingSoundEnabled: boolean;
-  toggleTypingSound: () => void;
 }
 
-export const useSoundStore = create<SoundStore>((set, get) => ({
-  effectsVolume: 80,
-  setEffectsVolume: (v: number) => set({ effectsVolume: v }),
-  muted: false,
-  toggleMuted: () => set((state) => ({ muted: !state.muted })),
-  typingSoundEnabled: true,
-  toggleTypingSound: () =>
-    set((state) => ({ typingSoundEnabled: !state.typingSoundEnabled })),
+export const useSoundStore = create<SoundStore>()(() => ({
   playSound: (name: UISoundName) => {
     const audio = document.getElementById(
       `ui-sound-${name}`,
@@ -27,7 +15,10 @@ export const useSoundStore = create<SoundStore>((set, get) => ({
     if (audio) {
       audio.currentTime = 0;
       try {
-        audio.volume = get().muted ? 0 : get().effectsVolume / 100;
+        // Usar volume/mute do settingsStore
+        const volumeEffects = useSettingsStore.getState().volumeEffects;
+        const muteEffects = useSettingsStore.getState().muteEffects;
+        audio.volume = muteEffects ? 0 : volumeEffects;
         audio.play();
       } catch (err) {
         // Ignore NotAllowedError (autoplay restriction)
@@ -40,7 +31,7 @@ export const useSoundStore = create<SoundStore>((set, get) => ({
 import { useRef, useCallback } from "react";
 export function useTypingSoundPerKey() {
   const playSound = useSoundStore((s) => s.playSound);
-  const typingSoundEnabled = useSoundStore((s) => s.typingSoundEnabled);
+  const typingSoundEnabled = useSettingsStore((s) => s.typingSoundEnabled);
   const pressedKeys = useRef<Set<string>>(new Set());
 
   const handleKeyDown = useCallback(

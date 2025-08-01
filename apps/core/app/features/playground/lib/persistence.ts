@@ -16,13 +16,15 @@ export function saveChallengeProgress(
   feedback: number,
   seen?: boolean,
 ) {
+  // Preserve previous 'seen' flag unless explicitly overridden
+  const prev = loadChallengeProgress(challengeId);
   const progress: ChallengeProgressLocal = {
     id: challengeId,
     userCode,
     userVoxels,
     feedback,
     timestamp: Date.now(),
-    seen,
+    seen: seen !== undefined ? seen : prev?.seen,
   };
   localStorage.setItem(
     `challenge-progress-${challengeId}`,

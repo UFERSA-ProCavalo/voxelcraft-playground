@@ -44,6 +44,22 @@ export function RightPanel({
   // Estado para armazenar os voxels atuais do usuário
   const [userVoxels, setUserVoxels] = useState<VoxelData[]>([]);
 
+  // Load user voxels from localStorage when challenge changes
+  useEffect(() => {
+    if (selectedChallengeId) {
+      import("../../lib/persistence").then(({ loadChallengeProgress }) => {
+        const progress = loadChallengeProgress(selectedChallengeId);
+        if (progress && Array.isArray(progress.userVoxels)) {
+          setUserVoxels(progress.userVoxels);
+        } else {
+          setUserVoxels([]);
+        }
+      });
+    } else {
+      setUserVoxels([]);
+    }
+  }, [selectedChallengeId]);
+
   // Auto-save sempre que voxels do usuário mudam (compilação)
   function handleUserVoxelsChange(voxels: VoxelData[]) {
     setUserVoxels(voxels);

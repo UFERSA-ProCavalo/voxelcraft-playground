@@ -46,6 +46,80 @@ import { Slider } from "~/components/ui/slider";
 
 import { useSoundStore } from "~/store/soundStore";
 
+import { useSettingsStore } from "~/store/settingsStore";
+
+function MusicSettingsBlock() {
+  const volume = useSettingsStore((s) => s.volumeMusic);
+  const setVolume = useSettingsStore((s) => s.setVolumeMusic);
+  const mute = useSettingsStore((s) => s.muteMusic);
+  const setMute = useSettingsStore((s) => s.setMuteMusic);
+
+return (
+    <div
+      style={{
+        background: "#f6f6f6",
+        borderRadius: 8,
+        padding: 16,
+      }}
+    >
+      <div
+        style={{
+          fontWeight: 500,
+          marginBottom: 12,
+          fontSize: 15,
+        }}
+      >
+        Música
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          marginBottom: 12,
+        }}
+      >
+        {/* Slider de volume */}
+        <Slider
+          min={0}
+          max={1}
+          step={0.01}
+          value={[mute ? 0 : volume]}
+          onValueChange={([v]) => setVolume(v)}
+          style={{ maxWidth: 220, flex: 1 }}
+          disabled={mute}
+        />
+        {/* Botão de mute (já no padrão) */}
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={() => setMute(!mute)}
+          aria-label={mute ? "Desmutar música" : "Mutar música"}
+          style={{
+            borderRadius: 20,
+            marginLeft: 4,
+            opacity: mute ? 0.5 : 1,
+            background: mute ? "#ffe0e0" : "#e0ffe0",
+            color: mute ? "#dc2626" : "#16a34a",
+          }}
+          title={mute ? "Desmutar música" : "Mutar música"}
+        >
+          {mute ? <VolumeX size={22} /> : <Volume size={22} />}
+        </Button>
+      </div>
+      <div
+        style={{
+          fontSize: 13,
+          color: "#888",
+          marginTop: 8,
+        }}
+      >
+        Volume: {Math.round((mute ? 0 : volume) * 100)}%
+      </div>
+    </div>
+  );
+}
+
 function VerticalTabs({
   tab,
   setTab,
@@ -162,21 +236,12 @@ function VerticalTabs({
                         Efeitos sonoros
                       </div>
                       {(() => {
-                        const effectsVolume = useSoundStore(
-                          (s) => s.effectsVolume,
-                        );
-                        const setEffectsVolume = useSoundStore(
-                          (s) => s.setEffectsVolume,
-                        );
-                        const muted = useSoundStore((s) => s.muted);
-                        const toggleMuted = useSoundStore((s) => s.toggleMuted);
-                        const typingSoundEnabled = useSoundStore(
-                          (s) => s.typingSoundEnabled,
-                        );
-                        const toggleTypingSound = useSoundStore(
-                          (s) => s.toggleTypingSound,
-                        ); // Lucide icons
-                        // Import at top: import { Volume, VolumeX } from "lucide-react";
+                        const effectsVolume = useSettingsStore((s) => s.volumeEffects);
+                        const setEffectsVolume = useSettingsStore((s) => s.setVolumeEffects);
+                        const muted = useSettingsStore((s) => s.muteEffects);
+                        const setMuted = useSettingsStore((s) => s.setMuteEffects);
+                        const typingSoundEnabled = useSettingsStore((s) => s.typingSoundEnabled);
+                        const toggleTypingSound = useSettingsStore((s) => s.toggleTypingSound);
                         return (
                           <>
                             <div
@@ -190,8 +255,9 @@ function VerticalTabs({
                               {/* Slider de volume */}
                               <Slider
                                 min={0}
-                                max={100}
-                                value={[effectsVolume]}
+                                max={1}
+                                step={0.01}
+                                value={[muted ? 0 : effectsVolume]}
                                 onValueChange={([v]) => setEffectsVolume(v)}
                                 style={{ maxWidth: 220 }}
                                 disabled={muted}
@@ -229,7 +295,7 @@ function VerticalTabs({
                               <Button
                                 variant="outline"
                                 size="icon"
-                                onClick={toggleMuted}
+                                onClick={() => setMuted(!muted)}
                                 aria-label={
                                   muted ? "Desmutar efeitos" : "Mutar efeitos"
                                 }
@@ -258,33 +324,13 @@ function VerticalTabs({
                                 marginTop: 8,
                               }}
                             >
-                              Volume: {effectsVolume}%
+                              Volume: {Math.round((muted ? 0 : effectsVolume) * 100)}%
                             </div>
                           </>
                         );
                       })()}
                     </div>
-                    <div
-                      style={{
-                        background: "#f6f6f6",
-                        borderRadius: 8,
-                        padding: 16,
-                        opacity: 0.5,
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontWeight: 500,
-                          marginBottom: 12,
-                          fontSize: 15,
-                        }}
-                      >
-                        Música
-                      </div>
-                      <div style={{ fontSize: 13, color: "#888" }}>
-                        [Slider de música em breve]
-                      </div>
-                    </div>
+                    <MusicSettingsBlock />{" "}
                   </div>
                 </TabsContent>
               </Tabs>
@@ -474,7 +520,7 @@ function ChallengeDescription({
           variant="default"
           size="icon"
           title="Iniciar desafio"
-          disabled={!canStart || isStarted}
+          disabled={!canStart}
         >
           <Play />
         </Button>{" "}
@@ -555,7 +601,7 @@ export function LeftPanel({
   );
 
   const filteredChallenges = challenges.filter(
-    (c) => c.difficulty === difficulty
+    (c) => c.difficulty === difficulty,
   );
   const selectedChallenge =
     challenges.find((c) => c.id === selectedChallengeId) ??
@@ -650,7 +696,16 @@ export function LeftPanel({
                     setCode={setCode}
                     onTryItOut={() => {
                       setStartedChallengeId(selectedChallenge.id);
-                      setCode("// Write your code here\n");
+                      // Only reset code if no progress exists
+                      const progress = loadChallengeProgress(
+                        selectedChallenge.id,
+                      );
+                      if (progress && progress.userCode) {
+                        setCode(progress.userCode);
+                      } else {
+                        setCode("// Write your code here\n");
+                      }
+                      setTab("editor");
                     }}
                     canStart={canStart}
                     isStarted={isStarted}
