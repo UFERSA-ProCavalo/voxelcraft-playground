@@ -1,1 +1,1 @@
-export { default } from '~/shared/layouts/public-layout';
+export { default } from "~/layouts/public-layout";
