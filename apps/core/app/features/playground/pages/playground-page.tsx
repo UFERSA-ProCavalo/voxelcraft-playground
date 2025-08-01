@@ -12,7 +12,11 @@ import {
 } from "~/components/ui/resizable";
 import { ChatButtonWithPopup } from "../components/ChatButtonWithPopup";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
+
+import SoundCloudPlayer from "../components/soundCloudPlayer";
+
 import { Button } from "~/components/ui/button";
+
 
 export default function PlaygroundPage() {
   const [tab, setTab] = React.useState<string>("challenge");
@@ -51,6 +55,9 @@ export default function PlaygroundPage() {
     >
       {/* Progress bar: fixed left, only in challenge mode with a challenge selected */}
       {/* Progress bar removido daqui. Agora está no RightPanel. */}{" "}
+
+      <SoundCloudPlayer/>
+
       <ChatButtonWithPopup />
       <Tabs
         value={tab}
