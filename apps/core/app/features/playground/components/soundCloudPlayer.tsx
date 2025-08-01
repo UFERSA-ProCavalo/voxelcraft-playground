@@ -110,11 +110,16 @@ export default function SoundCloudPlayer() {
     });
 
     return () => {
-      widget.unbind("play");
-      widget.unbind("pause");
-      widget.unbind("finish");
-      widget.unbind("ready");
-      widget.unbind("playProgress");
+      try {
+        widgetRef.current?.unbind("play");
+        widgetRef.current?.unbind("pause");
+        widgetRef.current?.unbind("finish");
+        widgetRef.current?.unbind("ready");
+        widgetRef.current?.unbind("playProgress");
+      } catch (err) {
+        console.warn("Erro ao desmontar SoundCloud widget:", err);
+      }
+      widgetRef.current = null;
     };
   }, [isSdkReady]);
 

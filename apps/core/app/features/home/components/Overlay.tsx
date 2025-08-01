@@ -68,7 +68,7 @@ export default function Overlay() {
           width: "100vw",
         }}
       >
-        <p className="leading-7 [&:not(:first-child)]:mt-6 max-w-3xl text-center text-foreground/90">
+        <p className="text-muted-foreground text-xl leading-7 [&:not(:first-child)]:mt-6 max-w-3xl text-center">
           Nosso objetivo é desenvolver uma plataforma gratuita, totalmente
           acessível via navegador, que permita aos usuários criar objetos 3D
           baseados em voxels, combinando programação, matemática e elementos
