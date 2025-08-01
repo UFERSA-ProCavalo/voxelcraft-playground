@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Button } from "~/components/ui/button";
 
 // Passos do onboarding
 export type OnboardingStep =
@@ -184,18 +185,18 @@ export const OnboardingGuide: React.FC<OnboardingGuideProps> = ({
     >
       <div
         style={{
-          background: "#fff",
           borderRadius: 12,
           padding: 32,
           maxWidth: 400,
           boxShadow: "0 8px 32px #0002",
         }}
+        className="bg-secondary"
       >
         {children}
         {onNext && (
-          <button style={{ marginTop: 24 }} onClick={onNext}>
+          <Button variant="secondary" className="mt-5" onClick={onNext}>
             {okText || "Próximo"}
-          </button>
+          </Button>
         )}
       </div>
     </div>
@@ -230,12 +231,12 @@ export const OnboardingGuide: React.FC<OnboardingGuideProps> = ({
               top:
                 (spotlightRect?.top ?? 0) + (spotlightRect?.height ?? 0) + 16,
               left: spotlightRect?.left ?? 0,
-              background: "#fff",
               borderRadius: 8,
               padding: 16,
               boxShadow: "0 2px 8px #0002",
               maxWidth: 320,
             }}
+            className="bg-accent text-foreground"
           >
             {step === "spotlight-challenges" && (
               <span>
