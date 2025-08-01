@@ -84,6 +84,8 @@ export function Scene({
   onVoxelsChange,
 }: SceneProps & { onVoxelsChange?: (voxels: VoxelData[]) => void }) {
    const [voxels, setVoxels] = useState<VoxelData[]>([]);
+   const [animation, setAnimation] = useState(null);
+
    // const [workerError, setWorkerError] = useState<string | null>(null);
 
    // Notifica o pai sempre que os voxels mudam (apenas quando não é preview)
@@ -136,11 +138,8 @@ export function Scene({
       }
     };
     if (code) {
-      setInterval(() => worker.postMessage({ code, gridSize, bounds, colorMap: COLOR_MAP }), 100)
+      setAnimation(setInterval(() => worker.postMessage({ code, gridSize, bounds, colorMap: COLOR_MAP }), 50));
     }
-    return () => {
-      // worker.terminate();
-    };
   }
 
   const cameraDistance = gridSize * bounds * 1.55;
@@ -178,7 +177,22 @@ export function Scene({
         />
         {/* <Perf position="top-right" style={{ top: perfOffset }} /> */}
       </Canvas>
-      <Button className="fixed top-0 right-0" onClick={startAnim}>Animar</Button>
+      <Button
+        className="fixed top-0 right-0"
+        onClick={() => {
+          if (animation) {
+            clearInterval(animation);
+            setAnimation(null);
+          } else {
+            startAnim();
+          }
+        }}
+      >
+      {animation
+        ? "Stop Animation"
+        : "Start Animation"
+      }
+      </Button>
     </>
   );
 }
