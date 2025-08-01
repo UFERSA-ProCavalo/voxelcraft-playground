@@ -38,10 +38,19 @@ export interface Chunk {
 export type ChallengeDifficulty = "tutorial" | "iniciante" | "desafiador";
 export type ChallengeProgress = "not-started" | "in-progress" | "completed";
 
+export interface ChallengeDescription {
+  lead?: string;
+  paragraphs?: string[];
+  blockquote?: string;
+  list?: string[];
+  code?: string;
+  tips?: string[];
+}
+
 export interface Challenge {
   id: string;
   name: string;
-  description: string;
+  description: ChallengeDescription;
   difficulty: ChallengeDifficulty;
   progress: ChallengeProgress;
   constructionCode: string; // Código para construir o desafio

@@ -64,8 +64,15 @@ function Button({
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     playHoverSound();
+    e.currentTarget.classList.add("wobble-hover");
     if (props.onMouseEnter) props.onMouseEnter(e);
   };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.classList.remove("wobble-hover");
+    if (props.onMouseLeave) props.onMouseLeave(e);
+  };
+
 
   const handleFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
     if (e.currentTarget && e.currentTarget.matches(":focus-visible")) {
@@ -101,6 +108,7 @@ function Button({
       onClick={handleClick}
       onFocus={handleFocus}
       onBlur={handleBlur}
+      onMouseLeave={handleMouseLeave}
     />
   );
 }

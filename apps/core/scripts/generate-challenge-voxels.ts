@@ -35,7 +35,7 @@ async function main() {
   for (const challenge of challenges) {
     let voxels: VoxelData[] = [];
     try {
-      voxels = await generateVoxelsForChallenge(challenge.starterCode);
+      voxels = await generateVoxelsForChallenge(challenge.starterCode ?? "");
     } catch (err) {
       console.error(
         `Error generating voxels for challenge ${challenge.id}:`,
