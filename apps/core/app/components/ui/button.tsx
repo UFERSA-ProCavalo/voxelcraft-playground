@@ -10,11 +10,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 focus:bg-primary/90",
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border bg-background shadow-xs hover:bg-accent focus:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost:
@@ -54,32 +54,53 @@ function Button({
   const lastPlayedRef = React.useRef<number>(0);
   const SOUND_THROTTLE_MS = 400;
 
-  const handleMouseEnter = (e: React.MouseEvent<Element>) => {
+  const playHoverSound = () => {
     const now = Date.now();
     if (now - lastPlayedRef.current > SOUND_THROTTLE_MS) {
       playSound("hover");
       lastPlayedRef.current = now;
     }
-    if (props.onMouseEnter) props.onMouseEnter(e as any);
   };
 
-  const handleClick = (e: React.MouseEvent<Element>) => {
+  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    playHoverSound();
+    if (props.onMouseEnter) props.onMouseEnter(e);
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
+    if (e.currentTarget && e.currentTarget.matches(":focus-visible")) {
+      playHoverSound();
+      e.currentTarget.classList.add("wobble-hover");
+    }
+    if (props.onFocus) props.onFocus(e);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLButtonElement>) => {
+    if (e.currentTarget) {
+      e.currentTarget.classList.remove("wobble-hover");
+    }
+    if (props.onBlur) props.onBlur(e);
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!props.suppressClickSound) {
       playSound("click");
     }
-    if (props.onClick) props.onClick(e as any);
+    if (props.onClick) props.onClick(e);
   };
 
   return (
     <Comp
       data-slot="button"
       className={cn(
-        "wobble-hover",
-        buttonVariants({ variant, size, className }),
+        "focus-visible:wobble-hover",
+        buttonVariants({ variant, size, className })
       )}
       {...props}
       onMouseEnter={handleMouseEnter}
       onClick={handleClick}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
     />
   );
 }
