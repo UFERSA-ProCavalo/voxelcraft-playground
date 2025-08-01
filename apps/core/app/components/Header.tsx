@@ -14,9 +14,9 @@ export function Header() {
       <div className="max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
         <Link to="/">
           <img
-            src="/logo-light.svg"
+            src="/voxelcraft-logo2.png"
             alt="Voxelcraft Logo"
-            className="h-8 w-auto dark:invert-100"
+            className="h-32 w-auto dark:invert-100"
           />
         </Link>
         <nav className="flex gap-2 items-center">

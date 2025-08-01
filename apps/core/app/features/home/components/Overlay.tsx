@@ -1,15 +1,26 @@
 import React from "react";
 import { Scroll } from "@react-three/drei";
 import Section from "./Section";
-import mtx from "./teamPictures/tixinha.png"
-import yab from "./teamPictures/yabo.jpg"
-import pik from "./teamPictures/pika.png"
-import col from "./teamPictures/coelho.webp"
+import mtx from "./teamPictures/tixinha.png";
+import yab from "./teamPictures/yabo.jpg";
+import pik from "./teamPictures/pika.png";
+import col from "./teamPictures/coelho.jpeg";
 
-const TeamMemberCard = ({ name, role, imgSrc }: { name: string; role: string; imgSrc: string }) => (
+const TeamMemberCard = ({
+  name,
+  role,
+  imgSrc,
+}: {
+  name: string;
+  role: string;
+  imgSrc: string;
+}) => (
   <div className="bg-card/80 backdrop-blur-sm p-4 rounded-lg text-center border border-border transition-all hover:bg-card/60 hover:border-accent">
-    <div className="bg-card/80 backdrop-blur-sm p-4 rounded-lg text-center border border-border transition-all hover:bg-card/60 hover:border-accent flex flex-col items-center gap-2">
-      <img src={imgSrc}></img>
+    <div className="bg-card/80  backdrop-blur-sm p-4 rounded-lg text-center border border-border transition-all hover:bg-card/60 hover:border-accent flex flex-col items-center gap-2">
+      <img
+        src={imgSrc}
+        className="w-full max-h-64 object-cover rounded-lg"
+      ></img>
     </div>
     <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-accent mb-1">
       {name}
@@ -30,10 +41,12 @@ export default function Overlay() {
           top: 0 * 100 + "vh",
           left: 0,
           width: "100vw",
-        }}>
-          <p className="text-muted-foreground text-xl leading-7 [&:not(:first-child)]:mt-6 max-w-3xl text-center">
-            Uma plataforma online de manipulação de voxels. 
-            Veja mais informações abaixo ou clique em Playground para começar!</p>
+        }}
+      >
+        <p className="text-muted-foreground text-xl leading-7 [&:not(:first-child)]:mt-6 max-w-3xl text-center">
+          Uma plataforma online de manipulação de voxels. Veja mais informações
+          abaixo ou clique em Playground para começar!
+        </p>
       </Section>
       <Section
         title="🧠 Idealização"

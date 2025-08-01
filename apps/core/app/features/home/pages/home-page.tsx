@@ -21,7 +21,7 @@ export default function App() {
           </ScrollControls>
         </Suspense>
       </Canvas>
-      <div className="absolute top-0 left-0 w-full h-12 flex items-center justify-center pointer-events-none z-10">
+      <div className="absolute top-0 left-0 w-full h-16 flex items-center justify-center pointer-events-none z-10">
         <h1 className="text-xl font-bold text-foreground tracking-widest uppercase">
           VoxelCraft
         </h1>{" "}
