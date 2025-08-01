@@ -20,22 +20,24 @@ export interface SettingsState {
 
 export const useSettingsStore = create<SettingsState>()(
   persist(
-     (set, get) => ({
-       volumeMaster: 1,
-       volumeMusic: 1,
-       volumeEffects: 1,
-       muteMaster: false,
-       muteMusic: false,
-       muteEffects: false,
-       typingSoundEnabled: true,
-       toggleTypingSound: () => set({ typingSoundEnabled: !get().typingSoundEnabled }),
-       setVolumeMaster: (v) => set({ volumeMaster: v }),
-       setVolumeMusic: (v) => set({ volumeMusic: v }),
-       setVolumeEffects: (v) => set({ volumeEffects: v }),
-       setMuteMaster: (m) => set({ muteMaster: m }),
-       setMuteMusic: (m) => set({ muteMusic: m }),
-       setMuteEffects: (m) => set({ muteEffects: m }),
-     }),    {
+    (set, get) => ({
+      volumeMaster: 1,
+      volumeMusic: 1,
+      volumeEffects: 1,
+      muteMaster: false,
+      muteMusic: false,
+      muteEffects: false,
+      typingSoundEnabled: true,
+      toggleTypingSound: () =>
+        set({ typingSoundEnabled: !get().typingSoundEnabled }),
+      setVolumeMaster: (v) => set({ volumeMaster: v }),
+      setVolumeMusic: (v) => set({ volumeMusic: v }),
+      setVolumeEffects: (v) => set({ volumeEffects: v }),
+      setMuteMaster: (m) => set({ muteMaster: m }),
+      setMuteMusic: (m) => set({ muteMusic: m }),
+      setMuteEffects: (m) => set({ muteEffects: m }),
+    }),
+    {
       name: "vc_settings",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
@@ -47,6 +49,6 @@ export const useSettingsStore = create<SettingsState>()(
         muteEffects: state.muteEffects,
         typingSoundEnabled: state.typingSoundEnabled,
       }),
-    }
-  )
+    },
+  ),
 );

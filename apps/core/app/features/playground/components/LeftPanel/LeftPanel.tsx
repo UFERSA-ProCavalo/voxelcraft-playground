@@ -54,7 +54,7 @@ function MusicSettingsBlock() {
   const mute = useSettingsStore((s) => s.muteMusic);
   const setMute = useSettingsStore((s) => s.setMuteMusic);
 
-return (
+  return (
     <div
       style={{
         background: "#f6f6f6",
@@ -236,12 +236,22 @@ function VerticalTabs({
                         Efeitos sonoros
                       </div>
                       {(() => {
-                        const effectsVolume = useSettingsStore((s) => s.volumeEffects);
-                        const setEffectsVolume = useSettingsStore((s) => s.setVolumeEffects);
+                        const effectsVolume = useSettingsStore(
+                          (s) => s.volumeEffects,
+                        );
+                        const setEffectsVolume = useSettingsStore(
+                          (s) => s.setVolumeEffects,
+                        );
                         const muted = useSettingsStore((s) => s.muteEffects);
-                        const setMuted = useSettingsStore((s) => s.setMuteEffects);
-                        const typingSoundEnabled = useSettingsStore((s) => s.typingSoundEnabled);
-                        const toggleTypingSound = useSettingsStore((s) => s.toggleTypingSound);
+                        const setMuted = useSettingsStore(
+                          (s) => s.setMuteEffects,
+                        );
+                        const typingSoundEnabled = useSettingsStore(
+                          (s) => s.typingSoundEnabled,
+                        );
+                        const toggleTypingSound = useSettingsStore(
+                          (s) => s.toggleTypingSound,
+                        );
                         return (
                           <>
                             <div
@@ -324,7 +334,8 @@ function VerticalTabs({
                                 marginTop: 8,
                               }}
                             >
-                              Volume: {Math.round((muted ? 0 : effectsVolume) * 100)}%
+                              Volume:{" "}
+                              {Math.round((muted ? 0 : effectsVolume) * 100)}%
                             </div>
                           </>
                         );

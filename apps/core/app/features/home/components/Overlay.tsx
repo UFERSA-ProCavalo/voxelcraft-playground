@@ -4,7 +4,9 @@ import Section from "./Section";
 
 const TeamMemberCard = ({ name, role }: { name: string; role: string }) => (
   <div className="bg-card/80 backdrop-blur-sm p-4 rounded-lg text-center border border-border transition-all hover:bg-card/60 hover:border-accent">
-    <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-accent mb-1">{name}</h4>
+    <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-accent mb-1">
+      {name}
+    </h4>
     <p className="text-muted-foreground text-sm">{role}</p>
   </div>
 );
@@ -16,25 +18,35 @@ export default function Overlay() {
       <Section
         title="🧠 Idealização"
         headingLevel={1}
-        style={{ position: 'absolute', top: 0 * 100 + 'vh', left: 0, width: '100vw' }}
+        style={{
+          position: "absolute",
+          top: 0 * 100 + "vh",
+          left: 0,
+          width: "100vw",
+        }}
       >
         <p className="text-muted-foreground text-xl leading-7 [&:not(:first-child)]:mt-6 max-w-3xl text-center">
           A proposta nasceu como parte de um trabalho avaliativo para a
-          disciplina de Sistemas Multimídia da Universidade Federal do
-          Semiárido (UFERSA). A equipe, movida pelo interesse comum em
-          computação gráfica e modelagem tridimensional, idealizou uma solução
-          que tornasse acessível a criação de arte em 3D. Inspirados por
-          desenhos simples construídos com lógica e matemática, o objetivo
-          inicial era desenvolver um site que permitisse a criação de formas
-          tridimensionais — de forma intuitiva, visual e divertida — a partir
-          de blocos básicos (voxels).
+          disciplina de Sistemas Multimídia da Universidade Federal do Semiárido
+          (UFERSA). A equipe, movida pelo interesse comum em computação gráfica
+          e modelagem tridimensional, idealizou uma solução que tornasse
+          acessível a criação de arte em 3D. Inspirados por desenhos simples
+          construídos com lógica e matemática, o objetivo inicial era
+          desenvolver um site que permitisse a criação de formas tridimensionais
+          — de forma intuitiva, visual e divertida — a partir de blocos básicos
+          (voxels).
         </p>
       </Section>
 
       <Section
         title="🎯 Objetivo"
         headingLevel={2}
-        style={{ position: 'absolute', top: 1 * 100 + 'vh', left: 0, width: '100vw' }}
+        style={{
+          position: "absolute",
+          top: 1 * 100 + "vh",
+          left: 0,
+          width: "100vw",
+        }}
       >
         <p className="leading-7 [&:not(:first-child)]:mt-6 max-w-3xl text-center text-foreground/90">
           Nosso objetivo é desenvolver uma plataforma gratuita, totalmente
@@ -50,7 +62,12 @@ export default function Overlay() {
       <Section
         title="⚙️ Funcionalidades"
         headingLevel={2}
-        style={{ position: 'absolute', top: 2 * 100 + 'vh', left: 0, width: '100vw' }}
+        style={{
+          position: "absolute",
+          top: 2 * 100 + "vh",
+          left: 0,
+          width: "100vw",
+        }}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full px-4">
           <div className="bg-card/80 backdrop-blur-md p-6 rounded-xl border border-border">
@@ -77,8 +94,8 @@ export default function Overlay() {
               📦 Exportação de projetos
             </h3>
             <p className="leading-7 text-muted-foreground">
-              Converta suas criações voxelizadas em arquivos de objetos 3D
-              (.obj ou .glb), prontos para serem usados em jogos, animações ou
+              Converta suas criações voxelizadas em arquivos de objetos 3D (.obj
+              ou .glb), prontos para serem usados em jogos, animações ou
               impressões 3D.
             </p>
           </div>
@@ -87,8 +104,8 @@ export default function Overlay() {
               🤖 Integração com o Gemini (IA)
             </h3>
             <p className="leading-7 text-muted-foreground">
-              Assistência automatizada para dúvidas de programação, sugestões
-              de código e resolução de problemas durante o processo criativo.
+              Assistência automatizada para dúvidas de programação, sugestões de
+              código e resolução de problemas durante o processo criativo.
             </p>
           </div>
         </div>
@@ -96,7 +113,12 @@ export default function Overlay() {
 
       <Section
         title="👥 Equipe"
-        style={{ position: 'absolute', top: 3 * 100 + 'vh', left: 0, width: '100vw' }}
+        style={{
+          position: "absolute",
+          top: 3 * 100 + "vh",
+          left: 0,
+          width: "100vw",
+        }}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl w-full px-4 text-foreground">
           <TeamMemberCard
@@ -121,7 +143,12 @@ export default function Overlay() {
 
       <Section
         headingLevel={2}
-        style={{ position: 'absolute', top: 4 * 100 + 'vh', left: 0, width: '100vw' }}
+        style={{
+          position: "absolute",
+          top: 4 * 100 + "vh",
+          left: 0,
+          width: "100vw",
+        }}
       >
         <div className="text-center">
           <h2 className="scroll-m-20 text-6xl font-extrabold tracking-tight text-balance mb-6">
