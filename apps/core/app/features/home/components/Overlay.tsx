@@ -143,22 +143,22 @@ export default function Overlay() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl w-full px-4 text-foreground">
           <TeamMemberCard
             name="Matheus Henrique"
-            role="Desenvolvimento Frontend & Modelagem 3D"
+            role="Concepção do projeto, liderança técnica e definição da arquitetura geral"
             imgSrc={mtx}
           />
           <TeamMemberCard
             name="Thiago Coelho"
-            role="Lógica de Programação & Integração com IA"
+            role="Manipulação de voxels, Transformações 3D e otimizações"
             imgSrc={col}
           />
           <TeamMemberCard
             name="Yan Balbino"
-            role="Design de Interface & Experiência do Usuário"
+            role="Arquitetura do sistema e Integração de APIs"
             imgSrc={yab}
           />
           <TeamMemberCard
             name="Matheus Vynicius"
-            role="Estrutura de Dados & Exportação de Objetos"
+            role="Design de Interface e Experiência do Usuário"
             imgSrc={pik}
           />
         </div>
