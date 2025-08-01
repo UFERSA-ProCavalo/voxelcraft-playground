@@ -28,62 +28,22 @@ export function VoxelInstances({ voxels, bounds = 1 }: VoxelInstancesProps) {
     meshRef.current.count = instanceCount;
   }, [instanceCount]);
 
-  // --- ANIMAÇÃO DE MONTAGEM DO CENTRO PRA FORA ---
+  // --- REMOVIDA ANIMAÇÃO: atualização instantânea dos voxels ---
   useEffect(() => {
     if (!meshRef.current) return;
     const mesh = meshRef.current;
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
-
-    // Se está removendo voxels, não anima, só atualiza
-    if (voxels.length <= prevVoxelCount.current) {
-      for (let i = 0; i < voxels.length; i++) {
-        const voxel = voxels[i];
-        dummy.position.set(...voxel.position);
-        dummy.scale.setScalar(1);
-        dummy.updateMatrix();
-        mesh.setMatrixAt(i, dummy.matrix);
-        mesh.setColorAt(i, color.set(voxel.color || "#ffffff"));
-      }
-      mesh.instanceMatrix.needsUpdate = true;
-      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-      prevVoxelCount.current = voxels.length;
-      return;
-    }
-
-    // Se está criando novos voxels, anima normalmente
-    const duration = 0.3;
-    let start: number | null = null;
-
     for (let i = 0; i < voxels.length; i++) {
       const voxel = voxels[i];
       dummy.position.set(...voxel.position);
-      dummy.scale.setScalar(0);
+      dummy.scale.setScalar(1);
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
       mesh.setColorAt(i, color.set(voxel.color || "#ffffff"));
     }
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-
-    function animate(ts: number) {
-      if (start === null) start = ts;
-      const elapsed = (ts - start) / 1000;
-      let t = Math.min(elapsed / duration, 1);
-      t = 1 - Math.pow(1 - t, 2); // ease out
-      for (let i = 0; i < voxels.length; i++) {
-        const voxel = voxels[i];
-        dummy.position.set(...voxel.position);
-        dummy.scale.setScalar(t);
-        dummy.updateMatrix();
-        mesh.setMatrixAt(i, dummy.matrix);
-      }
-      mesh.instanceMatrix.needsUpdate = true;
-      if (t < 1) {
-        requestAnimationFrame(animate);
-      }
-    }
-    requestAnimationFrame(animate);
     prevVoxelCount.current = voxels.length;
   }, [voxels, bounds]);
   // --- FIM DA ANIMAÇÃO ---
