@@ -4,9 +4,17 @@ export type UISoundName = "click" | "hover" | "close" | "typing";
 
 interface SoundStore {
   playSound: (name: UISoundName) => void;
+  effectsVolume: number;
+  setEffectsVolume: (v: number) => void;
+  muted: boolean;
+  toggleMuted: () => void;
 }
 
-export const useSoundStore = create<SoundStore>(() => ({
+export const useSoundStore = create<SoundStore>((set, get) => ({
+  effectsVolume: 80,
+  setEffectsVolume: (v: number) => set({ effectsVolume: v }),
+  muted: false,
+  toggleMuted: () => set((state) => ({ muted: !state.muted })),
   playSound: (name: UISoundName) => {
     const audio = document.getElementById(
       `ui-sound-${name}`,
@@ -14,6 +22,7 @@ export const useSoundStore = create<SoundStore>(() => ({
     if (audio) {
       audio.currentTime = 0;
       try {
+        audio.volume = get().muted ? 0 : get().effectsVolume / 100;
         audio.play();
       } catch (err) {
         // Ignore NotAllowedError (autoplay restriction)

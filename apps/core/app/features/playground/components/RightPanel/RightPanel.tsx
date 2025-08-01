@@ -109,20 +109,19 @@ export function RightPanel({
           position: "relative",
         }}
       >
-        <ToolMenu
-          showAxes={showAxes}
-          setShowAxes={setShowAxes}
-          showOutline={showOutline}
-          setShowOutline={setShowOutline}
-          showRulers={usePlaygroundStore((s: any) => s.showRulers)}
-          setShowRulers={usePlaygroundStore((s: any) => s.setShowRulers)}
-          code={code}
-          setCode={setCode}
-          voxels={userVoxels}
-        />
-        {selectedChallengeId && <ProgressBar value={similarity} />}
-        <div
-          style={{
+         <ToolMenu
+           showAxes={showAxes}
+           setShowAxes={setShowAxes}
+           showOutline={showOutline}
+           setShowOutline={setShowOutline}
+           showRulers={usePlaygroundStore((s: any) => s.showRulers)}
+           setShowRulers={usePlaygroundStore((s: any) => s.setShowRulers)}
+           code={code}
+           setCode={setCode}
+           voxels={userVoxels}
+         />
+         {selectedChallengeId && <ProgressBar value={similarity} />}
+         <div          style={{
             flex: 1,
             display: "flex",
             flexDirection: "column",
