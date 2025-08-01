@@ -51,7 +51,7 @@ self.onmessage = function (e: MessageEvent<WorkerInput>) {
   let voxels: VoxelData[] = [];
   try {
     // Compila a função do usuário
-    const userFn = new Function("x", "y", "z", "time", code) as (
+    let userFn = new Function("x", "y", "z", "time", code) as (
       x: number,
       y: number,
       z: number,
@@ -60,8 +60,8 @@ self.onmessage = function (e: MessageEvent<WorkerInput>) {
 
     const half = Math.floor(gridSize / 2);
     // Gera os voxels de acordo com o código do usuário
-    const now = new Date();
-    const time = now.getMilliseconds();
+    let now = new Date();
+    let time = now.getMilliseconds() / 1000 + now.getSeconds() + now.getMinutes() * 60;
     
     for (let x = -half; x <= half; x++) {
       for (let y = -half; y <= half; y++) {
