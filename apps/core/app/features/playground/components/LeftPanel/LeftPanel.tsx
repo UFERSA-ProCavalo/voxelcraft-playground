@@ -398,9 +398,9 @@ function ChallengeList({
   //   localStorage.setItem('UNLOCK_ALL_CHALLENGES', '1'); location.reload();
   // To restore normal progression, run:
   //   localStorage.removeItem('UNLOCK_ALL_CHALLENGES'); location.reload();
-  const unlockAll =
-    typeof window !== "undefined" &&
-    localStorage.getItem("UNLOCK_ALL_CHALLENGES") === "1";
+  const unlockAll = true;
+    // typeof window !== "undefined" &&
+    // localStorage.getItem("UNLOCK_ALL_CHALLENGES") === "1";
   // --- End debug unlock flag ---
 
   // Determine which challenges are unlocked
@@ -614,19 +614,20 @@ export function LeftPanel({
   const filteredChallenges = challenges.filter(
     (c) => c.difficulty === difficulty,
   );
-  const selectedChallenge =
-    challenges.find((c) => c.id === selectedChallengeId) ??
-    filteredChallenges[0];
+
+  const selectedChallenge = challenges.find((c) => c.id === selectedChallengeId) ?? filteredChallenges[1];
   // Determine which challenges are unlocked
-  let unlockedUntil = 0;
-  for (let i = 0; i < filteredChallenges.length; i++) {
-    if (filteredChallenges[i].progress === "completed") unlockedUntil = i + 1;
-    else break;
-  }
-  const selectedIdx = filteredChallenges.findIndex(
-    (c) => c.id === selectedChallenge?.id,
-  );
-  const canStart = true; // Always allow starting any challenge
+  // let unlockedUntil = 10;
+  // for (let i = 0; i < filteredChallenges.length; i++) {
+  //   if (filteredChallenges[i].progress === "completed") unlockedUntil = i + 1;
+  //   else break;
+  // }
+
+  // const selectedIdx = filteredChallenges.findIndex(
+  //   (c) => c.id === selectedChallenge?.id,
+  // );
+  // const canStart = selectedIdx === 0 || selectedIdx <= unlockedUntil;
+  const canStart = true;
   const isStarted = startedChallengeId === selectedChallenge?.id;
 
   return (
