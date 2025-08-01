@@ -626,7 +626,7 @@ export function LeftPanel({
   const selectedIdx = filteredChallenges.findIndex(
     (c) => c.id === selectedChallenge?.id,
   );
-  const canStart = selectedIdx === 0 || selectedIdx <= unlockedUntil;
+  const canStart = true; // Always allow starting any challenge
   const isStarted = startedChallengeId === selectedChallenge?.id;
 
   return (
