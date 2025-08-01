@@ -145,6 +145,8 @@ function VerticalTabs({
     prevOpen.current = settingsPopoverOpen;
   }, [settingsPopoverOpen, playSound]);
 
+  const { theme } = useTheme();
+
   return (
     <div className="flex flex-col border-r bg-muted h-full justify-between">
       <div>
@@ -209,7 +211,7 @@ function VerticalTabs({
               <Tabs defaultValue="audio" className="w-full">
                 <TabsList>
                   <TabsTrigger value="audio">Áudio</TabsTrigger>
-                  {/* Future: <TabsTrigger value="visual">Visual</TabsTrigger> */}
+                  <TabsTrigger value="visual">Visual</TabsTrigger>
                 </TabsList>
                 <TabsContent value="audio">
                   <div
@@ -237,20 +239,20 @@ function VerticalTabs({
                       </div>
                       {(() => {
                         const effectsVolume = useSettingsStore(
-                          (s) => s.volumeEffects,
+                          (s) => s.volumeEffects
                         );
                         const setEffectsVolume = useSettingsStore(
-                          (s) => s.setVolumeEffects,
+                          (s) => s.setVolumeEffects
                         );
                         const muted = useSettingsStore((s) => s.muteEffects);
                         const setMuted = useSettingsStore(
-                          (s) => s.setMuteEffects,
+                          (s) => s.setMuteEffects
                         );
                         const typingSoundEnabled = useSettingsStore(
-                          (s) => s.typingSoundEnabled,
+                          (s) => s.typingSoundEnabled
                         );
                         const toggleTypingSound = useSettingsStore(
-                          (s) => s.toggleTypingSound,
+                          (s) => s.toggleTypingSound
                         );
                         return (
                           <>
@@ -344,6 +346,34 @@ function VerticalTabs({
                     <MusicSettingsBlock />{" "}
                   </div>
                 </TabsContent>
+                <TabsContent value="visual">
+                  <div className="flex flex-col gap-4">
+                    <div className="bg-background-secondary p-4 rounded-md">
+                      <div className="flex p-2 justify-between text-">
+                        Tema
+                        <ModeToggle />
+                      </div>
+                      <div className="text-sm text-foreground-secondary">
+                        {theme === "dark" && (
+                          <>
+                            O tema escuro é ideal para ambientes com pouca luz.
+                          </>
+                        )}
+                        {theme === "light" && (
+                          <>
+                            O tema claro é ideal para ambientes bem iluminados.
+                          </>
+                        )}
+                        {theme === "system" && (
+                          <>
+                            O tema "sistema" adapta-se automaticamente ao tema
+                            do seu sistema operacional.
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
               </Tabs>
             </div>
             <div
@@ -399,8 +429,8 @@ function ChallengeList({
   // To restore normal progression, run:
   //   localStorage.removeItem('UNLOCK_ALL_CHALLENGES'); location.reload();
   const unlockAll = true;
-    // typeof window !== "undefined" &&
-    // localStorage.getItem("UNLOCK_ALL_CHALLENGES") === "1";
+  // typeof window !== "undefined" &&
+  // localStorage.getItem("UNLOCK_ALL_CHALLENGES") === "1";
   // --- End debug unlock flag ---
 
   // Determine which challenges are unlocked
@@ -551,7 +581,7 @@ function ChallengeDescription({
                   variant="destructive"
                   onClick={() => {
                     localStorage.removeItem(
-                      `challenge-progress-${challenge.id}`,
+                      `challenge-progress-${challenge.id}`
                     );
                     setCode(challenge.description.code || "");
                     setShowResetModal(false);
@@ -589,6 +619,8 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "~/components/ui/popover";
+import { ModeToggle } from "~/components/ModeToggle";
+import { useTheme } from "~/components/theme-provider";
 
 export function LeftPanel({
   code,
@@ -608,14 +640,16 @@ export function LeftPanel({
   const [guideOpen, setGuideOpen] = useState(false);
   const [settingsPopoverOpen, setSettingsPopoverOpen] = useState(false);
   const [startedChallengeId, setStartedChallengeId] = useState<string | null>(
-    null,
+    null
   );
 
   const filteredChallenges = challenges.filter(
-    (c) => c.difficulty === difficulty,
+    (c) => c.difficulty === difficulty
   );
 
-  const selectedChallenge = challenges.find((c) => c.id === selectedChallengeId) ?? filteredChallenges[1];
+  const selectedChallenge =
+    challenges.find((c) => c.id === selectedChallengeId) ??
+    filteredChallenges[1];
   // Determine which challenges are unlocked
   // let unlockedUntil = 10;
   // for (let i = 0; i < filteredChallenges.length; i++) {
@@ -630,6 +664,12 @@ export function LeftPanel({
   const canStart = true;
   const isStarted = startedChallengeId === selectedChallenge?.id;
 
+  // clear localStorage
+  const clearLocalStorage = () => {
+    localStorage.removeItem("onboarding_complete_v1");
+    location.reload();
+  };
+
   return (
     <div className="flex flex-row h-full flex-1 min-w-0 min-h-0 self-stretch border-r border-border">
       {/* Onboarding Guide integration */}
@@ -638,7 +678,7 @@ export function LeftPanel({
         tab={tab}
         setTab={setTab}
         mainTab={mainTab}
-        onGuideClick={() => setGuideOpen(true)}
+        onGuideClick={() => clearLocalStorage()}
         settingsPopoverOpen={settingsPopoverOpen}
         setSettingsPopoverOpen={setSettingsPopoverOpen}
       />
@@ -710,7 +750,7 @@ export function LeftPanel({
                       setStartedChallengeId(selectedChallenge.id);
                       // Only reset code if no progress exists
                       const progress = loadChallengeProgress(
-                        selectedChallenge.id,
+                        selectedChallenge.id
                       );
                       if (progress && progress.userCode) {
                         setCode(progress.userCode);

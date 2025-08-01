@@ -17,7 +17,9 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
   --color-foreground: var(--foreground);
+  --color-foreground-secondary: var(--foreground-secondary);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -79,7 +81,9 @@
 :root {
   --radius: 0.4rem;
   --background: oklch(0.9399 0.0203 345.6985);
+  --background-secondary: oklch(0.9731 0 0);
   --foreground: oklch(0.4712 0 0);
+  --foreground-secondary: oklch(0.5795 0 0);
   --card: oklch(0.9498 0.05 86.8891);
   --card-foreground: oklch(0.4712 0 0);
   --popover: oklch(1 0 0);

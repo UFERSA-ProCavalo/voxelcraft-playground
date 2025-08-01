@@ -154,7 +154,7 @@ export default function SoundCloudPlayer() {
                 style={{
                   position: "fixed",
                   right: 32,
-                  bottom: 32,
+                  bottom: 96,
                   zIndex: 41,
                   display: "flex",
                   alignItems: "center",

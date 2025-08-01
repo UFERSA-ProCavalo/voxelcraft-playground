@@ -31,7 +31,7 @@ export function CameraSync({ controlsRef }: { controlsRef: RefObject<any> }) {
   const EPSILON = 1e-4;
   function isDifferent(
     a: [number, number, number],
-    b: [number, number, number],
+    b: [number, number, number]
   ) {
     return a.some((v, i) => Math.abs(v - b[i]) > EPSILON);
   }
@@ -48,7 +48,7 @@ export function CameraSync({ controlsRef }: { controlsRef: RefObject<any> }) {
     if (
       isDifferent(
         [controls.target.x, controls.target.y, controls.target.z],
-        cameraTarget,
+        cameraTarget
       )
     ) {
       controls.target.set(...cameraTarget);
@@ -101,7 +101,7 @@ export function Scene({
     if (!workerRef.current) {
       workerRef.current = new Worker(
         new URL("../../lib/voxelWorker.ts", import.meta.url),
-        { type: "module" },
+        { type: "module" }
       );
     }
     const worker = workerRef.current;
@@ -126,7 +126,7 @@ export function Scene({
     if (!workerRef.current) {
       workerRef.current = new Worker(
         new URL("../../lib/voxelWorker.ts", import.meta.url),
-        { type: "module" },
+        { type: "module" }
       );
     }
     const worker = workerRef.current;
@@ -142,8 +142,8 @@ export function Scene({
       setAnimation(
         setInterval(
           () => worker.postMessage({ code, gridSize, bounds, colorMap }),
-          50,
-        ),
+          50
+        )
       );
     }
   }
@@ -184,7 +184,7 @@ export function Scene({
         {/* <Perf position="top-right" style={{ top: perfOffset }} /> */}
       </Canvas>
       <Button
-        className="fixed top-0 right-0"
+        className="fixed bottom-10 right-10"
         onClick={() => {
           if (animation) {
             clearInterval(animation);
