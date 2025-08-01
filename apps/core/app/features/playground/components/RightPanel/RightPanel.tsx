@@ -25,6 +25,7 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "~/components/ui/resizable";
+import { ColorTool } from "../ColorTool";
 
 export function RightPanel({
   code,
@@ -42,6 +43,28 @@ export function RightPanel({
   const setShowOutline = usePlaygroundStore((s: any) => s.setShowOutline);
   // Estado para armazenar os voxels atuais do usuário
   const [userVoxels, setUserVoxels] = useState<VoxelData[]>([]);
+
+  // Auto-save sempre que voxels do usuário mudam (compilação)
+  function handleUserVoxelsChange(voxels: VoxelData[]) {
+    setUserVoxels(voxels);
+    if (selectedChallengeId && voxels.length > 0 && previewVoxels) {
+      const toKey = (v: {
+        position: [number, number, number];
+        color?: string;
+      }) => `${v.position.join(",")}:${v.color || ""}`;
+      const previewSet = new Set(previewVoxels.map(toKey));
+      const userSet = new Set(voxels.map(toKey));
+      let match = 0;
+      previewSet.forEach((k) => {
+        if (userSet.has(k)) match++;
+      });
+      const percent =
+        previewSet.size === 0 ? 0 : Math.round((match / previewSet.size) * 100);
+      import("../../lib/persistence").then(({ saveChallengeProgress }) => {
+        saveChallengeProgress(selectedChallengeId, code, voxels, percent);
+      });
+    }
+  }
 
   const { getVoxelsForChallenge } = useChallengeVoxels();
   const previewVoxels = selectedChallengeId
@@ -65,6 +88,12 @@ export function RightPanel({
       const percent =
         previewSet.size === 0 ? 0 : Math.round((match / previewSet.size) * 100);
       console.log(`Similaridade: ${percent}% (${match} de ${previewSet.size})`);
+      // Salvar progresso automaticamente se houver voxels do usuário
+      if (userVoxels.length > 0) {
+        import("../../lib/persistence").then(({ saveChallengeProgress }) => {
+          saveChallengeProgress(selectedChallengeId, code, userVoxels, percent);
+        });
+      }
     } catch (e) {
       console.error("Erro ao comparar voxels:", e);
     }
@@ -109,19 +138,23 @@ export function RightPanel({
           position: "relative",
         }}
       >
-         <ToolMenu
-           showAxes={showAxes}
-           setShowAxes={setShowAxes}
-           showOutline={showOutline}
-           setShowOutline={setShowOutline}
-           showRulers={usePlaygroundStore((s: any) => s.showRulers)}
-           setShowRulers={usePlaygroundStore((s: any) => s.setShowRulers)}
-           code={code}
-           setCode={setCode}
-           voxels={userVoxels}
-         />
-         {selectedChallengeId && <ProgressBar value={similarity} />}
-         <div          style={{
+        <ToolMenu
+          showAxes={showAxes}
+          setShowAxes={setShowAxes}
+          showOutline={showOutline}
+          setShowOutline={setShowOutline}
+          showRulers={usePlaygroundStore((s: any) => s.showRulers)}
+          setShowRulers={usePlaygroundStore((s: any) => s.setShowRulers)}
+          code={code}
+          setCode={setCode}
+          voxels={userVoxels}
+        />{" "}
+        <ColorTool />
+        {selectedChallengeId && (
+          <ProgressBar value={similarity} challengeId={selectedChallengeId} />
+        )}
+        <div
+          style={{
             flex: 1,
             display: "flex",
             flexDirection: "column",
@@ -162,7 +195,7 @@ export function RightPanel({
                   showAxes={showAxes}
                   showOutline={showOutline}
                   preview={false}
-                  onVoxelsChange={setUserVoxels}
+                  onVoxelsChange={handleUserVoxelsChange}
                 />
               </div>
             </ResizablePanel>
@@ -208,7 +241,7 @@ export function RightPanel({
               showAxes={showAxes}
               showOutline={showOutline}
               preview={false}
-              onVoxelsChange={setUserVoxels}
+              onVoxelsChange={handleUserVoxelsChange}
             />{" "}
           </div>
         </div>

@@ -46,7 +46,8 @@ export const usePlaygroundStore = create<PlaygroundState>((set) => ({
     8: "#34495e", // cinza escuro
     9: "#ecf0f1", // branco
   },
-  setColorInMap: (idx, color) => set((state) => ({ colorMap: { ...state.colorMap, [idx]: color } })),
+  setColorInMap: (idx, color) =>
+    set((state) => ({ colorMap: { ...state.colorMap, [idx]: color } })),
   setColorMap: (map) => set({ colorMap: map }),
   setCameraPosition: (pos) => set({ cameraPosition: pos }),
   setCameraTarget: (target) => set({ cameraTarget: target }),

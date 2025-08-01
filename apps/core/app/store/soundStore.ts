@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type UISoundName = "click" | "hover" | "close" | "typing";
+export type UISoundName = "click" | "hover" | "close" | "typing" | "success";
 
 interface SoundStore {
   playSound: (name: UISoundName) => void;
@@ -8,6 +8,8 @@ interface SoundStore {
   setEffectsVolume: (v: number) => void;
   muted: boolean;
   toggleMuted: () => void;
+  typingSoundEnabled: boolean;
+  toggleTypingSound: () => void;
 }
 
 export const useSoundStore = create<SoundStore>((set, get) => ({
@@ -15,6 +17,9 @@ export const useSoundStore = create<SoundStore>((set, get) => ({
   setEffectsVolume: (v: number) => set({ effectsVolume: v }),
   muted: false,
   toggleMuted: () => set((state) => ({ muted: !state.muted })),
+  typingSoundEnabled: true,
+  toggleTypingSound: () =>
+    set((state) => ({ typingSoundEnabled: !state.typingSoundEnabled })),
   playSound: (name: UISoundName) => {
     const audio = document.getElementById(
       `ui-sound-${name}`,
@@ -35,16 +40,17 @@ export const useSoundStore = create<SoundStore>((set, get) => ({
 import { useRef, useCallback } from "react";
 export function useTypingSoundPerKey() {
   const playSound = useSoundStore((s) => s.playSound);
+  const typingSoundEnabled = useSoundStore((s) => s.typingSoundEnabled);
   const pressedKeys = useRef<Set<string>>(new Set());
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (!pressedKeys.current.has(e.code)) {
+      if (!pressedKeys.current.has(e.code) && typingSoundEnabled) {
         playSound("typing");
         pressedKeys.current.add(e.code);
       }
     },
-    [playSound],
+    [playSound, typingSoundEnabled],
   );
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {

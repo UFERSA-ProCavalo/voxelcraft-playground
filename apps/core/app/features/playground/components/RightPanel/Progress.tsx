@@ -4,6 +4,7 @@ interface ProgressBarProps {
   value: number;
   label?: string;
   className?: string;
+  challengeId?: string;
 }
 
 /**
@@ -14,6 +15,7 @@ export function ProgressBar({
   value,
   label = "Progresso",
   className = "",
+  challengeId,
 }: ProgressBarProps) {
   return (
     <div
@@ -36,7 +38,7 @@ export function ProgressBar({
       <span style={{ fontSize: 13, color: "#444", marginBottom: 4 }}>
         {label}
       </span>
-      <Progress value={value} className="w-full" />
+      <Progress value={value} className="w-full" challengeId={challengeId} />{" "}
       <span style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
         {value}%
       </span>

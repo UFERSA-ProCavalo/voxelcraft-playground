@@ -73,7 +73,6 @@ function Button({
     if (props.onMouseLeave) props.onMouseLeave(e);
   };
 
-
   const handleFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
     if (e.currentTarget && e.currentTarget.matches(":focus-visible")) {
       playHoverSound();
@@ -101,7 +100,7 @@ function Button({
       data-slot="button"
       className={cn(
         "focus-visible:wobble-hover",
-        buttonVariants({ variant, size, className })
+        buttonVariants({ variant, size, className }),
       )}
       {...props}
       onMouseEnter={handleMouseEnter}

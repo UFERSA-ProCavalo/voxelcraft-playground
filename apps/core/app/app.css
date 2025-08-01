@@ -249,40 +249,77 @@
 
 @keyframes success-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(34,197,94,0.7);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
     background-color: #22c55e;
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(34,197,94,0);
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
     background-color: #22c55e;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(34,197,94,0);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
     background-color: #22c55e;
   }
 }
 .animate-success-pulse {
-  animation: success-pulse 1s cubic-bezier(0.4,0,0.2,1) infinite;
+  animation: success-pulse 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   background-color: #22c55e !important;
   transition: background-color 0.3s;
 }
 
 @keyframes success-bar-loop {
   0% {
-    box-shadow: 0 0 0 0 rgba(34,197,94,0.7);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
     background-color: #22c55e;
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(34,197,94,0.2);
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0.2);
     background-color: #22c55e;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(34,197,94,0.7);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
     background-color: #22c55e;
   }
 }
 .animate-success-bar {
-  animation: success-bar-loop 1.2s infinite cubic-bezier(0.4,0,0.2,1);
+  animation: success-bar-loop 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
   background-color: #22c55e !important;
   transition: background-color 0.3s;
+}
+
+/* Onboarding spotlight visual cue */
+.onboarding-spotlight-active {
+  position: relative;
+  z-index: 10010 !important;
+  box-shadow:
+    0 0 0 4px #facc15,
+    0 0 16px 8px #fde68a;
+  border-radius: 10px !important;
+  animation: onboarding-spotlight-pulse 1.2s infinite
+    cubic-bezier(0.4, 0, 0.2, 1);
+  outline: 3px solid #facc15 !important;
+  outline-offset: 2px;
+  pointer-events: auto !important;
+}
+@keyframes onboarding-spotlight-pulse {
+  0% {
+    box-shadow:
+      0 0 0 4px #facc15,
+      0 0 16px 8px #fde68a;
+  }
+  50% {
+    box-shadow:
+      0 0 0 8px #facc15,
+      0 0 32px 16px #fde68a;
+  }
+  100% {
+    box-shadow:
+      0 0 0 4px #facc15,
+      0 0 16px 8px #fde68a;
+  }
+}
+
+/* Block pointer events everywhere except the spotlighted element */
+.onboarding-overlay-block {
+  pointer-events: auto !important;
 }

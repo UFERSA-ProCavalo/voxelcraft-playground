@@ -1,4 +1,17 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react"; // useState já importado aqui
+
+// Debug helper: window.debug_unlock_all(true) to unlock all challenges, window.debug_unlock_all(false) to restore normal progression
+if (typeof window !== "undefined") {
+  (window as any).debug_unlock_all = (on: boolean) => {
+    if (on) {
+      localStorage.setItem("UNLOCK_ALL_CHALLENGES", "1");
+    } else {
+      localStorage.removeItem("UNLOCK_ALL_CHALLENGES");
+    }
+    location.reload();
+  };
+}
+
 import {
   Save,
   Download,
@@ -12,8 +25,10 @@ import {
   Lock,
   Volume1,
   Volume2,
+  Keyboard,
 } from "lucide-react";
 import { CodeEditor } from "./CodeEditor";
+import { OnboardingGuide } from "../OnboardingGuide";
 import { challenges } from "~/features/playground/challenges";
 import type {
   Challenge,
@@ -75,6 +90,7 @@ function VerticalTabs({
         </Button>
         {mainTab === "challenge" && (
           <Button
+            data-onboarding="challenges-btn"
             variant={tab === "challenges" ? "default" : "secondary"}
             onClick={() => setTab("challenges")}
             style={{
@@ -98,6 +114,7 @@ function VerticalTabs({
           <PopoverTrigger asChild>
             <Button
               variant="secondary"
+              size="icon"
               style={{
                 borderRadius: 20,
                 minWidth: 40,
@@ -146,14 +163,19 @@ function VerticalTabs({
                       </div>
                       {(() => {
                         const effectsVolume = useSoundStore(
-                          (s) => s.effectsVolume
+                          (s) => s.effectsVolume,
                         );
                         const setEffectsVolume = useSoundStore(
-                          (s) => s.setEffectsVolume
+                          (s) => s.setEffectsVolume,
                         );
                         const muted = useSoundStore((s) => s.muted);
                         const toggleMuted = useSoundStore((s) => s.toggleMuted);
-                        // Lucide icons
+                        const typingSoundEnabled = useSoundStore(
+                          (s) => s.typingSoundEnabled,
+                        );
+                        const toggleTypingSound = useSoundStore(
+                          (s) => s.toggleTypingSound,
+                        ); // Lucide icons
                         // Import at top: import { Volume, VolumeX } from "lucide-react";
                         return (
                           <>
@@ -165,6 +187,7 @@ function VerticalTabs({
                                 marginBottom: 12,
                               }}
                             >
+                              {/* Slider de volume */}
                               <Slider
                                 min={0}
                                 max={100}
@@ -173,6 +196,36 @@ function VerticalTabs({
                                 style={{ maxWidth: 220 }}
                                 disabled={muted}
                               />
+                              {/* Botão de ativar/desativar som de digitação */}
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={toggleTypingSound}
+                                style={{
+                                  borderRadius: 20,
+                                  marginLeft: 4,
+                                  opacity: typingSoundEnabled ? 1 : 0.4,
+                                  background: typingSoundEnabled
+                                    ? "#e0ffe0"
+                                    : undefined,
+                                  color: typingSoundEnabled
+                                    ? "#16a34a"
+                                    : undefined,
+                                }}
+                                title={
+                                  typingSoundEnabled
+                                    ? "Desabilitar som de digitação"
+                                    : "Habilitar som de digitação"
+                                }
+                                aria-label={
+                                  typingSoundEnabled
+                                    ? "Desabilitar som de digitação"
+                                    : "Habilitar som de digitação"
+                                }
+                              >
+                                <Keyboard size={20} />
+                              </Button>
+                              {/* Botão de mute */}
                               <Button
                                 variant="outline"
                                 size="icon"
@@ -183,14 +236,18 @@ function VerticalTabs({
                                 title={
                                   muted ? "Desmutar efeitos" : "Mutar efeitos"
                                 }
-                                style={{ borderRadius: 20 }}
+                                style={{
+                                  borderRadius: 20,
+                                  marginLeft: 4,
+                                  opacity: muted ? 0.5 : 1,
+                                  background: muted ? "#ffe0e0" : "#e0ffe0",
+                                  color: muted ? "#dc2626" : "#16a34a",
+                                }}
                               >
                                 {muted ? (
                                   <VolumeX size={22} />
-                                ) : effectsVolume < 50 ? (
-                                  <Volume size={22} />
                                 ) : (
-                                  <Volume2 size={22} />
+                                  <Volume size={22} />
                                 )}
                               </Button>
                             </div>
@@ -251,6 +308,7 @@ function VerticalTabs({
         </Popover>
         <Button
           variant="secondary"
+          size="icon"
           onClick={onGuideClick}
           style={{
             borderRadius: 20,
@@ -278,10 +336,18 @@ function ChallengeList({
   selectedId: string | undefined;
   onSelect: (id: string) => void;
 }) {
+  // --- Debug unlock flag via localStorage ---
+  // To unlock all challenges for dev/demo, run in console:
+  //   localStorage.setItem('UNLOCK_ALL_CHALLENGES', '1'); location.reload();
+  // To restore normal progression, run:
+  //   localStorage.removeItem('UNLOCK_ALL_CHALLENGES'); location.reload();
+  const unlockAll =
+    typeof window !== "undefined" &&
+    localStorage.getItem("UNLOCK_ALL_CHALLENGES") === "1";
+  // --- End debug unlock flag ---
+
   // Determine which challenges are unlocked
   let unlockedUntil = 0;
-  const unlockAll =
-    typeof window !== "undefined" && (window as any).__UNLOCK_ALL_CHALLENGES__;
   for (let i = 0; i < challenges.length; i++) {
     if (unlockAll) {
       unlockedUntil = challenges.length - 1;
@@ -293,13 +359,11 @@ function ChallengeList({
   return (
     <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
       {challenges.map((ch, idx) => {
-        const unlockAll =
-          typeof window !== "undefined" &&
-          (window as any).__UNLOCK_ALL_CHALLENGES__;
         const unlocked = unlockAll || idx === 0 || idx <= unlockedUntil;
         return (
           <li key={ch.id}>
             <Button
+              data-onboarding={idx === 0 ? "challenge-1-btn" : undefined}
               variant={selectedId === ch.id ? "default" : "ghost"}
               size="sm"
               style={{
@@ -334,7 +398,7 @@ function ChallengeList({
             </Button>
           </li>
         );
-      })}
+      })}{" "}
     </ul>
   );
 }
@@ -345,6 +409,8 @@ import {
   saveChallengeProgress,
   loadChallengeProgress,
 } from "~/features/playground/lib/persistence";
+
+import { Modal } from "~/components/ui/Modal";
 
 function ChallengeDescription({
   challenge,
@@ -361,10 +427,11 @@ function ChallengeDescription({
   canStart: boolean;
   isStarted: boolean;
 }) {
+  const [showResetModal, setShowResetModal] = useState(false);
   const { getVoxelsForChallenge } = useChallengeVoxels();
   const voxels = getVoxelsForChallenge(challenge.id);
   return (
-    <div>
+    <div data-onboarding="challenge-desc">
       <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-2">
         {challenge.name}
       </h3>
@@ -402,6 +469,7 @@ function ChallengeDescription({
         }}
       >
         <Button
+          data-onboarding="start-btn"
           onClick={onTryItOut}
           variant="default"
           size="icon"
@@ -409,32 +477,47 @@ function ChallengeDescription({
           disabled={!canStart || isStarted}
         >
           <Play />
-        </Button>
-        <Button
-          variant="default"
-          size="icon"
-          title="Salvar progresso"
-          onClick={() => {
-            saveChallengeProgress(challenge.id, code, [], 0);
-            window.alert("Progresso salvo!");
-          }}
-          disabled={!isStarted}
-        >
-          <Save />
-        </Button>
+        </Button>{" "}
+        {/* Modal de confirmação para resetar progresso */}
+        {showResetModal && (
+          <Modal open={showResetModal} onClose={() => setShowResetModal(false)}>
+            <div style={{ textAlign: "center", padding: 16 }}>
+              <div style={{ marginBottom: 16 }}>
+                Tem certeza que deseja apagar todo o progresso deste desafio?
+                <br />
+                Esta ação não pode ser desfeita.
+              </div>
+              <div
+                style={{ display: "flex", justifyContent: "center", gap: 16 }}
+              >
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    localStorage.removeItem(
+                      `challenge-progress-${challenge.id}`,
+                    );
+                    setCode(challenge.description.code || "");
+                    setShowResetModal(false);
+                  }}
+                  suppressClickSound
+                >
+                  Apagar progresso
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowResetModal(false)}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </div>
+          </Modal>
+        )}
         <Button
           variant="default"
           size="icon"
           title="Restaurar progresso"
-          onClick={() => {
-            const progress = loadChallengeProgress(challenge.id);
-            if (progress && progress.userCode) {
-              setCode(progress.userCode);
-              window.alert("Progresso restaurado!");
-            } else {
-              window.alert("Nenhum progresso salvo encontrado.");
-            }
-          }}
+          onClick={() => setShowResetModal(true)}
           disabled={!isStarted}
         >
           <Download />
@@ -449,7 +532,6 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "~/components/ui/popover";
-import { cn } from "~/lib/utils";
 
 export function LeftPanel({
   code,
@@ -469,7 +551,7 @@ export function LeftPanel({
   const [guideOpen, setGuideOpen] = useState(false);
   const [settingsPopoverOpen, setSettingsPopoverOpen] = useState(false);
   const [startedChallengeId, setStartedChallengeId] = useState<string | null>(
-    null
+    null,
   );
 
   const filteredChallenges = challenges.filter(
@@ -485,13 +567,15 @@ export function LeftPanel({
     else break;
   }
   const selectedIdx = filteredChallenges.findIndex(
-    (c) => c.id === selectedChallenge?.id
+    (c) => c.id === selectedChallenge?.id,
   );
   const canStart = selectedIdx === 0 || selectedIdx <= unlockedUntil;
   const isStarted = startedChallengeId === selectedChallenge?.id;
 
   return (
     <div className="flex flex-row h-full flex-1 min-w-0 min-h-0 self-stretch border-r border-border">
+      {/* Onboarding Guide integration */}
+      <OnboardingGuide onFinish={() => setTab("editor")} />
       <VerticalTabs
         tab={tab}
         setTab={setTab}
@@ -537,6 +621,9 @@ export function LeftPanel({
                 ).map((d) => (
                   <Button
                     key={d.value}
+                    data-onboarding={
+                      d.value === "tutorial" ? "tutorial-btn" : undefined
+                    }
                     variant={difficulty === d.value ? "default" : "outline"}
                     size="sm"
                     onClick={() => setDifficulty(d.value)}

@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
 import { useSoundStore } from "~/store/soundStore";
-import { Popover, PopoverTrigger, PopoverContent } from "~/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "~/components/ui/popover";
 import { MessageCircle, X, RotateCcw } from "lucide-react";
 import {
   criarSessaoChat,
@@ -70,7 +74,7 @@ export function ChatButtonWithPopup() {
   };
 
   return (
-    <div style={{ position: 'fixed', left: 72, bottom: 32, zIndex: 40 }}>
+    <div style={{ position: "fixed", left: 72, bottom: 32, zIndex: 40 }}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -83,14 +87,24 @@ export function ChatButtonWithPopup() {
             <MessageCircle size={22} />
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="start" sideOffset={12} className="p-0" style={{ width: chatWidth, height: chatHeight, borderRadius: 18, overflow: 'hidden' }}>
+        <PopoverContent
+          align="start"
+          sideOffset={12}
+          className="p-0"
+          style={{
+            width: chatWidth,
+            height: chatHeight,
+            borderRadius: 18,
+            overflow: "hidden",
+          }}
+        >
           <div
             style={{
-              width: '100%',
-              height: '100%',
-              background: '#fff',
-              display: 'flex',
-              flexDirection: 'column',
+              width: "100%",
+              height: "100%",
+              background: "#fff",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
             <div
@@ -162,7 +176,11 @@ export function ChatButtonWithPopup() {
               ))}
               {loading && (
                 <div
-                  style={{ color: "#888", fontSize: 13, alignSelf: "flex-start" }}
+                  style={{
+                    color: "#888",
+                    fontSize: 13,
+                    alignSelf: "flex-start",
+                  }}
                 >
                   Pensando...
                 </div>
@@ -215,7 +233,11 @@ export function ChatButtonWithPopup() {
                 disabled={loading}
                 autoFocus
               />
-              <Button type="submit" size="sm" disabled={loading || !input.trim()}>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={loading || !input.trim()}
+              >
                 Enviar
               </Button>
             </form>

@@ -26,6 +26,7 @@
     "@react-router/serve": "^7.5.3",
     "@react-three/drei": "^10.5.0",
     "@react-three/fiber": "^9.2.0",
+    "@react-three/postprocessing": "^3.0.4",
     "@voxelcraft-playground/ui": "workspace:*",
     "acorn": "^8.15.0",
     "class-variance-authority": "^0.7.1",
