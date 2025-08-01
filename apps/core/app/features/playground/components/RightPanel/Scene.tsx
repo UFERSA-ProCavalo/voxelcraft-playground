@@ -9,6 +9,7 @@ import { CommonSceneElements } from "../CommonSceneElements";
 import { mapVoxelPositions } from "../utils";
 import { usePlaygroundStore } from "~/store/store";
 import type { RefObject } from "react";
+import { Button } from "~/components/ui/button";
 export interface SceneProps {
   perfOffset?: number;
   bounds?: number;
@@ -82,17 +83,19 @@ export function Scene({
   voxels: voxelsProp,
   onVoxelsChange,
 }: SceneProps & { onVoxelsChange?: (voxels: VoxelData[]) => void }) {
-  const [voxels, setVoxels] = useState<VoxelData[]>([]);
-  // const [workerError, setWorkerError] = useState<string | null>(null);
+   const [voxels, setVoxels] = useState<VoxelData[]>([]);
+   const [animation, setAnimation] = useState(null);
+   // const [workerError, setWorkerError] = useState<string | null>(null);
 
-  // Notifica o pai sempre que os voxels mudam (apenas quando não é preview)
-  useEffect(() => {
-    if (!voxelsProp && onVoxelsChange) {
-      onVoxelsChange(voxels);
-    }
-  }, [voxels, voxelsProp, onVoxelsChange]);
-  const workerRef = useRef<Worker | null>(null);
-  const spacing = bounds - 0.1;
+   // Notifica o pai sempre que os voxels mudam (apenas quando não é preview)
+   useEffect(() => {
+     if (!voxelsProp && onVoxelsChange) {
+       onVoxelsChange(voxels);
+     }
+   }, [voxels, voxelsProp, onVoxelsChange]); 
+   const workerRef = useRef<Worker | null>(null);
+   const spacing = bounds - 0.1;
+
 
   useEffect(() => {
     if (voxelsProp) return;
@@ -119,6 +122,27 @@ export function Scene({
     };
   }, [code, gridSize, bounds, voxelsProp]);
 
+  function startAnim() {
+    if (voxelsProp) return;
+    if (!workerRef.current) {
+      workerRef.current = new Worker(
+        new URL("../../lib/voxelWorker.ts", import.meta.url),
+        { type: "module" },
+      );
+    }
+    const worker = workerRef.current;
+    worker.onmessage = (e) => {
+      if (e.data.error) {
+        setVoxels([]);
+      } else {
+        setVoxels(e.data.voxels);
+      }
+    };
+    if (code) {
+      setAnimation(setInterval(() => worker.postMessage({ code, gridSize, bounds, colorMap: COLOR_MAP }), 50));
+    }
+  }
+
   const cameraDistance = gridSize * bounds * 1.55;
   const cameraPosition: [number, number, number] = [
     cameraDistance,
@@ -128,29 +152,48 @@ export function Scene({
   // If preview, use voxelsProp (challenge voxels); else, use computed voxels
   const voxelsToRender = voxelsProp ?? voxels;
   const controlsRef = useRef<any>(null);
+ 
   return (
-    <Canvas
-      style={{ height: "100%", width: "100%" }}
-      camera={{ position: cameraPosition, fov: 50 }}
-    >
-      <CommonSceneElements
-        gridSize={gridSize}
-        bounds={bounds}
-        spacing={spacing}
+    <>
+      <Canvas
+        style={{ height: "100%", width: "100%" }}
+        camera={{ position: cameraPosition, fov: 50 }}
       >
-        <VoxelInstances
-          voxels={mapVoxelPositions(voxelsToRender, spacing)}
+        <CommonSceneElements
+          gridSize={gridSize}
           bounds={bounds}
+          spacing={spacing}
+        >
+          <VoxelInstances
+            voxels={mapVoxelPositions(voxelsToRender, spacing)}
+            bounds={bounds}
+          />
+        </CommonSceneElements>
+        <CameraSync controlsRef={controlsRef} />
+        <OrbitControls
+          ref={controlsRef}
+          enableDamping
+          makeDefault
+          enablePan={false}
         />
-      </CommonSceneElements>
-      <CameraSync controlsRef={controlsRef} />
-      <OrbitControls
-        ref={controlsRef}
-        enableDamping
-        makeDefault
-        enablePan={false}
-      />
-      {/* <Perf position="top-right" style={{ top: perfOffset }} /> */}
-    </Canvas>
+        {/* <Perf position="top-right" style={{ top: perfOffset }} /> */}
+      </Canvas>
+      <Button
+        className="fixed top-0 right-0"
+        onClick={() => {
+          if (animation) {
+            clearInterval(animation);
+            setAnimation(null);
+          } else {
+            startAnim();
+          }
+        }}
+      >
+      {animation
+        ? "Stop Animation"
+        : "Start Animation"
+      }
+      </Button>
+    </>
   );
 }
