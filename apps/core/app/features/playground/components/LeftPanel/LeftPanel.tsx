@@ -1,15 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import {
-   Save,
-   Download,
-   Play,
-   Code,
-   List,
-   CircleQuestionMark,
-   Settings,
-   Volume,
-   VolumeX,
-   Lock,
+  Save,
+  Download,
+  Play,
+  Code,
+  List,
+  CircleQuestionMark,
+  Settings,
+  Volume,
+  VolumeX,
+  Lock,
+  Volume1,
+  Volume2,
 } from "lucide-react";
 import { CodeEditor } from "./CodeEditor";
 import { challenges } from "~/features/playground/challenges";
@@ -89,7 +91,10 @@ function VerticalTabs({
         )}
       </div>
       <div className="mb-2 flex flex-col gap-2">
-        <Popover open={settingsPopoverOpen} onOpenChange={setSettingsPopoverOpen}>
+        <Popover
+          open={settingsPopoverOpen}
+          onOpenChange={setSettingsPopoverOpen}
+        >
           <PopoverTrigger asChild>
             <Button
               variant="secondary"
@@ -106,67 +111,144 @@ function VerticalTabs({
               <Settings size={22} />
             </Button>
           </PopoverTrigger>
-             <PopoverContent align="end" className="w-80">
-              <h2 style={{ marginTop: 0 }}>Configurações</h2>
-              <div style={{ margin: '16px 0' }}>
-                {/* Tabs for settings */}
-                <Tabs defaultValue="audio" className="w-full">
-                  <TabsList>
-                    <TabsTrigger value="audio">Áudio</TabsTrigger>
-                    {/* Future: <TabsTrigger value="visual">Visual</TabsTrigger> */}
-                  </TabsList>
-                  <TabsContent value="audio">
-                    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-                      <div style={{ background: '#f6f6f6', borderRadius: 8, padding: 16 }}>
-                        <div style={{ fontWeight: 500, marginBottom: 12, fontSize: 15 }}>Efeitos sonoros</div>
-                        {(() => {
-  const effectsVolume = useSoundStore((s) => s.effectsVolume);
-  const setEffectsVolume = useSoundStore((s) => s.setEffectsVolume);
-  const muted = useSoundStore((s) => s.muted);
-  const toggleMuted = useSoundStore((s) => s.toggleMuted);
-  // Lucide icons
-  // Import at top: import { Volume, VolumeX } from "lucide-react";
-  return (
-    <>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-        <Slider
-          min={0}
-          max={100}
-          value={[effectsVolume]}
-          onValueChange={([v]) => setEffectsVolume(v)}
-          style={{ maxWidth: 220 }}
-          disabled={muted}
-        />
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={toggleMuted}
-          aria-label={muted ? "Desmutar efeitos" : "Mutar efeitos"}
-          title={muted ? "Desmutar efeitos" : "Mutar efeitos"}
-          style={{ borderRadius: 20 }}
-        >
-          {muted ? <VolumeX size={22} /> : <Volume size={22} />}
-        </Button>
-      </div>
-      <div style={{ fontSize: 13, color: '#888', marginTop: 8 }}>Volume: {effectsVolume}%</div>
-    </>
-  );
-})()}
-
+          <PopoverContent align="end" className="w-80">
+            <h2 style={{ marginTop: 0 }}>Configurações</h2>
+            <div style={{ margin: "16px 0" }}>
+              {/* Tabs for settings */}
+              <Tabs defaultValue="audio" className="w-full">
+                <TabsList>
+                  <TabsTrigger value="audio">Áudio</TabsTrigger>
+                  {/* Future: <TabsTrigger value="visual">Visual</TabsTrigger> */}
+                </TabsList>
+                <TabsContent value="audio">
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 24,
+                    }}
+                  >
+                    <div
+                      style={{
+                        background: "#f6f6f6",
+                        borderRadius: 8,
+                        padding: 16,
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: 500,
+                          marginBottom: 12,
+                          fontSize: 15,
+                        }}
+                      >
+                        Efeitos sonoros
                       </div>
-                      <div style={{ background: '#f6f6f6', borderRadius: 8, padding: 16, opacity: 0.5 }}>
-                        <div style={{ fontWeight: 500, marginBottom: 12, fontSize: 15 }}>Música</div>
-                        <div style={{ fontSize: 13, color: '#888' }}>[Slider de música em breve]</div>
+                      {(() => {
+                        const effectsVolume = useSoundStore(
+                          (s) => s.effectsVolume
+                        );
+                        const setEffectsVolume = useSoundStore(
+                          (s) => s.setEffectsVolume
+                        );
+                        const muted = useSoundStore((s) => s.muted);
+                        const toggleMuted = useSoundStore((s) => s.toggleMuted);
+                        // Lucide icons
+                        // Import at top: import { Volume, VolumeX } from "lucide-react";
+                        return (
+                          <>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 12,
+                                marginBottom: 12,
+                              }}
+                            >
+                              <Slider
+                                min={0}
+                                max={100}
+                                value={[effectsVolume]}
+                                onValueChange={([v]) => setEffectsVolume(v)}
+                                style={{ maxWidth: 220 }}
+                                disabled={muted}
+                              />
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={toggleMuted}
+                                aria-label={
+                                  muted ? "Desmutar efeitos" : "Mutar efeitos"
+                                }
+                                title={
+                                  muted ? "Desmutar efeitos" : "Mutar efeitos"
+                                }
+                                style={{ borderRadius: 20 }}
+                              >
+                                {muted ? (
+                                  <VolumeX size={22} />
+                                ) : effectsVolume < 50 ? (
+                                  <Volume size={22} />
+                                ) : (
+                                  <Volume2 size={22} />
+                                )}
+                              </Button>
+                            </div>
+                            <div
+                              style={{
+                                fontSize: 13,
+                                color: "#888",
+                                marginTop: 8,
+                              }}
+                            >
+                              Volume: {effectsVolume}%
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+                    <div
+                      style={{
+                        background: "#f6f6f6",
+                        borderRadius: 8,
+                        padding: 16,
+                        opacity: 0.5,
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: 500,
+                          marginBottom: 12,
+                          fontSize: 15,
+                        }}
+                      >
+                        Música
+                      </div>
+                      <div style={{ fontSize: 13, color: "#888" }}>
+                        [Slider de música em breve]
                       </div>
                     </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 24 }}>
-               <Button variant="default" onClick={() => setSettingsPopoverOpen(false)} suppressClickSound>
-                 Fechar
-               </Button>
-             </div>          </PopoverContent>        </Popover>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: 24,
+              }}
+            >
+              <Button
+                variant="default"
+                onClick={() => setSettingsPopoverOpen(false)}
+                suppressClickSound
+              >
+                Fechar
+              </Button>
+            </div>{" "}
+          </PopoverContent>{" "}
+        </Popover>
         <Button
           variant="secondary"
           onClick={onGuideClick}
@@ -198,7 +280,8 @@ function ChallengeList({
 }) {
   // Determine which challenges are unlocked
   let unlockedUntil = 0;
-  const unlockAll = typeof window !== 'undefined' && (window as any).__UNLOCK_ALL_CHALLENGES__;
+  const unlockAll =
+    typeof window !== "undefined" && (window as any).__UNLOCK_ALL_CHALLENGES__;
   for (let i = 0; i < challenges.length; i++) {
     if (unlockAll) {
       unlockedUntil = challenges.length - 1;
@@ -210,7 +293,9 @@ function ChallengeList({
   return (
     <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
       {challenges.map((ch, idx) => {
-        const unlockAll = typeof window !== 'undefined' && (window as any).__UNLOCK_ALL_CHALLENGES__;
+        const unlockAll =
+          typeof window !== "undefined" &&
+          (window as any).__UNLOCK_ALL_CHALLENGES__;
         const unlocked = unlockAll || idx === 0 || idx <= unlockedUntil;
         return (
           <li key={ch.id}>
@@ -238,7 +323,11 @@ function ChallengeList({
                 background: unlocked ? undefined : "#f3f3f3",
               }}
               onClick={unlocked ? () => onSelect(ch.id) : undefined}
-              title={unlocked ? ch.name : "Complete o desafio anterior para desbloquear"}
+              title={
+                unlocked
+                  ? ch.name
+                  : "Complete o desafio anterior para desbloquear"
+              }
               disabled={!unlocked}
             >
               {unlocked ? `#${idx + 1}` : <Lock size={18} />}
@@ -276,13 +365,20 @@ function ChallengeDescription({
   const voxels = getVoxelsForChallenge(challenge.id);
   return (
     <div>
-      <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-2">{challenge.name}</h3>
+      <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-2">
+        {challenge.name}
+      </h3>
       {challenge.description.lead && (
-        <p className="text-muted-foreground text-xl leading-7 mb-2">{challenge.description.lead}</p>
+        <p className="text-muted-foreground text-xl leading-7 mb-2">
+          {challenge.description.lead}
+        </p>
       )}
-      {challenge.description.paragraphs && challenge.description.paragraphs.map((para, i) => (
-        <p key={i} className="leading-7 mb-2">{para}</p>
-      ))}
+      {challenge.description.paragraphs &&
+        challenge.description.paragraphs.map((para, i) => (
+          <p key={i} className="leading-7 mb-2">
+            {para}
+          </p>
+        ))}
       {challenge.description.code && (
         <pre className="bg-muted rounded px-3 py-2 font-mono text-sm font-semibold mb-2 whitespace-pre-wrap">
           {challenge.description.code}
@@ -291,7 +387,9 @@ function ChallengeDescription({
       {challenge.description.tips && (
         <ul className="my-3 ml-6 list-disc text-muted-foreground text-sm">
           {challenge.description.tips.map((tip, i) => (
-            <li key={i} className="mt-1">{tip}</li>
+            <li key={i} className="mt-1">
+              {tip}
+            </li>
           ))}
         </ul>
       )}
@@ -346,7 +444,12 @@ function ChallengeDescription({
   );
 }
 
-import { Popover, PopoverTrigger, PopoverContent } from "~/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "~/components/ui/popover";
+import { cn } from "~/lib/utils";
 
 export function LeftPanel({
   code,
@@ -365,10 +468,12 @@ export function LeftPanel({
   const [difficulty, setDifficulty] = useState<ChallengeDifficulty>("tutorial");
   const [guideOpen, setGuideOpen] = useState(false);
   const [settingsPopoverOpen, setSettingsPopoverOpen] = useState(false);
-  const [startedChallengeId, setStartedChallengeId] = useState<string | null>(null);
+  const [startedChallengeId, setStartedChallengeId] = useState<string | null>(
+    null
+  );
 
   const filteredChallenges = challenges.filter(
-    (c) => c.difficulty === difficulty,
+    (c) => c.difficulty === difficulty
   );
   const selectedChallenge =
     challenges.find((c) => c.id === selectedChallengeId) ??
@@ -379,7 +484,9 @@ export function LeftPanel({
     if (filteredChallenges[i].progress === "completed") unlockedUntil = i + 1;
     else break;
   }
-  const selectedIdx = filteredChallenges.findIndex((c) => c.id === selectedChallenge?.id);
+  const selectedIdx = filteredChallenges.findIndex(
+    (c) => c.id === selectedChallenge?.id
+  );
   const canStart = selectedIdx === 0 || selectedIdx <= unlockedUntil;
   const isStarted = startedChallengeId === selectedChallenge?.id;
 
@@ -421,11 +528,13 @@ export function LeftPanel({
                   marginRight: 16,
                 }}
               >
-                {([
-  { label: "Tutorial", value: "tutorial" },
-  { label: "Iniciante", value: "iniciante" },
-  { label: "Desafiador", value: "desafiador" },
-] as { label: string; value: ChallengeDifficulty }[]).map((d) => (
+                {(
+                  [
+                    { label: "Tutorial", value: "tutorial" },
+                    { label: "Iniciante", value: "iniciante" },
+                    { label: "Desafiador", value: "desafiador" },
+                  ] as { label: string; value: ChallengeDifficulty }[]
+                ).map((d) => (
                   <Button
                     key={d.value}
                     variant={difficulty === d.value ? "default" : "outline"}
@@ -465,8 +574,8 @@ export function LeftPanel({
           </div>
         )}
       </div>
-       {/* Modal for guide is not implemented, replace or remove as needed */}
-       {/* <Modal open={guideOpen} onClose={() => setGuideOpen(false)}>
+      {/* Modal for guide is not implemented, replace or remove as needed */}
+      {/* <Modal open={guideOpen} onClose={() => setGuideOpen(false)}>
          <h2 style={{ marginTop: 0 }}>Guia de uso</h2>
          <p>Guia de uso em breve...</p>
          <div
@@ -480,8 +589,7 @@ export function LeftPanel({
              Fechar
            </Button>
          </div>
-       </Modal> */}      
+       </Modal> */}
     </div>
   );
 }
-
