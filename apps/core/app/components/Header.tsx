@@ -16,7 +16,7 @@ export function Header() {
           <img
             src="/logo-light.svg"
             alt="Voxelcraft Logo"
-            className="h-8 w-auto"
+            className="h-8 w-auto dark:invert-100"
           />
         </Link>
         <nav className="flex gap-2 items-center">
