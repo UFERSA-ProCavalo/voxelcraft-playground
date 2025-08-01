@@ -35,6 +35,8 @@ const buttonVariants = cva(
   },
 );
 
+import { useSoundStore } from "../../store/soundStore";
+
 function Button({
   className,
   variant,
@@ -44,8 +46,29 @@ function Button({
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    suppressClickSound?: boolean;
   }) {
   const Comp = asChild ? Slot : "button";
+  const playSound = useSoundStore((s) => s.playSound);
+  // Armazena a última vez que o som de hover foi tocado
+  const lastPlayedRef = React.useRef<number>(0);
+  const SOUND_THROTTLE_MS = 400;
+
+  const handleMouseEnter = (e: React.MouseEvent<Element>) => {
+    const now = Date.now();
+    if (now - lastPlayedRef.current > SOUND_THROTTLE_MS) {
+      playSound("hover");
+      lastPlayedRef.current = now;
+    }
+    if (props.onMouseEnter) props.onMouseEnter(e as any);
+  };
+
+  const handleClick = (e: React.MouseEvent<Element>) => {
+    if (!props.suppressClickSound) {
+      playSound("click");
+    }
+    if (props.onClick) props.onClick(e as any);
+  };
 
   return (
     <Comp
@@ -55,6 +78,8 @@ function Button({
         buttonVariants({ variant, size, className }),
       )}
       {...props}
+      onMouseEnter={handleMouseEnter}
+      onClick={handleClick}
     />
   );
 }

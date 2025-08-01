@@ -267,9 +267,8 @@ export function LeftPanel({
             <div
               style={{ display: "flex", flexDirection: "row", height: "100%" }}
             >
-              {/* Column 1: Difficulties */}
-              <div
-                style={{
+               {/* Coluna 1: Dificuldades */}
+              <div                style={{
                   display: "flex",
                   flexDirection: "column",
                   gap: 8,
@@ -288,23 +287,21 @@ export function LeftPanel({
                   </Button>
                 ))}
               </div>
-              {/* Column 2: Challenges */}
-              <div style={{ minWidth: 60, marginRight: 16 }}>
+               {/* Coluna 2: Desafios */}              <div style={{ minWidth: 60, marginRight: 16 }}>
                 <ChallengeList
                   challenges={filteredChallenges}
                   selectedId={selectedChallenge?.id}
                   onSelect={setSelectedChallengeId}
                 />
               </div>
-              {/* Column 3: Challenge Details */}
-              <div style={{ flex: 2, minWidth: 0 }}>
+               {/* Coluna 3: Detalhes do Desafio */}              <div style={{ flex: 2, minWidth: 0 }}>
                 {selectedChallenge && (
                   <ChallengeDescription
                     challenge={selectedChallenge}
                     code={code}
                     setCode={setCode}
                     onTryItOut={() => {
-                      setCode('// Write your code here\n');
+                      setCode("// Write your code here\n");
                       setSelectedChallengeId(selectedChallenge.id);
                     }}
                   />
@@ -320,7 +317,11 @@ export function LeftPanel({
         <div
           style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}
         >
-          <Button variant="default" onClick={() => setGuideOpen(false)}>
+          <Button
+            variant="default"
+            onClick={() => setGuideOpen(false)}
+            suppressClickSound
+          >
             Fechar
           </Button>
         </div>

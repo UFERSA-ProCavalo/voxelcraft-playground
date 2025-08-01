@@ -19,11 +19,10 @@ export default function Home() {
     <div>
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          {/* TODO: Add ThemeSwitcher here if implemented locally */}
           <div className="border p-4 my-4">
             <LoaderSpinner />
           </div>
-          {/*<FullPageLoader description="Loading Voxelcraft Playground..." className="mb-4" />*/}
+          {/*<FullPageLoader description="Carregando Voxelcraft Playground..." className="mb-4" />*/}
           <h1 className="text-4xl font-bold mb-4">Welcome to Nead App</h1>{" "}
           <p className="text-xl">
             Built with React Router 7 and our custom UI components

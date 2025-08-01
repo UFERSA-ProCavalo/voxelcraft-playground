@@ -6,7 +6,7 @@ interface PlaygroundState {
   showAxes: boolean;
   showOutline: boolean;
   showRulers: boolean;
-  // Camera state for syncing between scenes
+  // Estado da câmera para sincronização entre cenas
   cameraPosition: [number, number, number];
   cameraTarget: [number, number, number];
   setCameraPosition: (pos: [number, number, number]) => void;
@@ -24,7 +24,7 @@ export const usePlaygroundStore = create<PlaygroundState>((set) => ({
   showAxes: true,
   showOutline: true,
   showRulers: true,
-  cameraPosition: [50, 50, 50], // default initial camera position
+  cameraPosition: [50, 50, 50],
   cameraTarget: [0, 0, 0], // default initial camera target
   setCameraPosition: (pos) => set({ cameraPosition: pos }),
   setCameraTarget: (target) => set({ cameraTarget: target }),

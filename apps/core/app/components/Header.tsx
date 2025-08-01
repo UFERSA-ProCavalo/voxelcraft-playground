@@ -25,7 +25,7 @@ export function Header() {
               <Link to={item.href}>{item.label}</Link>
             </Button>
           ))}
-          {/* Dark mode toggle */}
+          {/* Alternância de modo escuro */}
           <ModeToggle />
         </nav>
       </div>{" "}

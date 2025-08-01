@@ -12,7 +12,7 @@ export function ChatButtonWithPopup() {
   const [incluirCodigo, setIncluirCodigo] = useState(false);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<any[]>(carregarHistorico());
+  const [messages, setMessages] = useState<any[]>(carregarHistorico().slice(2));
   const [loading, setLoading] = useState(false);
   const [chat, setChat] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,11 +46,7 @@ export function ChatButtonWithPopup() {
       mensagem = `${input}\ncódigo do usuário:\n${codigo}`;
     }
     const resposta = await enviarMensagem(chat, mensagem);
-    setMessages([
-      ...chat.getHistory(),
-      { role: "user", parts: [{ text: mensagem }] },
-      { role: "model", parts: [{ text: resposta }] },
-    ]);
+    setMessages(chat.getHistory().slice(2));
     setInput("");
     setLoading(false);
     setTimeout(() => inputRef.current?.focus(), 200);
@@ -58,7 +54,7 @@ export function ChatButtonWithPopup() {
 
   const handleReset = () => {
     resetarChat();
-    setMessages(carregarHistorico());
+    setMessages(carregarHistorico().slice(2));
     setChat(null);
     criarSessaoChat().then(setChat);
     setInput("");

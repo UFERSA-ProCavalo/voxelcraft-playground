@@ -7,7 +7,7 @@ import { COLOR_MAP } from "~/features/playground/consts";
 import { VoxelInstances } from "~/features/playground/components/VoxelInstances";
 import { CommonSceneElements } from "../CommonSceneElements";
 import { mapVoxelPositions } from "../utils";
-import { usePlaygroundStore } from "~/features/playground/lib/store";
+import { usePlaygroundStore } from "~/store/store";
 import type { RefObject } from "react";
 export interface SceneProps {
   perfOffset?: number;
@@ -82,15 +82,16 @@ export function Scene({
   voxels: voxelsProp,
   onVoxelsChange,
 }: SceneProps & { onVoxelsChange?: (voxels: VoxelData[]) => void }) {
-   const [voxels, setVoxels] = useState<VoxelData[]>([]);
-   // const [workerError, setWorkerError] = useState<string | null>(null);
+  const [voxels, setVoxels] = useState<VoxelData[]>([]);
+  // const [workerError, setWorkerError] = useState<string | null>(null);
 
-   // Notifica o pai sempre que os voxels mudam (apenas quando não é preview)
-   useEffect(() => {
-     if (!voxelsProp && onVoxelsChange) {
-       onVoxelsChange(voxels);
-     }
-   }, [voxels, voxelsProp, onVoxelsChange]);  const workerRef = useRef<Worker | null>(null);
+  // Notifica o pai sempre que os voxels mudam (apenas quando não é preview)
+  useEffect(() => {
+    if (!voxelsProp && onVoxelsChange) {
+      onVoxelsChange(voxels);
+    }
+  }, [voxels, voxelsProp, onVoxelsChange]);
+  const workerRef = useRef<Worker | null>(null);
   const spacing = bounds - 0.1;
 
   useEffect(() => {

@@ -1,10 +1,18 @@
+import * as React from "react";
+import { Save, Check } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { useSoundStore } from "~/store/soundStore";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+} from "~/components/ui/DropdownMenu";
+import { Modal } from "~/components/ui/Modal";
 
 /**
  * ToolMenu compartilhado para alternar eixos e grade.
  * Pode ser usado tanto no painel principal quanto no popup.
- * Comentários em pt-BR conforme padrão do projeto.
  */
 export interface ToolMenuProps {
   showAxes: boolean;
@@ -18,6 +26,9 @@ export interface ToolMenuProps {
   // Botão Run opcional
   onRun?: () => void;
   runDisabled?: boolean;
+  // Props para salvar/recuperar código no modo Livre
+  code?: string;
+  setCode?: (code: string) => void;
 }
 
 export function ToolMenu({
@@ -31,12 +42,193 @@ export function ToolMenu({
   cardClassName,
   onRun,
   runDisabled,
+  code,
+  setCode,
 }: ToolMenuProps) {
+  // DropdownMenu de salvar/load slots 3x3
+  const SaveLoadDropdown = ({
+    code,
+    setCode,
+  }: {
+    code: string;
+    setCode: (code: string) => void;
+  }) => {
+    const [dropdownOpen, setDropdownOpen] = React.useState(false);
+    const [modalOpen, setModalOpen] = React.useState(false);
+    const [pendingSlot, setPendingSlot] = React.useState<number | null>(null);
+    const [pendingAction, setPendingAction] = React.useState<"save" | null>(
+      null,
+    );
+    const [slots, setSlots] = React.useState<(string | null)[]>(() => {
+      return Array.from({ length: 9 }, (_, i) => {
+        try {
+          return localStorage.getItem(`free_code_slot_${i + 1}`);
+        } catch {
+          return null;
+        }
+      });
+    });
+
+    // Atualiza slots ao salvar/carregar
+    const refreshSlots = () => {
+      setSlots(
+        Array.from({ length: 9 }, (_, i) => {
+          try {
+            return localStorage.getItem(`free_code_slot_${i + 1}`);
+          } catch {
+            return null;
+          }
+        }),
+      );
+    };
+
+    // Salvar código no slot
+    const saveSlot = (idx: number) => {
+      localStorage.setItem(`free_code_slot_${idx + 1}`, code);
+      refreshSlots();
+    };
+
+    // Carregar código do slot
+    const loadSlot = (idx: number) => {
+      const val = localStorage.getItem(`free_code_slot_${idx + 1}`);
+      if (val) setCode(val);
+    };
+
+    // Handler de click
+    const handleSlotClick = (idx: number, e: React.MouseEvent) => {
+      e.preventDefault();
+      if (e.type === "click" && e.button === 0) {
+        // Esquerdo: save
+        if (slots[idx]) {
+          setPendingSlot(idx);
+          setPendingAction("save");
+          setDropdownOpen(false); // Fecha o DropdownMenu
+          setModalOpen(true);
+        } else {
+          saveSlot(idx);
+        }
+      } else if (e.type === "contextmenu" || e.button === 2) {
+        // Direito: load
+        loadSlot(idx);
+      }
+    };
+
+    // Confirma sobrescrever
+    const confirmOverwrite = () => {
+      if (pendingSlot !== null && pendingAction === "save") {
+        saveSlot(pendingSlot);
+      }
+      setModalOpen(false);
+      setPendingSlot(null);
+      setPendingAction(null);
+    };
+
+    // Lucide Save icon
+    const diskIcon = <Save size={20} />;
+    const playSound = useSoundStore((s) => s.playSound);
+    return (
+      <>
+        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+          <DropdownMenuTrigger asChild>
+            <Button
+              onPointerDown={() => playSound("click")}
+              variant="outline"
+              size="icon"
+              title="Salvar/Carregar slots"
+              aria-label="Salvar/Carregar slots"
+            >
+              {diskIcon}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent sideOffset={8} style={{ padding: 12 }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 32px)",
+                gap: 8,
+              }}
+            >
+              {Array.from({ length: 9 }, (_, i) => (
+                <button
+                  key={i}
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 6,
+                    border: "1px solid #ccc",
+                    background: slots[i] ? "#e0ffe0" : "#f8f8f8",
+                    cursor: "pointer",
+                    position: "relative",
+                    fontWeight: 600,
+                    fontSize: 14,
+                  }}
+                  onClick={(e) => handleSlotClick(i, e as any)}
+                  onContextMenu={(e) => handleSlotClick(i, e as any)}
+                  title={slots[i] ? "Slot salvo" : "Slot vazio"}
+                >
+                  {i + 1}
+                  {slots[i] && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 2,
+                        right: 4,
+                        fontSize: 10,
+                        color: "#0a0",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Check size={12} />
+                    </span>
+                  )}{" "}
+                </button>
+              ))}
+            </div>
+            <div
+              style={{
+                fontSize: 11,
+                color: "#888",
+                marginTop: 8,
+                textAlign: "center",
+              }}
+            >
+              Clique esquerdo: salvar
+              <br />
+              Clique direito: carregar
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ marginBottom: 16 }}>
+              Já existe um código salvo neste slot.
+              <br />
+              Deseja sobrescrever?
+            </div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
+              <Button
+                variant="destructive"
+                onClick={confirmOverwrite}
+                suppressClickSound
+              >
+                Sobrescrever
+              </Button>
+              <Button variant="outline" onClick={() => setModalOpen(false)}>
+                Cancelar
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      </>
+    );
+  };
+
   return (
     <div
       style={{
         position: "absolute",
-        top: 24,
+        top: "60vh",
         left: 24,
         zIndex: 10,
         display: "flex",
@@ -127,6 +319,11 @@ export function ToolMenu({
             <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
           </svg>
         </Button>
+
+        {/* Botão de salvar/load para modo Livre */}
+        {code !== undefined && setCode && (
+          <SaveLoadDropdown code={code} setCode={setCode} />
+        )}
         {typeof showRulers === "boolean" && setShowRulers && (
           <Button
             variant={showRulers ? "default" : "outline"}

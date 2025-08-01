@@ -80,12 +80,9 @@ function main() {
       voxels: culled.map((v) => ({ position: v.position, color: v.color })),
     };
   });
-  const localPath = new URL("./challenges-with-voxels.json", import.meta.url).pathname;
-  fs.writeFileSync(
-    localPath,
-    JSON.stringify(output, null, 2),
-    "utf-8",
-  );
+  const localPath = new URL("./challenges-with-voxels.json", import.meta.url)
+    .pathname;
+  fs.writeFileSync(localPath, JSON.stringify(output, null, 2), "utf-8");
   // Copia para a pasta pública do app core
   const publicDir = path.resolve(__dirname, "../../../../public");
   if (!fs.existsSync(publicDir)) {
@@ -96,7 +93,9 @@ function main() {
     fs.unlinkSync(destPath);
   }
   fs.copyFileSync(localPath, destPath);
-  console.log(`Arquivo challenges-with-voxels.json gerado e copiado para ${destPath}`);
+  console.log(
+    `Arquivo challenges-with-voxels.json gerado e copiado para ${destPath}`,
+  );
 }
 
 main();

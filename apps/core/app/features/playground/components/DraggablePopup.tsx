@@ -7,7 +7,7 @@ import { Button } from "~/components/ui/button";
  * Comentários em pt-BR conforme padrão do projeto.
  */
 // import { VoxelPreviewScene } from "./VoxelPreviewScene";
-import { usePlaygroundStore } from "../lib/store";
+import { usePlaygroundStore } from "../../../store/store";
 
 import { useChallengeVoxels } from "../lib/ChallengeVoxelsProvider";
 
