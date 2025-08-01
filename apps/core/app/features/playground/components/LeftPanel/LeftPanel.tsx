@@ -56,6 +56,8 @@ function VerticalTabs({
     prevOpen.current = settingsPopoverOpen;
   }, [settingsPopoverOpen, playSound]);
 
+  const { theme } = useTheme();
+
   return (
     <div className="flex flex-col border-r bg-muted h-full justify-between">
       <div>
@@ -118,30 +120,12 @@ function VerticalTabs({
               <Tabs defaultValue="audio" className="w-full">
                 <TabsList>
                   <TabsTrigger value="audio">Áudio</TabsTrigger>
-                  {/* Future: <TabsTrigger value="visual">Visual</TabsTrigger> */}
+                  <TabsTrigger value="visual">Visual</TabsTrigger>
                 </TabsList>
                 <TabsContent value="audio">
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 24,
-                    }}
-                  >
-                    <div
-                      style={{
-                        background: "#f6f6f6",
-                        borderRadius: 8,
-                        padding: 16,
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontWeight: 500,
-                          marginBottom: 12,
-                          fontSize: 15,
-                        }}
-                      >
+                  <div className="flex flex-col gap-4">
+                    <div className="bg-background-secondary p-4 rounded-md">
+                      <div className="font-medium text-lg mb-3">
                         Efeitos sonoros
                       </div>
                       {(() => {
@@ -153,18 +137,10 @@ function VerticalTabs({
                         );
                         const muted = useSoundStore((s) => s.muted);
                         const toggleMuted = useSoundStore((s) => s.toggleMuted);
-                        // Lucide icons
-                        // Import at top: import { Volume, VolumeX } from "lucide-react";
+
                         return (
                           <>
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 12,
-                                marginBottom: 12,
-                              }}
-                            >
+                            <div className="flex items-center gap-3 mb-3">
                               <Slider
                                 min={0}
                                 max={100}
@@ -207,25 +183,38 @@ function VerticalTabs({
                         );
                       })()}
                     </div>
-                    <div
-                      style={{
-                        background: "#f6f6f6",
-                        borderRadius: 8,
-                        padding: 16,
-                        opacity: 0.5,
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontWeight: 500,
-                          marginBottom: 12,
-                          fontSize: 15,
-                        }}
-                      >
-                        Música
-                      </div>
+                    <div className="bg-background-secondary p-4 rounded-md">
+                      <div className="font-medium mb-3 text-lg">Música</div>
                       <div style={{ fontSize: 13, color: "#888" }}>
                         [Slider de música em breve]
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="visual">
+                  <div className="flex flex-col gap-4">
+                    <div className="bg-background-secondary p-4 rounded-md">
+                      <div className="flex p-2 justify-between">
+                        Tema
+                        <ModeToggle />
+                      </div>
+                      <div className="text-sm text-foreground-secondary">
+                        {theme === "dark" && (
+                          <>
+                            O tema escuro é ideal para ambientes com pouca luz.
+                          </>
+                        )}
+                        {theme === "light" && (
+                          <>
+                            O tema claro é ideal para ambientes bem iluminados.
+                          </>
+                        )}
+                        {theme === "system" && (
+                          <>
+                            O tema "sistema" adapta-se automaticamente ao tema
+                            do seu sistema operacional.
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -450,6 +439,8 @@ import {
   PopoverContent,
 } from "~/components/ui/popover";
 import { cn } from "~/lib/utils";
+import { ModeToggle } from "~/components/ModeToggle";
+import { useTheme } from "~/components/theme-provider";
 
 export function LeftPanel({
   code,
