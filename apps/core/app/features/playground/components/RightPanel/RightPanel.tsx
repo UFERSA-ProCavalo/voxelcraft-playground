@@ -109,20 +109,19 @@ export function RightPanel({
           position: "relative",
         }}
       >
-        <ToolMenu
-          showAxes={showAxes}
-          setShowAxes={setShowAxes}
-          showOutline={showOutline}
-          setShowOutline={setShowOutline}
-          showRulers={usePlaygroundStore((s: any) => s.showRulers)}
-          setShowRulers={usePlaygroundStore((s: any) => s.setShowRulers)}
-          onRun={selectedChallengeId ? handleRun : undefined}
-          runDisabled={!selectedChallengeId}
-        />
-        {/* Progress bar alinhado com ToolMenu, 3x mais para baixo */}
-        {selectedChallengeId && <ProgressBar value={similarity} />}
-        <div
-          style={{
+         <ToolMenu
+           showAxes={showAxes}
+           setShowAxes={setShowAxes}
+           showOutline={showOutline}
+           setShowOutline={setShowOutline}
+           showRulers={usePlaygroundStore((s: any) => s.showRulers)}
+           setShowRulers={usePlaygroundStore((s: any) => s.setShowRulers)}
+           code={code}
+           setCode={setCode}
+           voxels={userVoxels}
+         />
+         {selectedChallengeId && <ProgressBar value={similarity} />}
+         <div          style={{
             flex: 1,
             display: "flex",
             flexDirection: "column",
@@ -167,8 +166,8 @@ export function RightPanel({
                 />
               </div>
             </ResizablePanel>
-          </ResizablePanelGroup>{" "}
-        </div>{" "}
+          </ResizablePanelGroup>
+        </div>
       </div>
     );
   }

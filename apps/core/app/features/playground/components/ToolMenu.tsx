@@ -3,10 +3,12 @@ import { Save, Check } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { useSoundStore } from "~/store/soundStore";
+import { exportVoxelsToObjMtl } from "../utils-export-obj";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
+  DropdownMenuItem,
 } from "~/components/ui/DropdownMenu";
 import { Modal } from "~/components/ui/Modal";
 
@@ -14,6 +16,8 @@ import { Modal } from "~/components/ui/Modal";
  * ToolMenu compartilhado para alternar eixos e grade.
  * Pode ser usado tanto no painel principal quanto no popup.
  */
+import type { VoxelData } from "../types";
+
 export interface ToolMenuProps {
   showAxes: boolean;
   setShowAxes: (v: boolean) => void;
@@ -29,6 +33,8 @@ export interface ToolMenuProps {
   // Props para salvar/recuperar código no modo Livre
   code?: string;
   setCode?: (code: string) => void;
+  // Voxels da cena atual para exportação
+  voxels?: VoxelData[];
 }
 
 export function ToolMenu({
@@ -44,7 +50,10 @@ export function ToolMenu({
   runDisabled,
   code,
   setCode,
+  voxels,
 }: ToolMenuProps) {
+  const [showExportError, setShowExportError] = React.useState(false);
+  const [showExportCodeError, setShowExportCodeError] = React.useState(false);
   // DropdownMenu de salvar/load slots 3x3
   const SaveLoadDropdown = ({
     code,
@@ -348,6 +357,128 @@ export function ToolMenu({
             </svg>
           </Button>
         )}
+
+        {/* Dropdown de exportação */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="secondary"
+              size="icon"
+              title="Exportar"
+              aria-label="Exportar"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 5v14M5 12l7 7 7-7" />
+              </svg>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="right" align="start">
+            <DropdownMenuItem
+              onClick={() => {
+                if (!voxels || voxels.length === 0) {
+                  setShowExportError(true);
+                  return;
+                }
+                const { obj } = exportVoxelsToObjMtl(voxels, { cubeSize: 1 });
+                const blob = new Blob([obj], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "voxels.obj";
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                }, 100);
+              }}
+            >
+              Exportar OBJ
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                if (!voxels || voxels.length === 0) {
+                  setShowExportError(true);
+                  return;
+                }
+                const { mtl } = exportVoxelsToObjMtl(voxels, { cubeSize: 1 });
+                const blob = new Blob([mtl], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "voxels.mtl";
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                }, 100);
+              }}
+            >
+              Exportar MTL
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                if (!code || !voxels || voxels.length === 0) {
+                  setShowExportCodeError(true);
+                  return;
+                }
+                const blob = new Blob([code], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "usercode.txt";
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                }, 100);
+              }}
+            >
+              Exportar usercode
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Modal open={showExportError} onClose={() => setShowExportError(false)}>
+          <div style={{ textAlign: "center", padding: 16 }}>
+            <div style={{ marginBottom: 16 }}>
+              Não há objeto para exportar.
+              <br />
+              Crie ou adicione voxels antes de exportar.
+            </div>
+            <Button variant="outline" onClick={() => setShowExportError(false)}>
+              OK
+            </Button>
+          </div>
+        </Modal>
+        <Modal
+          open={showExportCodeError}
+          onClose={() => setShowExportCodeError(false)}
+        >
+          <div style={{ textAlign: "center", padding: 16 }}>
+            <div style={{ marginBottom: 16 }}>
+              O código não gera nenhum objeto.
+              <br />
+              Escreva algum código válido antes de exportar.
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setShowExportCodeError(false)}
+            >
+              OK
+            </Button>
+          </div>
+        </Modal>
       </div>
     </div>
   );

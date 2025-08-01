@@ -12,7 +12,11 @@ import {
 } from "~/components/ui/resizable";
 import { ChatButtonWithPopup } from "../components/ChatButtonWithPopup";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
+
 import SoundCloudPlayer from "../components/soundCloudPlayer";
+
+import { Button } from "~/components/ui/button";
+
 
 export default function PlaygroundPage() {
   const [tab, setTab] = React.useState<string>("challenge");
@@ -63,8 +67,23 @@ export default function PlaygroundPage() {
         {/* Floating, centered TabsList */}
         <div className="absolute left-1/2 top-6 z-20 -translate-x-1/2 flex justify-center w-auto">
           <TabsList className="shadow-lg bg-background rounded-xl px-6 py-2 flex gap-2 border border-border">
-            <TabsTrigger value="challenge">Desafios</TabsTrigger>
-            <TabsTrigger value="free">Livre</TabsTrigger>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-2 hover:shadow-sm"
+              onClick={() => setTab("challenge")}
+            >
+              Desafios
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-2 hover:shadow-sm"
+              onClick={() => setTab("free")}
+            >
+              Modo Livre
+            </Button>
           </TabsList>
         </div>
         <TabsContent value="challenge" className="flex-1 flex flex-col min-h-0">

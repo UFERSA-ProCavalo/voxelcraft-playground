@@ -32,16 +32,19 @@ export function CodeEditor({ code, onChange }: CodeEditorProps) {
 
   // Monta o editor Monaco
   const { handleKeyDown, handleKeyUp } = useTypingSoundPerKey();
-  const handleEditorDidMount = useCallback((editor: any) => {
-    editorRef.current = editor;
-    // Adiciona som de digitação no pressionar/soltar tecla
-    editor.onKeyDown((e: any) => {
-      handleKeyDown(e.browserEvent);
-    });
-    editor.onKeyUp((e: any) => {
-      handleKeyUp(e.browserEvent);
-    });
-  }, [handleKeyDown, handleKeyUp]);
+  const handleEditorDidMount = useCallback(
+    (editor: any) => {
+      editorRef.current = editor;
+      // Adiciona som de digitação no pressionar/soltar tecla
+      editor.onKeyDown((e: any) => {
+        handleKeyDown(e.browserEvent);
+      });
+      editor.onKeyUp((e: any) => {
+        handleKeyUp(e.browserEvent);
+      });
+    },
+    [handleKeyDown, handleKeyUp],
+  );
 
   // ResizeObserver para ajustar o layout ao redimensionar
   useEffect(() => {

@@ -4,16 +4,29 @@ export type UISoundName = "click" | "hover" | "close" | "typing";
 
 interface SoundStore {
   playSound: (name: UISoundName) => void;
+  effectsVolume: number;
+  setEffectsVolume: (v: number) => void;
+  muted: boolean;
+  toggleMuted: () => void;
 }
 
-export const useSoundStore = create<SoundStore>(() => ({
+export const useSoundStore = create<SoundStore>((set, get) => ({
+  effectsVolume: 80,
+  setEffectsVolume: (v: number) => set({ effectsVolume: v }),
+  muted: false,
+  toggleMuted: () => set((state) => ({ muted: !state.muted })),
   playSound: (name: UISoundName) => {
     const audio = document.getElementById(
       `ui-sound-${name}`,
     ) as HTMLAudioElement | null;
     if (audio) {
       audio.currentTime = 0;
-      audio.play();
+      try {
+        audio.volume = get().muted ? 0 : get().effectsVolume / 100;
+        audio.play();
+      } catch (err) {
+        // Ignore NotAllowedError (autoplay restriction)
+      }
     }
   },
 }));
@@ -24,12 +37,15 @@ export function useTypingSoundPerKey() {
   const playSound = useSoundStore((s) => s.playSound);
   const pressedKeys = useRef<Set<string>>(new Set());
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (!pressedKeys.current.has(e.code)) {
-      playSound("typing");
-      pressedKeys.current.add(e.code);
-    }
-  }, [playSound]);
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!pressedKeys.current.has(e.code)) {
+        playSound("typing");
+        pressedKeys.current.add(e.code);
+      }
+    },
+    [playSound],
+  );
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
     pressedKeys.current.delete(e.code);
