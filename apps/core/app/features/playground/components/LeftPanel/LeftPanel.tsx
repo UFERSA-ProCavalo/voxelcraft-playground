@@ -198,14 +198,20 @@ function ChallengeList({
 }) {
   // Determine which challenges are unlocked
   let unlockedUntil = 0;
+  const unlockAll = typeof window !== 'undefined' && (window as any).__UNLOCK_ALL_CHALLENGES__;
   for (let i = 0; i < challenges.length; i++) {
+    if (unlockAll) {
+      unlockedUntil = challenges.length - 1;
+      break;
+    }
     if (challenges[i].progress === "completed") unlockedUntil = i + 1;
     else break;
   }
   return (
     <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
       {challenges.map((ch, idx) => {
-        const unlocked = idx === 0 || idx <= unlockedUntil;
+        const unlockAll = typeof window !== 'undefined' && (window as any).__UNLOCK_ALL_CHALLENGES__;
+        const unlocked = unlockAll || idx === 0 || idx <= unlockedUntil;
         return (
           <li key={ch.id}>
             <Button
