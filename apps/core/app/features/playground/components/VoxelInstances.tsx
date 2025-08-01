@@ -15,12 +15,10 @@ interface VoxelInstancesProps {
 
 export function VoxelInstances({ voxels, bounds = 1 }: VoxelInstancesProps) {
   const prevVoxelCount = useRef(0);
-  
 
   const meshRef = useRef<THREE.InstancedMesh>(null!);
 
   const geometry = useMemo(() => {
-    
     return new RoundedBoxGeometry(bounds, bounds, bounds, 4, 0.2);
   }, [bounds, voxels.length]);
   const instanceCount = voxels.length;
@@ -90,7 +88,6 @@ export function VoxelInstances({ voxels, bounds = 1 }: VoxelInstancesProps) {
   }, [voxels, bounds]);
   // --- FIM DA ANIMAÇÃO ---
 
-  
   // Cria uma chave única baseada nas posições/cores dos voxels
   const meshKey = useMemo(() => {
     // Para arrays pequenos, isso é rápido e robusto

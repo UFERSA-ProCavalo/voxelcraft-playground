@@ -3,7 +3,7 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 // import { Perf } from "r3f-perf";
 import { OrbitControls } from "@react-three/drei";
 import type { VoxelData } from "~/features/playground/types";
-import { COLOR_MAP } from "~/features/playground/consts";
+
 import { VoxelInstances } from "~/features/playground/components/VoxelInstances";
 import { CommonSceneElements } from "../CommonSceneElements";
 import { mapVoxelPositions } from "../utils";
@@ -111,7 +111,8 @@ export function Scene({
       }
     };
     if (code) {
-      worker.postMessage({ code, gridSize, bounds, colorMap: COLOR_MAP });
+      const colorMap = usePlaygroundStore.getState().colorMap;
+      worker.postMessage({ code, gridSize, bounds, colorMap });
     }
     return () => {
       // worker.terminate();

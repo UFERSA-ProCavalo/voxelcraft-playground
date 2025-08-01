@@ -13,7 +13,11 @@ export const useSoundStore = create<SoundStore>(() => ({
     ) as HTMLAudioElement | null;
     if (audio) {
       audio.currentTime = 0;
-      audio.play();
+      try {
+        audio.play();
+      } catch (err) {
+        // Ignore NotAllowedError (autoplay restriction)
+      }
     }
   },
 }));
@@ -24,12 +28,15 @@ export function useTypingSoundPerKey() {
   const playSound = useSoundStore((s) => s.playSound);
   const pressedKeys = useRef<Set<string>>(new Set());
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (!pressedKeys.current.has(e.code)) {
-      playSound("typing");
-      pressedKeys.current.add(e.code);
-    }
-  }, [playSound]);
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!pressedKeys.current.has(e.code)) {
+        playSound("typing");
+        pressedKeys.current.add(e.code);
+      }
+    },
+    [playSound],
+  );
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
     pressedKeys.current.delete(e.code);

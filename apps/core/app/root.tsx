@@ -31,7 +31,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
-    
     if (navigation.state === "loading") {
       setShowLoader(true);
     } else {
