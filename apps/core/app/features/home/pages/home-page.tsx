@@ -15,7 +15,7 @@ export default function App() {
     <>
       <Canvas shadows camera={{ position: [0, 0, 5], fov: 30 }}>
         <Suspense fallback={null}>
-          <ScrollControls pages={5} damping={0.25}>
+          <ScrollControls pages={7} damping={0.25}>
             <Scene />
             <Overlay />
           </ScrollControls>
@@ -23,7 +23,7 @@ export default function App() {
       </Canvas>
       <div className="absolute top-0 left-0 w-full h-12 flex items-center justify-center pointer-events-none z-10">
         <h1 className="text-xl font-bold text-foreground tracking-widest uppercase">
-          VoxelArt
+          VoxelCraft
         </h1>{" "}
       </div>
       <div className="absolute bottom-4 right-4 text-muted-foreground text-sm pointer-events-none z-10">

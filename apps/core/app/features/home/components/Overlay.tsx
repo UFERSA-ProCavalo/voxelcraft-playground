@@ -1,9 +1,16 @@
 import React from "react";
 import { Scroll } from "@react-three/drei";
 import Section from "./Section";
+import mtx from "./teamPictures/tixinha.png"
+import yab from "./teamPictures/yabo.jpg"
+import pik from "./teamPictures/pika.png"
+import col from "./teamPictures/coelho.webp"
 
-const TeamMemberCard = ({ name, role }: { name: string; role: string }) => (
+const TeamMemberCard = ({ name, role, imgSrc }: { name: string; role: string; imgSrc: string }) => (
   <div className="bg-card/80 backdrop-blur-sm p-4 rounded-lg text-center border border-border transition-all hover:bg-card/60 hover:border-accent">
+    <div className="bg-card/80 backdrop-blur-sm p-4 rounded-lg text-center border border-border transition-all hover:bg-card/60 hover:border-accent flex flex-col items-center gap-2">
+      <img src={imgSrc}></img>
+    </div>
     <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-accent mb-1">
       {name}
     </h4>
@@ -16,11 +23,24 @@ export default function Overlay() {
     <Scroll html>
       {/* Each section is absolutely positioned at N * 100vh */}
       <Section
-        title="🧠 Idealização"
+        title="Bem vindo(a) ao VoxelCraft Playground!"
         headingLevel={1}
         style={{
           position: "absolute",
           top: 0 * 100 + "vh",
+          left: 0,
+          width: "100vw",
+        }}>
+          <p className="text-muted-foreground text-xl leading-7 [&:not(:first-child)]:mt-6 max-w-3xl text-center">
+            Uma plataforma online de manipulação de voxels. 
+            Veja mais informações abaixo ou clique em Playground para começar!</p>
+      </Section>
+      <Section
+        title="🧠 Idealização"
+        headingLevel={2}
+        style={{
+          position: "absolute",
+          top: 1 * 100 + "vh",
           left: 0,
           width: "100vw",
         }}
@@ -40,10 +60,10 @@ export default function Overlay() {
 
       <Section
         title="🎯 Objetivo"
-        headingLevel={2}
+        headingLevel={3}
         style={{
           position: "absolute",
-          top: 1 * 100 + "vh",
+          top: 2 * 100 + "vh",
           left: 0,
           width: "100vw",
         }}
@@ -61,10 +81,10 @@ export default function Overlay() {
 
       <Section
         title="⚙️ Funcionalidades"
-        headingLevel={2}
+        headingLevel={4}
         style={{
           position: "absolute",
-          top: 2 * 100 + "vh",
+          top: 3 * 100 + "vh",
           left: 0,
           width: "100vw",
         }}
@@ -115,29 +135,32 @@ export default function Overlay() {
         title="👥 Equipe"
         style={{
           position: "absolute",
-          top: 3 * 100 + "vh",
+          top: 4 * 100 + "vh",
           left: 0,
           width: "100vw",
         }}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl w-full px-4 text-foreground">
           <TeamMemberCard
-            name="[Nome 1]"
+            name="Matheus Henrique"
             role="Desenvolvimento Frontend & Modelagem 3D"
+            imgSrc={mtx}
           />
           <TeamMemberCard
-            name="[Nome 2]"
+            name="Thiago Coelho"
             role="Lógica de Programação & Integração com IA"
+            imgSrc={col}
           />
           <TeamMemberCard
-            name="[Nome 3]"
+            name="Yan Balbino"
             role="Design de Interface & Experiência do Usuário"
+            imgSrc={yab}
           />
           <TeamMemberCard
-            name="[Nome 4]"
+            name="Matheus Vynicius"
             role="Estrutura de Dados & Exportação de Objetos"
+            imgSrc={pik}
           />
-          <TeamMemberCard name="[Nome 5]" role="Documentação & Testes" />
         </div>
       </Section>
 
@@ -145,7 +168,7 @@ export default function Overlay() {
         headingLevel={2}
         style={{
           position: "absolute",
-          top: 4 * 100 + "vh",
+          top: 5 * 100 + "vh",
           left: 0,
           width: "100vw",
         }}
