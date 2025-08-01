@@ -1,4 +1,4 @@
-// Utility to fetch and cache challenge voxels from the precomputed JSON
+// Utilitário para buscar e cachear voxels dos desafios a partir do JSON pré-computado
 
 export interface ChallengeVoxels {
   id: string;

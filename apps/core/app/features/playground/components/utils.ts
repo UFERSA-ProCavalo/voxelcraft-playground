@@ -31,10 +31,10 @@ export const TEMA_CENA = {
 import type { VoxelData } from "../types";
 
 /**
- * Maps voxel positions using the given spacing.
- * @param voxels Array of VoxelData
- * @param spacing number
- * @returns Array of VoxelData with mapped positions
+ * Mapeia as posições dos voxels usando o espaçamento fornecido.
+ * @param voxels Array de VoxelData
+ * @param spacing número
+ * @returns Array de VoxelData com posições mapeadas
  */
 export function mapVoxelPositions(
   voxels: VoxelData[],

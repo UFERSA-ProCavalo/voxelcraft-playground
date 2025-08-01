@@ -1,6 +1,17 @@
 // Script para gerar voxels dos desafios a partir do starterCode
 import { challenges } from "../challenges";
-import { COLOR_MAP } from "../consts";
+// Paleta padrão (deve bater com o default do Zustand)
+const COLOR_MAP: Record<number, string> = {
+  1: "#e74c3c", // vermelho
+  2: "#27ae60", // verde
+  3: "#2980b9", // azul
+  4: "#f1c40f", // amarelo
+  5: "#8e44ad", // roxo
+  6: "#e67e22", // laranja
+  7: "#1abc9c", // ciano
+  8: "#34495e", // cinza escuro
+  9: "#ecf0f1", // branco
+};
 import { runVoxelPipeline, faceCullingStep } from "../pipeline/voxelPipeline";
 import type { VoxelData } from "../types";
 import * as fs from "fs";
@@ -80,12 +91,9 @@ function main() {
       voxels: culled.map((v) => ({ position: v.position, color: v.color })),
     };
   });
-  const localPath = new URL("./challenges-with-voxels.json", import.meta.url).pathname;
-  fs.writeFileSync(
-    localPath,
-    JSON.stringify(output, null, 2),
-    "utf-8",
-  );
+  const localPath = new URL("./challenges-with-voxels.json", import.meta.url)
+    .pathname;
+  fs.writeFileSync(localPath, JSON.stringify(output, null, 2), "utf-8");
   // Copia para a pasta pública do app core
   const publicDir = path.resolve(__dirname, "../../../../public");
   if (!fs.existsSync(publicDir)) {
@@ -96,7 +104,9 @@ function main() {
     fs.unlinkSync(destPath);
   }
   fs.copyFileSync(localPath, destPath);
-  console.log(`Arquivo challenges-with-voxels.json gerado e copiado para ${destPath}`);
+  console.log(
+    `Arquivo challenges-with-voxels.json gerado e copiado para ${destPath}`,
+  );
 }
 
 main();

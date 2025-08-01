@@ -1,5 +1,3 @@
-import * as React from "react";
-
 /**
  * PageLoader - barra de carregamento exibida abaixo do cabeçalho.
  *

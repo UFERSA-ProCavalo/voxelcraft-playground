@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Save,
   Download,
   Play,
   Code,
   List,
-  CircleQuestionMark,
-} from "lucide-react";
-import { CodeEditor } from "./CodeEditor";
+   CircleQuestionMark,
+   Settings,
+} from "lucide-react";import { CodeEditor } from "./CodeEditor";
 import { challenges } from "~/features/playground/challenges";
 import type {
   Challenge,
@@ -27,17 +27,34 @@ const DIFFICULTIES: { label: string; value: ChallengeDifficulty }[] = [
   { label: "Desafiador", value: "desafiador" },
 ];
 
+import { useSoundStore } from "~/store/soundStore";
+import { ColorPickerSettings } from "./ColorPickerSettings";
+
 function VerticalTabs({
   tab,
   setTab,
   mainTab,
   onGuideClick,
+  settingsPopoverOpen,
+  setSettingsPopoverOpen,
 }: {
   tab: "editor" | "challenges";
   setTab: (t: "editor" | "challenges") => void;
   mainTab: "challenge" | "free";
   onGuideClick: () => void;
+  settingsPopoverOpen: boolean;
+  setSettingsPopoverOpen: (open: boolean) => void;
 }) {
+  // play close sound when popover closes
+  const playSound = useSoundStore((s) => s.playSound);
+  const prevOpen = useRef(settingsPopoverOpen);
+  useEffect(() => {
+    if (prevOpen.current && !settingsPopoverOpen) {
+      playSound("close");
+    }
+    prevOpen.current = settingsPopoverOpen;
+  }, [settingsPopoverOpen, playSound]);
+
   return (
     <div className="flex flex-col border-r bg-muted h-full justify-between">
       <div>
@@ -72,7 +89,37 @@ function VerticalTabs({
           </Button>
         )}
       </div>
-      <div className="mb-2">
+      <div className="mb-2 flex flex-col gap-2">
+        <Popover open={settingsPopoverOpen} onOpenChange={setSettingsPopoverOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="secondary"
+              style={{
+                borderRadius: 20,
+                minWidth: 40,
+                minHeight: 40,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              title="Configurações"
+              suppressClickSound
+            >
+              <Settings size={22} />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-80">
+             <h2 style={{ marginTop: 0 }}>Configurações</h2>
+             <div style={{ margin: '16px 0' }}>
+               {/* Color picker settings */}
+               <ColorPickerSettings />
+             </div>
+             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 24 }}>
+               <Button variant="default" onClick={() => setSettingsPopoverOpen(false)} suppressClickSound>
+                 Fechar
+               </Button>
+             </div>          </PopoverContent>
+        </Popover>
         <Button
           variant="secondary"
           onClick={onGuideClick}
@@ -222,7 +269,7 @@ function ChallengeDescription({
   );
 }
 
-import { Modal } from "~/components/ui/Modal";
+import { Popover, PopoverTrigger, PopoverContent } from "~/components/ui/popover";
 
 export function LeftPanel({
   code,
@@ -240,6 +287,8 @@ export function LeftPanel({
   const [tab, setTab] = useState<"editor" | "challenges">("editor");
   const [difficulty, setDifficulty] = useState<ChallengeDifficulty>("tutorial");
   const [guideOpen, setGuideOpen] = useState(false);
+  // const [settingsOpen, setSettingsOpen] = useState(false);
+const [settingsPopoverOpen, setSettingsPopoverOpen] = useState(false);
 
   const filteredChallenges = challenges.filter(
     (c) => c.difficulty === difficulty,
@@ -255,6 +304,8 @@ export function LeftPanel({
         setTab={setTab}
         mainTab={mainTab}
         onGuideClick={() => setGuideOpen(true)}
+        settingsPopoverOpen={settingsPopoverOpen}
+        setSettingsPopoverOpen={setSettingsPopoverOpen}
       />
       <div style={{ flex: 1, minHeight: 0, minWidth: 0, height: "100%" }}>
         {tab === "editor" && (
@@ -267,7 +318,7 @@ export function LeftPanel({
             <div
               style={{ display: "flex", flexDirection: "row", height: "100%" }}
             >
-              {/* Column 1: Difficulties */}
+              {/* Coluna 1: Dificuldades */}
               <div
                 style={{
                   display: "flex",
@@ -288,7 +339,7 @@ export function LeftPanel({
                   </Button>
                 ))}
               </div>
-              {/* Column 2: Challenges */}
+              {/* Coluna 2: Desafios */}{" "}
               <div style={{ minWidth: 60, marginRight: 16 }}>
                 <ChallengeList
                   challenges={filteredChallenges}
@@ -296,7 +347,7 @@ export function LeftPanel({
                   onSelect={setSelectedChallengeId}
                 />
               </div>
-              {/* Column 3: Challenge Details */}
+              {/* Coluna 3: Detalhes do Desafio */}{" "}
               <div style={{ flex: 2, minWidth: 0 }}>
                 {selectedChallenge && (
                   <ChallengeDescription
@@ -304,7 +355,7 @@ export function LeftPanel({
                     code={code}
                     setCode={setCode}
                     onTryItOut={() => {
-                      setCode('// Write your code here\n');
+                      setCode("// Write your code here\n");
                       setSelectedChallengeId(selectedChallenge.id);
                     }}
                   />
@@ -314,17 +365,22 @@ export function LeftPanel({
           </div>
         )}
       </div>
-      <Modal open={guideOpen} onClose={() => setGuideOpen(false)}>
-        <h2 style={{ marginTop: 0 }}>Guia de uso</h2>
-        <p>Guia de uso em breve...</p>
-        <div
-          style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}
-        >
-          <Button variant="default" onClick={() => setGuideOpen(false)}>
-            Fechar
-          </Button>
-        </div>
-      </Modal>
+       {/* Modal for guide is not implemented, replace or remove as needed */}
+       {/* <Modal open={guideOpen} onClose={() => setGuideOpen(false)}>
+         <h2 style={{ marginTop: 0 }}>Guia de uso</h2>
+         <p>Guia de uso em breve...</p>
+         <div
+           style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}
+         >
+           <Button
+             variant="default"
+             onClick={() => setGuideOpen(false)}
+             suppressClickSound
+           >
+             Fechar
+           </Button>
+         </div>
+       </Modal> */}      
     </div>
   );
 }

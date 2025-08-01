@@ -43,7 +43,7 @@ export function useChallengeVoxels() {
   const ctx = useContext(ChallengeVoxelsContext);
   if (!ctx)
     throw new Error(
-      "useChallengeVoxels must be used within ChallengeVoxelsProvider",
+      "useChallengeVoxels deve ser usado dentro de ChallengeVoxelsProvider",
     );
   return ctx;
 }

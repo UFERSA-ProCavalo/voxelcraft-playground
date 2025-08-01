@@ -8,8 +8,6 @@ export const challenges: Challenge[] = [
     constructionCode: `// Crie um cubo na posição (0,0,0)\nif(x==0 && y==0 && z==0) return 1;`,
     difficulty: "tutorial",
     progress: "not-started",
-    // hint?: string;
-    // order?: number;
   },
   {
     id: "iniciante-1",

@@ -242,6 +242,7 @@
     transform: none;
   }
 }
-.wobble-hover:hover {
+.wobble-hover:hover,
+.wobble-hover:focus-visible {
   animation: wobble 0.4s both;
 }

@@ -1,14 +1,10 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useOutletContext } from "react-router";
 import { LeftPanel } from "../components/LeftPanel/LeftPanel";
-import { Scene } from "../components/RightPanel/Scene";
 import { useDebounce } from "@libs/utils";
-
 import { ChallengeVoxelsProvider } from "../lib/ChallengeVoxelsProvider";
 import { loadChallengeProgress } from "../lib/persistence";
 import { RightPanel } from "../components/RightPanel/RightPanel";
-import { FullPageLoader } from "~/components/ui/FullPageLoader";
-import { TEMA_CENA } from "../components/utils";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -18,24 +14,20 @@ import { ChatButtonWithPopup } from "../components/ChatButtonWithPopup";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 
 export default function PlaygroundPage() {
-  const [tab, setTab] = useState<string>("challenge");
+  const [tab, setTab] = React.useState<string>("challenge");
 
-  const [code, setCode] = useState("// Write code here\n");
-  const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(
-    null,
-  );
+  const [code, setCode] = React.useState("// Write code here\n");
+  const [selectedChallengeId, setSelectedChallengeId] = React.useState<
+    string | null
+  >(null);
+  const [similarity, setSimilarity] = React.useState(0);
 
-  // Restore code from localStorage if available
+  // Restaura o código do localStorage se disponível
   useEffect(() => {
     if (selectedChallengeId) {
       const progress = loadChallengeProgress(selectedChallengeId);
       if (progress && progress.userCode) {
         setCode(progress.userCode);
-        // TODO: set user voxels and feedback if you have state for them
-        console.log(
-          "Restored code from localStorage for challenge",
-          selectedChallengeId,
-        );
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,6 +48,8 @@ export default function PlaygroundPage() {
         position: "relative",
       }}
     >
+      {/* Progress bar: fixed left, only in challenge mode with a challenge selected */}
+      {/* Progress bar removido daqui. Agora está no RightPanel. */}{" "}
       <ChatButtonWithPopup />
       <Tabs
         value={tab}
@@ -92,6 +86,7 @@ export default function PlaygroundPage() {
                     perfOffset={0}
                     selectedChallengeId={selectedChallengeId}
                     tab={tab as "challenge" | "free"}
+                    onSimilarityChange={setSimilarity}
                   />
                 </ResizablePanel>
               </ResizablePanelGroup>
@@ -121,7 +116,8 @@ export default function PlaygroundPage() {
                     perfOffset={0}
                     selectedChallengeId={null}
                     tab={tab as "challenge" | "free"}
-                  />
+                    setCode={setCode}
+                  />{" "}
                 </ResizablePanel>
               </ResizablePanelGroup>
             </div>

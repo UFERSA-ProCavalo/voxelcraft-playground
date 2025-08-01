@@ -3,11 +3,11 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 // import { Perf } from "r3f-perf";
 import { OrbitControls } from "@react-three/drei";
 import type { VoxelData } from "~/features/playground/types";
-import { COLOR_MAP } from "~/features/playground/consts";
+
 import { VoxelInstances } from "~/features/playground/components/VoxelInstances";
 import { CommonSceneElements } from "../CommonSceneElements";
 import { mapVoxelPositions } from "../utils";
-import { usePlaygroundStore } from "~/features/playground/lib/store";
+import { usePlaygroundStore } from "~/store/store";
 import type { RefObject } from "react";
 import { Button } from "~/components/ui/button";
 export interface SceneProps {
@@ -85,7 +85,6 @@ export function Scene({
 }: SceneProps & { onVoxelsChange?: (voxels: VoxelData[]) => void }) {
    const [voxels, setVoxels] = useState<VoxelData[]>([]);
    const [animation, setAnimation] = useState(null);
-
    // const [workerError, setWorkerError] = useState<string | null>(null);
 
    // Notifica o pai sempre que os voxels mudam (apenas quando não é preview)
@@ -93,9 +92,10 @@ export function Scene({
      if (!voxelsProp && onVoxelsChange) {
        onVoxelsChange(voxels);
      }
-   }, [voxels, voxelsProp, onVoxelsChange]);  const workerRef = useRef<Worker | null>(null);
-
+   }, [voxels, voxelsProp, onVoxelsChange]); 
+   const workerRef = useRef<Worker | null>(null);
    const spacing = bounds - 0.1;
+
 
   useEffect(() => {
     if (voxelsProp) return;
@@ -114,7 +114,8 @@ export function Scene({
       }
     };
     if (code) {
-      worker.postMessage({ code, gridSize, bounds, colorMap: COLOR_MAP });
+      const colorMap = usePlaygroundStore.getState().colorMap;
+      worker.postMessage({ code, gridSize, bounds, colorMap });
     }
     return () => {
       // worker.terminate();

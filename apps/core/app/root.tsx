@@ -10,6 +10,7 @@ import { useNavigation } from "react-router-dom";
 import type { Route } from "./+types/root";
 import "./app.css";
 import { ThemeProvider } from "./components/theme-provider";
+import { UISoundProvider } from "./lib/UISoundProvider";
 import { useEffect, useState } from "react";
 
 export const links: Route.LinksFunction = () => [
@@ -30,7 +31,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
-    console.log("Navigation state:", navigation.state);
     if (navigation.state === "loading") {
       setShowLoader(true);
     } else {
@@ -39,7 +39,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   }, [navigation.state]);
 
   useEffect(() => {
-    console.log("Show loader:", showLoader);
+    // Nenhum efeito colateral além do setShowLoader
   }, [showLoader]);
 
   return (
@@ -59,13 +59,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
           )}
           {children}
         </div>
+        <UISoundProvider />
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
   );
 }
-
 export default function App() {
   return (
     <ThemeProvider>

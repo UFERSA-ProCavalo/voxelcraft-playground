@@ -6,19 +6,23 @@ Este sistema é uma aplicação web interativa para criação, visualização e 
 ## Lógica de Voxels e Geração de Objetos
 - O usuário pode criar ou editar estruturas 3D usando voxels, visualizando em tempo real no painel direito.
 - O painel esquerdo permite editar código ou selecionar desafios, que definem regras ou objetivos para a construção.
-- A lógica de geração de voxels pode ser baseada em código do usuário, instruções ou presets de desafios.
+- **O código do usuário é executado para cada voxel do espaço 3D. O valor retornado pela função determina a cor (ou existência) do voxel naquela posição.**
+- Por exemplo, se o usuário digitar `return 1;`, todos os voxels possíveis receberão a cor 1.
 - O sistema utiliza providers/contextos para compartilhar estado dos voxels e desafios entre componentes.
 
 ### Exemplo: Código JS para gerar voxels
 ```js
-// Exemplo de função que adiciona um cubo na posição (x, y, z)
-addVoxel(0, 0, 0);
-addVoxel(1, 0, 0);
-addVoxel(0, 1, 0);
-// O usuário pode criar laços, condições, etc.
-for (let x = 0; x < 5; x++) {
-  addVoxel(x, 0, 0);
+// Este código roda para cada voxel (x, y, z):
+return (x + y + z) % 2; // alterna cor entre 0 e 1
+
+// Se você quiser que todos os voxels sejam da cor 1:
+return 1;
+
+// Para criar uma pirâmide, por exemplo:
+if (y <= 4 - Math.abs(x) - Math.abs(z)) {
+  return 2; // cor 2 para voxels dentro da pirâmide
 }
+return 0; // sem voxel fora da pirâmide
 ```
 
 ### Exemplo: Enviando código do usuário para a IA

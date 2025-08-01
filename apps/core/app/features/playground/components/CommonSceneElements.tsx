@@ -2,7 +2,7 @@ import React from "react";
 import { AxesCylinders } from "./RightPanel/AxesCylinders";
 import { GridOutline } from "./RightPanel/GridOutline";
 import { AxisRulers } from "./AxisRulers";
-import { usePlaygroundStore } from "../lib/store";
+import { usePlaygroundStore } from "../../../store/store";
 
 interface CommonSceneElementsProps {
   gridSize: number;
@@ -13,8 +13,8 @@ interface CommonSceneElementsProps {
 }
 
 /**
- * Shared scene elements: lights, axes, grid outline.
- * Use as a child of <Canvas> in both Scene and VoxelPreviewScene.
+ * Elementos de cena compartilhados: luzes, eixos, contorno da grade.
+ * Use como filho de <Canvas> tanto em Scene quanto em VoxelPreviewScene.
  */
 export function CommonSceneElements({
   gridSize,
@@ -33,7 +33,7 @@ export function CommonSceneElements({
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 7]} intensity={0.8} />
       <directionalLight position={[-5, -10, -7]} intensity={0.8} />
-      {/* Debug: strong point light at origin */}
+      {/* Debug: luz pontual forte na origem */}
       <pointLight position={[0, 0, 0]} intensity={2} />
       {children}
       {showAxes && <AxesCylinders gridSize={gridSize} tickInterval={step} />}

@@ -1,6 +1,7 @@
 import MonacoEditor from "@monaco-editor/react";
 import * as acorn from "acorn";
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useTypingSoundPerKey } from "~/store/soundStore";
 
 interface CodeEditorProps {
   code: string;
@@ -29,12 +30,23 @@ export function CodeEditor({ code, onChange }: CodeEditorProps) {
     [onChange],
   );
 
-  // Handle Monaco mount
-  const handleEditorDidMount = useCallback((editor: any) => {
-    editorRef.current = editor;
-  }, []);
+  // Monta o editor Monaco
+  const { handleKeyDown, handleKeyUp } = useTypingSoundPerKey();
+  const handleEditorDidMount = useCallback(
+    (editor: any) => {
+      editorRef.current = editor;
+      // Adiciona som de digitação no pressionar/soltar tecla
+      editor.onKeyDown((e: any) => {
+        handleKeyDown(e.browserEvent);
+      });
+      editor.onKeyUp((e: any) => {
+        handleKeyUp(e.browserEvent);
+      });
+    },
+    [handleKeyDown, handleKeyUp],
+  );
 
-  // ResizeObserver to trigger layout on resize
+  // ResizeObserver para ajustar o layout ao redimensionar
   useEffect(() => {
     if (!containerRef.current) return;
     const ro = new window.ResizeObserver((entries) => {
