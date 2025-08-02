@@ -6,6 +6,8 @@ Este projeto é o núcleo do Voxelcraft Playground, uma aplicação web interati
 
 ![/docs/examples/example-1.png](/docs/examples/example-1.png)
 
+A proposta nasceu como parte de um trabalho avaliativo para a disciplina de Sistemas Multimídia da Universidade Federal do Semiárido (UFERSA). A equipe, movida pelo interesse comum em computação gráfica e modelagem tridimensional, idealizou uma solução que tornasse acessível a criação de arte em 3D. Inspirados por desenhos simples construídos com lógica e matemática, o objetivo inicial era desenvolver um site que permitisse a criação de formas tridimensionais — de forma intuitiva, visual e divertida — a partir de blocos básicos (voxels).
+
 ## Exemplos de Animação
 
 As animações abaixo foram criadas diretamente na plataforma VoxelCraft Playground:
@@ -13,8 +15,6 @@ As animações abaixo foram criadas diretamente na plataforma VoxelCraft Playgro
 ![Exemplo de Animação 1](/docs/examples/animation-1.gif)
 ![Exemplo de Animação 2](/docs/examples/animation-2.gif)
 ![Exemplo de Animação 3](/docs/examples/animation-3.gif)
-
-A proposta nasceu como parte de um trabalho avaliativo para a disciplina de Sistemas Multimídia da Universidade Federal do Semiárido (UFERSA). A equipe, movida pelo interesse comum em computação gráfica e modelagem tridimensional, idealizou uma solução que tornasse acessível a criação de arte em 3D. Inspirados por desenhos simples construídos com lógica e matemática, o objetivo inicial era desenvolver um site que permitisse a criação de formas tridimensionais — de forma intuitiva, visual e divertida — a partir de blocos básicos (voxels).
 
 ## Tecnologias Utilizadas
 - **React**: Interface e lógica de componentes.
